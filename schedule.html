@@ -54,6 +54,7 @@
             <th>Date</th>
             <th>Event</th>
             <th>Location</th>
+            <th>Registration</th>
           </tr>
         </thead>
         <tbody id="tournament-rows">
@@ -97,7 +98,7 @@
       if (Array.isArray(tournaments) && tournaments.length) {
         tTbody.innerHTML = tournaments.map(r => {
           const d = r.date ? new Date(r.date).toLocaleDateString() : '';
-          return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td></tr>`;
+          return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>` + (r.registration_url ? `<a href=\"${r.registration_url}\" target=\"_blank\" rel=\"noopener noreferrer\">Register</a>` : '-') + `</td></tr>`;
         }).join('');
       }
     }

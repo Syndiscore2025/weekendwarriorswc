@@ -111,11 +111,11 @@
     }
 
     #wwwc-logo {
-      animation: collideFromLeft 2.2s ease-in forwards;
+      animation: collideFromLeft 2.6s ease-in-out forwards;
     }
 
     #wywc-logo {
-      animation: collideFromRight 2.2s ease-in forwards;
+      animation: collideFromRight 2.6s ease-in-out forwards;
     }
 
     /* Explosion flash element */
@@ -133,31 +133,33 @@
       top: 50%;
       transform: translate(-50%, -50%) scale(0);
       opacity: 0;
-      animation: explosion 0.9s ease-out 2.1s forwards;
+      animation: explosion 1s ease-out 2.4s forwards;
       z-index: 5;
       pointer-events: none;
     }
 
     #combined-logo {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.92);
-      animation: fadeInSmooth 1.8s ease-out 2.2s forwards;
+      transform: translate(-50%, -50%) scale(0.9);
+      animation: fadeInSmooth 2.8s ease-out 2.9s forwards;
       z-index: 10;
     }
 
-    /* Left and right logos travel to center (no rotation) and vanish on collision */
+    /* Logos move straight to the center, overlap (collision), then vanish */
     @keyframes collideFromLeft {
-      0%   { transform: translate(-50%, -50%) translateX(-480px); opacity: 0; }
-      60%  { transform: translate(-50%, -50%) translateX(-140px); opacity: 1; }
-      75%  { transform: translate(-50%, -50%) translateX(-100px); opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(-100px) scale(0.2); opacity: 0; }
+      0%   { transform: translate(-50%, -50%) translateX(-560px) scale(1); opacity: 0; }
+      55%  { transform: translate(-50%, -50%) translateX(-160px) scale(1); opacity: 1; }
+      80%  { transform: translate(-50%, -50%) translateX(-40px)  scale(1.02); opacity: 1; }
+      88%  { transform: translate(-50%, -50%) translateX(0)      scale(1.06); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(0)      scale(0);    opacity: 0; }
     }
 
     @keyframes collideFromRight {
-      0%   { transform: translate(-50%, -50%) translateX(480px); opacity: 0; }
-      60%  { transform: translate(-50%, -50%) translateX(140px); opacity: 1; }
-      75%  { transform: translate(-50%, -50%) translateX(100px); opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(100px) scale(0.2); opacity: 0; }
+      0%   { transform: translate(-50%, -50%) translateX(560px) scale(1); opacity: 0; }
+      55%  { transform: translate(-50%, -50%) translateX(160px) scale(1); opacity: 1; }
+      80%  { transform: translate(-50%, -50%) translateX(40px)  scale(1.02); opacity: 1; }
+      88%  { transform: translate(-50%, -50%) translateX(0)     scale(1.06); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(0)     scale(0);    opacity: 0; }
     }
 
     /* Explosion effect (lightweight) */

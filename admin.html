@@ -147,15 +147,16 @@
       <div class="content-card">
         <h2>Upcoming Tournaments</h2>
         <div class="stack">
-          <div class="row" style="grid-template-columns: 1fr 2fr 2fr 1fr auto;">
+          <div class="row" style="grid-template-columns: 1fr 2fr 2fr 1fr 2fr auto;">
             <input id="t-date" type="date" placeholder="Tournament Date" />
             <input id="t-event" placeholder="Event Name" />
             <input id="t-location" placeholder="Location" />
             <input id="t-weighin" type="time" placeholder="Weigh-in Time" />
+            <input id="t-link" type="url" placeholder="Registration URL (optional)" />
             <button id="add-tournament" class="success">Add</button>
           </div>
           <table class="admin-list" style="width:100%">
-            <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Weigh-in</th><th class="right">Actions</th></tr></thead>
+            <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Weigh-in</th><th>Registration</th><th class="right">Actions</th></tr></thead>
             <tbody id="tournament-list"></tbody>
           </table>
         </div>
@@ -232,8 +233,10 @@
     });
 
     supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));
-    const { data: { session } } = await supabase.auth.getSession();
-    await refreshUI(session);
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      await refreshUI(session);
+    })();
 
     // Data ops
     async function loadData() {
@@ -518,7 +521,8 @@
         const tr = document.createElement('tr');
         const d = row.date ? new Date(row.date).toLocaleDateString() : '';
         const weighin = row.weighin_time || 'N/A';
-        tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighin}</td>` +
+        const link = row.registration_url ? `<a href="${row.registration_url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
+        tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighin}</td><td>${link}</td>` +
           `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
         tr.querySelector('button').addEventListener('click', async () => {
           if (!(await ensureAdmin())) return alert('Not an admin.');
@@ -539,6 +543,7 @@
       const event = $('t-event').value.trim();
       const location = $('t-location').value.trim();
       const weighinTime = $('t-weighin').value.trim();
+      const link = $('t-link') ? $('t-link').value.trim() : '';
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
       // Format weigh-in time if provided
@@ -555,7 +560,8 @@
         date,
         event,
         location,
-        weighin_time: weighinFormatted
+        weighin_time: weighinFormatted,
+        registration_url: link || null
       });
       if (error) {
         console.error('Error adding tournament:', error);
@@ -565,6 +571,7 @@
       $('t-event').value = '';
       $('t-location').value = '';
       $('t-weighin').value = '';
+      if ($('t-link')) $('t-link').value = '';
       loadTournaments();
     });
 
