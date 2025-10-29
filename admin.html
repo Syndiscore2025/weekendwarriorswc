@@ -66,8 +66,7 @@
   <section class="admin-wrap">
     <div class="content-card">
       <h2>Sign in</h2>
-      <p class="note">This page uses Supabase Auth. Only emails in the Admins table will be allowed to change data.
-      <br>First time setup steps are listed at the bottom of this page.</p>
+      <p class="note">This page uses Supabase Auth. Only emails in the Admins table will be allowed to change data.</p>
 
       <div id="auth-view" class="stack">
         <input id="email" type="email" placeholder="Email" required />
@@ -191,17 +190,6 @@
         </div>
       </div>
 
-      <div class="content-card">
-        <h2>First-time setup (read-only)</h2>
-        <ol class="note" style="text-align:left; margin: 0 auto; max-width: 800px;">
-          <li>Create a free project at supabase.com</li>
-          <li>In Settings → API, copy your Project URL and anon public key</li>
-          <li>In the SQL Editor, run the SQL included at the bottom of this file (expand source) to create tables and policies</li>
-          <li>In Auth → Users, create a user account with your email</li>
-          <li>Insert your email into the <span class="mono">admins</span> table</li>
-          <li>Set the two constants in this page to your Supabase values and deploy</li>
-        </ol>
-      </div>
     </div>
   </section>
 
@@ -358,7 +346,36 @@
 
       const div = $('current-audio');
       if (data?.value) {
-        div.innerHTML = `<div class="note">Current: <audio src="${data.value}" controls style="width:100%;max-width:400px;"></audio></div>`;
+        div.innerHTML = `
+          <div class="note" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 200px;">
+              Current: <audio src="${data.value}" controls style="width:100%;max-width:400px;"></audio>
+            </div>
+            <button class="danger" id="delete-audio">Delete Audio</button>
+          </div>
+        `;
+
+        // Add delete button event listener
+        const deleteBtn = document.getElementById('delete-audio');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', async () => {
+            if (!(await ensureAdmin())) return alert('Not an admin.');
+            if (!confirm('Delete background audio?')) return;
+
+            // Delete from site_settings
+            const { error } = await supabase
+              .from('site_settings')
+              .delete()
+              .eq('key', 'background_audio');
+
+            if (error) {
+              console.error('Error deleting audio:', error);
+              return alert(error.message);
+            }
+
+            loadAudio();
+          });
+        }
       } else {
         div.innerHTML = '<div class="muted">No audio uploaded yet.</div>';
       }
