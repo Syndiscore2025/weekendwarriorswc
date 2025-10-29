@@ -62,44 +62,30 @@
         </tbody>
       </table>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    // Fill with your Supabase project values to enable dynamic schedule
-    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
-
-    function configured() {
-      return SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR-ANON-KEY';
-    }
-
+  <script>
     async function run() {
-      if (!configured()) return; // keep fallback HTML
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      try {
+        const schTbody = document.getElementById('schedule-rows');
+        const tTbody = document.getElementById('tournament-rows');
 
-      const schTbody = document.getElementById('schedule-rows');
-      const tTbody = document.getElementById('tournament-rows');
+        // Load schedule from JSON
+        const scheduleRes = await fetch('data/schedule.json');
+        const schedule = await scheduleRes.json();
+        if (Array.isArray(schedule) && schedule.length) {
+          schTbody.innerHTML = schedule.map(r => `<tr><td>${r.day}</td><td>${r.time}</td><td>${r.group}</td></tr>`).join('');
+        }
 
-      // Load schedule
-      const { data: schedule } = await supabase
-        .from('schedule')
-        .select('*')
-        .order('sort', { ascending: true })
-        .order('id', { ascending: true });
-      if (Array.isArray(schedule) && schedule.length) {
-        schTbody.innerHTML = schedule.map(r => `<tr><td>${r.day}</td><td>${r.time}</td><td>${r.grp}</td></tr>`).join('');
-      }
-
-      // Load tournaments
-      const { data: tournaments } = await supabase
-        .from('tournaments')
-        .select('*')
-        .order('date', { ascending: true })
-        .order('id', { ascending: true });
-      if (Array.isArray(tournaments) && tournaments.length) {
-        tTbody.innerHTML = tournaments.map(r => {
-          const d = r.date ? new Date(r.date).toLocaleDateString() : '';
-          return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>` + (r.registration_url ? `<a href=\"${r.registration_url}\" target=\"_blank\" rel=\"noopener noreferrer\">Register</a>` : '-') + `</td></tr>`;
-        }).join('');
+        // Load tournaments from JSON
+        const tournamentsRes = await fetch('data/tournaments.json');
+        const tournaments = await tournamentsRes.json();
+        if (Array.isArray(tournaments) && tournaments.length) {
+          tTbody.innerHTML = tournaments.map(r => {
+            const d = r.date ? new Date(r.date).toLocaleDateString() : '';
+            return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>` + (r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-') + `</td></tr>`;
+          }).join('');
+        }
+      } catch (e) {
+        console.error('Error loading data:', e);
       }
     }
 

@@ -45,16 +45,7 @@
     </svg>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
-
-    function configured() {
-      return SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR-ANON-KEY';
-    }
-
+  <script>
     const slider = document.querySelector('.hero-slider');
     const slidesContainer = document.getElementById('slides-container');
     const dotsWrap = slider?.querySelector('.slider-dots');
@@ -70,58 +61,51 @@
     let timer;
 
     async function loadSlides() {
-      if (!configured()) {
-        initSlider();
-        return;
-      }
+      try {
+        // Load slides from JSON
+        const slidesRes = await fetch('data/slides.json');
+        const slidesData = await slidesRes.json();
 
-      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      const { data } = await supabase
-        .from('slides')
-        .select('*')
-        .order('sort', { ascending: true })
-        .order('id', { ascending: true });
+        if (Array.isArray(slidesData) && slidesData.length) {
+          slidesContainer.innerHTML = '';
+          slidesData.forEach((slide, i) => {
+            const div = document.createElement('div');
+            div.className = 'slide' + (i === 0 ? ' is-active' : '');
 
-      if (Array.isArray(data) && data.length) {
-        slidesContainer.innerHTML = '';
-        data.forEach((slide, i) => {
-          const div = document.createElement('div');
-          div.className = 'slide' + (i === 0 ? ' is-active' : '');
+            if (slide.type === 'video') {
+              const video = document.createElement('video');
+              video.src = slide.url;
+              video.muted = true;
+              video.loop = true;
+              video.playsInline = true;
+              div.appendChild(video);
+            } else {
+              div.style.backgroundImage = `url('${slide.url}')`;
+            }
 
-          if (slide.media_type === 'video') {
-            const video = document.createElement('video');
-            video.src = slide.media_url;
-            video.muted = true;
-            video.loop = true;
-            video.playsInline = true;
-            div.appendChild(video);
-          } else {
-            div.style.backgroundImage = `url('${slide.media_url}')`;
-          }
+            if (slide.caption) {
+              const caption = document.createElement('div');
+              caption.className = 'caption';
+              caption.textContent = slide.caption;
+              div.appendChild(caption);
+            }
 
-          if (slide.caption) {
-            const caption = document.createElement('div');
-            caption.className = 'caption';
-            caption.textContent = slide.caption;
-            div.appendChild(caption);
-          }
+            slidesContainer.appendChild(div);
+          });
+        }
 
-          slidesContainer.appendChild(div);
-        });
-      }
+        // Load audio from JSON
+        const audioRes = await fetch('data/audio.json');
+        const audioData = await audioRes.json();
 
-      // Load audio
-      const { data: audioData } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'background_audio')
-        .single();
-
-      if (audioData?.value) {
-        bgAudio.src = audioData.value;
-        audioToggle.style.display = 'flex';
-        bgAudio.muted = true;
-        bgAudio.play().catch(() => {});
+        if (audioData?.url) {
+          bgAudio.src = audioData.url;
+          audioToggle.style.display = 'flex';
+          bgAudio.muted = true;
+          bgAudio.play().catch(() => {});
+        }
+      } catch (e) {
+        console.error('Error loading data:', e);
       }
 
       initSlider();

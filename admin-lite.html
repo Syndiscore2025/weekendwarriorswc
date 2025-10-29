@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Lite - Weekend Warriors WC</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 1rem; }
+    .card { background: #111; border: 1px solid #333; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: center; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; }
+    .row-5 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: .5rem; }
+    .btn { padding: .55rem .9rem; border-radius: 8px; border: 1px solid #e60000; background: rgba(230,0,0,.15); color: #fff; cursor: pointer; }
+    .btn:hover { background: rgba(230,0,0,.3); }
+    input, select { width: 100%; padding: .55rem; border: 1px solid #444; border-radius: 6px; background: #000; color: #fff; }
+    .muted { color: #aaa; font-size: .9rem; }
+    .hidden { display: none; }
+    .ok { color: #2ecc71; }
+    .err { color: #ff5252; }
+    .status { min-height: 1.2em; }
+    header, nav { text-align: center; margin-bottom: .5rem; }
+    nav a { color: #ddd; margin: 0 .3rem; text-decoration: none; }
+    nav a.active { color: #fff; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="IMG_6531.png" alt="Logo" class="logo" style="height:64px" />
+    <h1>Admin Lite</h1>
+  </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="admin.html">Admin (old)</a>
+    <a href="admin-lite.html" class="active" aria-current="page">Admin Lite (new)</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="card">
+      <h2>Sign in</h2>
+      <div id="auth-view" class="row-3">
+        <input id="email" type="email" placeholder="Email" />
+        <input id="password" type="password" placeholder="Password" />
+        <button id="btn-sign-in" class="btn">Sign in</button>
+      </div>
+      <div id="user-view" class="hidden">
+        <div class="row">
+          <div>Signed in as <span id="who" class="muted"></span></div>
+          <button id="btn-sign-out" class="btn">Sign out</button>
+        </div>
+        <div id="admin-flag" class="muted"></div>
+      </div>
+    </div>
+
+    <div id="dash" class="hidden">
+      <div class="card">
+        <h2>Slides</h2>
+        <div class="row-3">
+          <input id="slide-file" type="file" accept="image/*,video/*" />
+          <input id="slide-caption" placeholder="Caption (optional)" />
+          <button id="btn-slide-upload" class="btn">Upload Slide</button>
+        </div>
+        <div id="slide-status" class="status muted"></div>
+      </div>
+
+      <div class="card">
+        <h2>Background Audio</h2>
+        <div class="row">
+          <input id="audio-file" type="file" accept="audio/mp3,audio/mpeg" />
+          <button id="btn-audio-upload" class="btn">Upload Audio</button>
+        </div>
+        <div id="audio-status" class="status muted"></div>
+      </div>
+
+      <div class="card">
+        <h2>Practice Schedule</h2>
+        <div class="row-5">
+          <select id="sch-day">
+            <option value="">Day</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+          <input id="sch-start" type="time" />
+          <input id="sch-end" type="time" />
+          <input id="sch-group" placeholder="Group" />
+          <button id="btn-schedule-add" class="btn">Add</button>
+        </div>
+        <div id="schedule-status" class="status muted"></div>
+      </div>
+
+      <div class="card">
+        <h2>Tournaments</h2>
+        <div class="row-5">
+          <input id="t-date" type="date" />
+          <input id="t-event" placeholder="Event" />
+          <input id="t-location" placeholder="Location" />
+          <input id="t-weighin" type="time" />
+          <button id="btn-tournament-add" class="btn">Add</button>
+        </div>
+        <div class="row" style="grid-template-columns: 1fr auto; margin-top:.5rem;">
+          <input id="t-link" placeholder="Registration URL (optional)" />
+          <span></span>
+        </div>
+        <div id="tournament-status" class="status muted"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const $ = (id) => document.getElementById(id);
+
+    const authView = $('auth-view');
+    const userView = $('user-view');
+    const dash = $('dash');
+    const who = $('who');
+
+    function show(el, on) { el.classList.toggle('hidden', !on); }
+
+    async function isAdmin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) return false;
+      const { data, error } = await supabase
+        .from('admins')
+        .select('email')
+        .eq('email', user.email)
+        .limit(1);
+      if (error) { console.error('admin check error', error); return false; }
+      return Array.isArray(data) && data.length > 0;
+    }
+
+    async function refresh() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const loggedIn = !!session?.user;
+      show(authView, !loggedIn);
+      show(userView, loggedIn);
+      show(dash, loggedIn);
+      who.textContent = session?.user?.email || '';
+      if (loggedIn) {
+        const admin = await isAdmin();
+        $('admin-flag').textContent = admin ? 'Admin OK' : 'Not an admin';
+      } else {
+        $('admin-flag').textContent = '';
+      }
+    }
+
+    // Button wiring (idempotent: overwrite onclick each time)
+    $('btn-sign-in').onclick = async () => {
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) alert(error.message);
+    };
+    $('btn-sign-out').onclick = async () => {
+      await supabase.auth.signOut();
+    };
+
+    $('btn-slide-upload').onclick = async () => {
+      if (!(await isAdmin())) return alert('Not an admin');
+      const file = $('slide-file').files[0];
+      const caption = $('slide-caption').value.trim();
+      const status = $('slide-status');
+      if (!file) return alert('Pick a file');
+      status.textContent = 'Uploading...';
+      const ext = (file.name.split('.').pop() || 'bin');
+      const name = `slide-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('media').upload(name, file);
+      if (upErr) { status.textContent = upErr.message; status.className = 'status err'; return; }
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(name);
+      const media_type = file.type.startsWith('video/') ? 'video' : 'image';
+      const { error: dbErr } = await supabase.from('slides').insert({ media_url: publicUrl, media_type, caption: caption || null, storage_path: name, sort: 0 });
+      if (dbErr) { status.textContent = dbErr.message; status.className = 'status err'; return; }
+      status.textContent = 'Uploaded'; status.className = 'status ok';
+      $('slide-file').value = ''; $('slide-caption').value = '';
+      setTimeout(() => { status.textContent=''; status.className='status muted'; }, 2000);
+    };
+
+    $('btn-audio-upload').onclick = async () => {
+      if (!(await isAdmin())) return alert('Not an admin');
+      const file = $('audio-file').files[0];
+      const status = $('audio-status');
+      if (!file) return alert('Pick a file');
+      status.textContent = 'Uploading...';
+      const name = `bg-audio-${Date.now()}.mp3`;
+      const { error: upErr } = await supabase.storage.from('media').upload(name, file);
+      if (upErr) { status.textContent = upErr.message; status.className = 'status err'; return; }
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(name);
+      const { error: setErr } = await supabase.from('site_settings').upsert({ key: 'background_audio', value: publicUrl });
+      if (setErr) { status.textContent = setErr.message; status.className = 'status err'; return; }
+      status.textContent = 'Audio set'; status.className = 'status ok';
+      $('audio-file').value = '';
+      setTimeout(() => { status.textContent=''; status.className='status muted'; }, 2000);
+    };
+
+    $('btn-schedule-add').onclick = async () => {
+      if (!(await isAdmin())) return alert('Not an admin');
+      const day = $('sch-day').value.trim();
+      const s = $('sch-start').value.trim();
+      const e = $('sch-end').value.trim();
+      const grp = $('sch-group').value.trim();
+      const status = $('schedule-status');
+      if (!day || !s || !e || !grp) return alert('All fields required');
+      const fmt = (t) => { const [h,m] = t.split(':'); const H = parseInt(h,10); const am = H<12; const h12 = H%12||12; return `${h12}:${m} ${am?'AM':'PM'}`; };
+      const time = `${fmt(s)} - ${fmt(e)}`;
+      const { error } = await supabase.from('schedule').insert({ day, time, grp, sort: 0 });
+      if (error) { status.textContent = error.message; status.className = 'status err'; return; }
+      status.textContent = 'Added'; status.className = 'status ok';
+      $('sch-day').value=''; $('sch-start').value=''; $('sch-end').value=''; $('sch-group').value='';
+      setTimeout(() => { status.textContent=''; status.className='status muted'; }, 2000);
+    };
+
+    $('btn-tournament-add').onclick = async () => {
+      if (!(await isAdmin())) return alert('Not an admin');
+      const date = $('t-date').value; const event = $('t-event').value.trim();
+      const location = $('t-location').value.trim(); const w = $('t-weighin').value.trim();
+      const link = $('t-link').value.trim();
+      const status = $('tournament-status');
+      if (!date || !event || !location) return alert('Date, event, and location are required');
+      let weighin_time = null; if (w) { const [h,m] = w.split(':'); const H=parseInt(h,10); const am=H<12; const h12=H%12||12; weighin_time = `${h12}:${m} ${am?'AM':'PM'}`; }
+      const { error } = await supabase.from('tournaments').insert({ date, event, location, weighin_time, registration_url: link || null });
+      if (error) { status.textContent = error.message; status.className = 'status err'; return; }
+      status.textContent = 'Added'; status.className = 'status ok';
+      $('t-date').value=''; $('t-event').value=''; $('t-location').value=''; $('t-weighin').value=''; $('t-link').value='';
+      setTimeout(() => { status.textContent=''; status.className='status muted'; }, 2000);
+    };
+
+    supabase.auth.onAuthStateChange((_e, _s) => refresh());
+    refresh();
+  </script>
+</body>
+</html>
+

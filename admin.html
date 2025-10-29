@@ -685,15 +685,20 @@
       if (error) alert(error.message);
     });
     $('sign-out').addEventListener('click', async () => {
+      console.log('Sign out clicked');
+      // Primary: clear storage (works even if supabase client isn't ready)
+      localStorage.clear();
+      sessionStorage.clear();
+      // Secondary: call supabase signOut if available
       try {
-        await supabase.auth.signOut();
+        if (typeof supabase !== 'undefined' && supabase.auth) {
+          await supabase.auth.signOut();
+        }
       } catch (e) {
-        console.warn('signOut error', e);
+        console.warn('supabase.auth.signOut error (non-fatal)', e);
       }
-      // Extra safety for static hosting: clear local/session storage keys
-      if (typeof hardLocalSignOut === 'function') hardLocalSignOut();
-      // Reload to reset any in-memory state and UI
-      location.reload();
+      // Reload to show sign-in form
+      location.href = location.href.split('?')[0];
     });
 
     supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));

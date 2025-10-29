@@ -394,13 +394,7 @@
     </div>
   </section>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script>
 
     // Create snowflakes
     function createSnowflakes() {
@@ -439,32 +433,18 @@
 
       console.log('📝 Submitting registration:', formData);
 
-      try {
-        const { data, error } = await supabase
-          .from('winter_signups_2025')
-          .insert([formData]);
+      // Show instructions to manually add to JSON
+      const jsonStr = JSON.stringify(formData, null, 2);
+      alert(`Registration received!\n\nTo complete the signup, copy this data and add it to data/winter-signups.json:\n\n${jsonStr}\n\nOr email this information to the admin.`);
 
-        if (error) {
-          console.error('❌ Error submitting form:', error);
-          alert('Error submitting registration. Please try again or contact us directly.');
-          return;
-        }
+      // Show success message
+      successMessage.classList.add('show');
+      form.reset();
 
-        console.log('✅ Registration submitted successfully!', data);
-
-        // Show success message
-        successMessage.classList.add('show');
-        form.reset();
-
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          successMessage.classList.remove('show');
-        }, 5000);
-
-      } catch (err) {
-        console.error('❌ Unexpected error:', err);
-        alert('Error submitting registration. Please try again.');
-      }
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        successMessage.classList.remove('show');
+      }, 5000);
     });
   </script>
 
