@@ -212,7 +212,14 @@
 
     // Data ops
     async function loadData() {
-      await Promise.all([loadSlides(), loadAudio(), loadSchedule(), loadTournaments(), loadWinterSignups()]);
+      // Load all data in parallel, but don't let one failure break everything
+      await Promise.allSettled([
+        loadSlides(),
+        loadAudio(),
+        loadSchedule(),
+        loadTournaments(),
+        loadWinterSignups()
+      ]);
     }
 
     async function ensureAdmin() {
