@@ -108,47 +108,90 @@
 
     #wwwc-logo {
       left: 10%;
-      animation: slideInLeft 2s ease-out forwards;
+      animation: slideInLeft 2.5s ease-in-out forwards;
     }
 
     #wywc-logo {
       right: 10%;
-      animation: slideInRight 2s ease-out forwards;
+      animation: slideInRight 2.5s ease-in-out forwards;
+    }
+
+    /* Explosion flash element */
+    .explosion-flash {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(77, 184, 255, 0.8) 20%,
+        rgba(230, 0, 0, 0.6) 40%,
+        transparent 70%);
+      opacity: 0;
+      animation: explosion 1s ease-out 2.5s forwards;
+      z-index: 5;
+      pointer-events: none;
     }
 
     #combined-logo {
       opacity: 0;
-      transform: scale(0);
-      animation: explodeIn 1s ease-out 2.5s forwards;
+      transform: scale(0.5);
+      animation: fadeInSlow 2.5s ease-out 3.5s forwards;
       z-index: 10;
     }
 
     @keyframes slideInLeft {
       0% { transform: translateX(-200%) rotate(-180deg); opacity: 0; }
-      70% { transform: translateX(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateX(calc(50vw - 50% - 100px)) rotate(0deg); opacity: 1; }
+      60% { transform: translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(0) rotate(720deg) scale(0); opacity: 0; }
     }
 
     @keyframes slideInRight {
       0% { transform: translateX(200%) rotate(180deg); opacity: 0; }
-      70% { transform: translateX(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateX(calc(-50vw + 50% + 100px)) rotate(0deg); opacity: 1; }
+      60% { transform: translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(0) rotate(-720deg) scale(0); opacity: 0; }
     }
 
-    @keyframes explodeIn {
-      0% { 
-        opacity: 0; 
-        transform: scale(0) rotate(0deg);
+    /* Explosion effect */
+    @keyframes explosion {
+      0% {
+        opacity: 0;
+        transform: scale(0);
       }
-      50% { 
-        opacity: 1; 
-        transform: scale(1.3) rotate(180deg);
-        filter: drop-shadow(0 0 40px rgba(77, 184, 255, 1)) drop-shadow(0 0 60px rgba(230, 0, 0, 0.8));
+      1% {
+        opacity: 1;
+        transform: scale(0.1);
       }
-      100% { 
-        opacity: 1; 
-        transform: scale(1) rotate(360deg);
-        filter: drop-shadow(0 0 30px rgba(77, 184, 255, 0.7));
+      20% {
+        opacity: 1;
+        transform: scale(3);
+        filter: drop-shadow(0 0 80px rgba(77, 184, 255, 1))
+                drop-shadow(0 0 120px rgba(230, 0, 0, 1))
+                drop-shadow(0 0 160px rgba(255, 255, 255, 0.8));
+      }
+      100% {
+        opacity: 0;
+        transform: scale(5);
+        filter: drop-shadow(0 0 200px rgba(77, 184, 255, 0.3));
+      }
+    }
+
+    /* Slow fade in for combined logo */
+    @keyframes fadeInSlow {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+        filter: blur(10px);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+        filter: blur(5px) drop-shadow(0 0 30px rgba(77, 184, 255, 0.8));
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0) drop-shadow(0 0 30px rgba(77, 184, 255, 0.7));
       }
     }
 
@@ -319,6 +362,8 @@
       <div class="logo-wrapper" id="wywc-logo">
         <img src="IMG_6549-Picsart-BackgroundRemover.jpeg" alt="Wethersfield Wrestling Logo">
       </div>
+      <!-- Explosion flash effect -->
+      <div class="explosion-flash"></div>
       <div class="logo-wrapper" id="combined-logo">
         <img src="IMG_6550-Picsart-BackgroundRemover.jpeg" alt="Eagle Warrior Combined Logo">
       </div>
