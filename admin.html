@@ -66,19 +66,18 @@
   <section class="admin-wrap">
     <div class="content-card">
       <h2>Sign in</h2>
-      <p class="note">This page uses Supabase Auth. Only emails in the Admins table will be allowed to change data.</p>
+      <p class="note">Enter the admin password to access the dashboard.</p>
 
       <div id="auth-view" class="stack">
-        <input id="email" type="email" placeholder="Email" required />
         <input id="password" type="password" placeholder="Password" required />
         <button id="sign-in" class="small-btn">Sign in</button>
-        <div class="muted">Tip: Create a user in Supabase Auth with this email, then add the email to the <span class="mono">admins</span> table.</div>
+        <div id="auth-error" class="muted" style="color: #ff5252;"></div>
       </div>
 
       <div id="user-view" class="hidden">
         <div class="topbar">
           <div>
-            Signed in as <span id="user-email" class="mono"></span>
+            Signed in as <span class="mono">Admin</span>
           </div>
           <div>
             <button id="sign-out" class="small-btn">Sign out</button>
@@ -196,39 +195,60 @@
 
   <footer>&copy; 2025 Weekend Warriors Wrestling Club.</footer>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    // TODO: Fill these with your Supabase project values
-    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Project ref derived from SUPABASE_URL for clearing local auth storage on static hosting
-    const PROJECT_REF = (() => {
-      try { return new URL(SUPABASE_URL).host.split('.')[0]; } catch { return 'wiaswnogkcbatjbqyfvj'; }
-    })();
-
-    function hardLocalSignOut() {
-      try {
-        localStorage.removeItem(`sb-${PROJECT_REF}-auth-token`);
-        sessionStorage.removeItem(`sb-${PROJECT_REF}-auth-token`);
-        localStorage.removeItem('supabase.auth.token'); // legacy key fallback
-      } catch (e) {
-        console.warn('Local sign-out cleanup error', e);
-      }
-    }
-
-
+  <script>
     const $ = (id) => document.getElementById(id);
     const authView = $('auth-view');
     const userView = $('user-view');
     const dash = $('dash');
+    const authError = $('auth-error');
+
+    // Check if already signed in
+    if (localStorage.getItem('admin-auth') === 'true') {
+      showDashboard();
+    }
+
+    // Sign in handler
+    $('sign-in').addEventListener('click', async () => {
+      const password = $('password').value;
+      authError.textContent = '';
+
+      try {
+        const res = await fetch('data/admin-password.json');
+        const data = await res.json();
+
+        if (password === data.password) {
+          localStorage.setItem('admin-auth', 'true');
+          showDashboard();
+        } else {
+          authError.textContent = 'Incorrect password';
+        }
+      } catch (e) {
+        authError.textContent = 'Error loading password file';
+      }
+    });
+
+    // Allow Enter key to sign in
+    $('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') $('sign-in').click();
+    });
+
+    // Sign out handler
+    $('sign-out').addEventListener('click', () => {
+      localStorage.removeItem('admin-auth');
+      authView.classList.remove('hidden');
+      userView.classList.add('hidden');
+      dash.classList.add('hidden');
+    });
+
+    function showDashboard() {
+      authView.classList.add('hidden');
+      userView.classList.remove('hidden');
+      dash.classList.remove('hidden');
+      loadData();
+    }
 
     // Data ops
     async function loadData() {
-      // Load all data in parallel, but don't let one failure break everything
       await Promise.allSettled([
         loadSlides(),
         loadAudio(),
@@ -238,243 +258,177 @@
       ]);
     }
 
-    async function ensureAdmin() {
-      // Backend RLS is the real protection. This is a light UX check.
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        console.error('Error getting user:', userError);
-        return false;
-      }
-      if (!user) {
-        console.error('No user logged in');
-        return false;
-      }
-      const { data: admins, error: adminError } = await supabase.from('admins').select('email').eq('email', user.email).limit(1);
-      if (adminError) {
-        console.error('Error checking admin status:', adminError);
-        return false;
-      }
-      const isAdmin = Array.isArray(admins) && admins.length > 0;
-      console.log('Admin check for', user.email, ':', isAdmin);
-      return isAdmin;
-    }
-
     // Slides management
     async function loadSlides() {
-      const { data, error } = await supabase
-        .from('slides')
-        .select('*')
-        .order('sort', { ascending: true })
-        .order('id', { ascending: true });
-      if (error) { console.error(error); return; }
-      const tbody = $('slides-list');
-      tbody.innerHTML = '';
-      for (const row of data || []) {
-        const tr = document.createElement('tr');
-        const isVideo = row.media_type === 'video';
-        const preview = isVideo
-          ? `<video src="${row.media_url}" style="width:80px;height:45px;object-fit:cover;" muted></video>`
-          : `<img src="${row.media_url}" style="width:80px;height:45px;object-fit:cover;" />`;
-        tr.innerHTML = `<td>${preview}</td><td>${row.caption || ''}</td><td>${row.media_type}</td>` +
-          `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
-        tr.querySelector('button').addEventListener('click', async () => {
-          if (!(await ensureAdmin())) return alert('Not an admin.');
-          // Delete from storage
-          if (row.storage_path) {
-            await supabase.storage.from('media').remove([row.storage_path]);
-          }
-          const { error } = await supabase.from('slides').delete().eq('id', row.id);
-          if (error) return alert(error.message);
-          loadSlides();
-        });
-        tbody.appendChild(tr);
+      try {
+        const res = await fetch('data/slides.json');
+        const data = await res.json();
+        const tbody = $('slides-list');
+        tbody.innerHTML = '';
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          const isVideo = row.type === 'video';
+          const preview = isVideo
+            ? `<video src="${row.url}" style="width:80px;height:45px;object-fit:cover;" muted></video>`
+            : `<img src="${row.url}" style="width:80px;height:45px;object-fit:cover;" />`;
+          tr.innerHTML = `<td>${preview}</td><td>${row.caption || ''}</td><td>${row.type}</td>` +
+            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
+          tr.querySelector('button').addEventListener('click', () => deleteSlide(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load slides error:', e);
+      }
+    }
+
+    async function deleteSlide(index) {
+      if (!confirm('Delete this slide?')) return;
+
+      try {
+        const res = await fetch('data/slides.json');
+        const slides = await res.json();
+        slides.splice(index, 1);
+
+        alert(`Copy this JSON to data/slides.json:\n\n${JSON.stringify(slides, null, 2)}`);
+        await loadSlides();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
     async function handleAddSlide() {
-      console.log('Upload button clicked');
-
-      if (!(await ensureAdmin())) {
-        console.error('User is not an admin');
-        return alert('Not an admin.');
-      }
-
       const file = $('slide-file').files[0];
       const caption = $('slide-caption').value.trim();
-
-      console.log('File selected:', file ? file.name : 'none');
-      console.log('Caption:', caption);
+      const status = $('slide-upload-status');
 
       if (!file) {
-        console.error('No file selected');
         return alert('Please select a file');
       }
 
-      const status = $('slide-upload-status');
-      status.textContent = 'Uploading...';
+      status.textContent = 'Preparing upload...';
       status.style.color = '#4db8ff';
 
       try {
-        const ext = file.name.split('.').pop();
-        const fileName = `slide-${Date.now()}.${ext}`;
+        const fileName = `slide-${Date.now()}-${file.name}`;
+        const url = `media/${fileName}`;
+        const type = file.type.startsWith('video') ? 'video' : 'image';
 
-        console.log('Uploading to storage:', fileName);
+        // Read current slides
+        const res = await fetch('data/slides.json');
+        const slides = await res.json();
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('media')
-          .upload(fileName, file);
+        // Add new slide
+        slides.push({ url, caption, type });
 
-        if (uploadError) {
-          console.error('Storage upload error:', uploadError);
-          status.textContent = 'Upload failed: ' + uploadError.message;
-          status.style.color = '#e60000';
-          return;
-        }
-
-        console.log('Upload successful, getting public URL');
-
-        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
-        const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-
-        console.log('Inserting into database:', { publicUrl, mediaType, caption });
-
-        const { error } = await supabase.from('slides').insert({
-          media_url: publicUrl,
-          media_type: mediaType,
-          caption: caption || null,
-          storage_path: fileName,
-          sort: 0
-        });
-
-        if (error) {
-          console.error('Database insert error:', error);
-          status.textContent = 'Database error: ' + error.message;
-          status.style.color = '#e60000';
-          return;
-        }
-
-        console.log('Upload complete!');
+        // Show instructions
+        status.innerHTML = `<div style="color:#00ff00;">
+          <strong>Step 1:</strong> Copy the file "${file.name}" to the "media" folder and rename it to "${fileName}"<br>
+          <strong>Step 2:</strong> Copy this JSON and save it to data/slides.json:<br>
+          <textarea readonly style="width:100%;height:100px;margin-top:0.5rem;background:rgba(0,0,0,0.5);color:#fff;border:1px solid #444;padding:0.5rem;border-radius:4px;">${JSON.stringify(slides, null, 2)}</textarea><br>
+          <strong>Step 3:</strong> Commit and push to GitHub
+        </div>`;
 
         $('slide-file').value = '';
         $('slide-caption').value = '';
-        status.textContent = 'Uploaded successfully!';
-        status.style.color = '#00ff00';
-        setTimeout(() => status.textContent = '', 3000);
-        loadSlides();
       } catch (err) {
-        console.error('Unexpected error during upload:', err);
-        status.textContent = 'Unexpected error: ' + err.message;
+        status.textContent = 'Error: ' + err.message;
         status.style.color = '#e60000';
       }
     }
 
     // Audio management
     async function loadAudio() {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('*')
-        .eq('key', 'background_audio')
-        .single();
+      try {
+        const res = await fetch('data/audio.json');
+        const data = await res.json();
+        const div = $('current-audio');
 
-      const div = $('current-audio');
-      if (data?.value) {
-        div.innerHTML = `
-          <div class="note" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 200px;">
-              Current: <audio src="${data.value}" controls style="width:100%;max-width:400px;"></audio>
+        if (data?.url) {
+          div.innerHTML = `
+            <div class="note" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                Current: <audio src="${data.url}" controls style="width:100%;max-width:400px;"></audio>
+              </div>
+              <button class="danger" id="delete-audio">Delete Audio</button>
             </div>
-            <button class="danger" id="delete-audio">Delete Audio</button>
-          </div>
-        `;
+          `;
 
-        // Add delete button event listener
-        const deleteBtn = document.getElementById('delete-audio');
-        if (deleteBtn) {
-          deleteBtn.addEventListener('click', async () => {
-            if (!(await ensureAdmin())) return alert('Not an admin.');
-            if (!confirm('Delete background audio?')) return;
-
-            // Delete from site_settings
-            const { error } = await supabase
-              .from('site_settings')
-              .delete()
-              .eq('key', 'background_audio');
-
-            if (error) {
-              console.error('Error deleting audio:', error);
-              return alert(error.message);
-            }
-
-            loadAudio();
-          });
+          const deleteBtn = document.getElementById('delete-audio');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', async () => {
+              if (!confirm('Delete background audio?')) return;
+              alert('Copy this JSON to data/audio.json:\n\n{"url": ""}');
+              await loadAudio();
+            });
+          }
+        } else {
+          div.innerHTML = '<div class="muted">No audio uploaded yet.</div>';
         }
-      } else {
-        div.innerHTML = '<div class="muted">No audio uploaded yet.</div>';
+      } catch (e) {
+        console.error('Load audio error:', e);
       }
     }
 
     async function handleUploadAudio() {
-      if (!(await ensureAdmin())) return alert('Not an admin.');
       const file = $('audio-file').files[0];
       if (!file) return alert('Please select an audio file');
 
       const status = $('audio-upload-status');
-      status.textContent = 'Uploading...';
+      status.textContent = 'Preparing upload...';
 
-      const fileName = `bg-audio-${Date.now()}.mp3`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('media')
-        .upload(fileName, file);
+      try {
+        const fileName = `audio-${Date.now()}.mp3`;
+        const url = `media/${fileName}`;
 
-      if (uploadError) {
-        status.textContent = 'Upload failed: ' + uploadError.message;
-        return;
+        status.innerHTML = `<div style="color:#00ff00;">
+          <strong>Step 1:</strong> Copy the file "${file.name}" to the "media" folder and rename it to "${fileName}"<br>
+          <strong>Step 2:</strong> Copy this JSON and save it to data/audio.json:<br>
+          <textarea readonly style="width:100%;height:60px;margin-top:0.5rem;background:rgba(0,0,0,0.5);color:#fff;border:1px solid #444;padding:0.5rem;border-radius:4px;">{"url": "${url}"}</textarea><br>
+          <strong>Step 3:</strong> Commit and push to GitHub
+        </div>`;
+
+        $('audio-file').value = '';
+      } catch (err) {
+        status.textContent = 'Error: ' + err.message;
       }
-
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
-
-      // Upsert setting
-      const { error } = await supabase.from('site_settings').upsert({
-        key: 'background_audio',
-        value: publicUrl
-      });
-
-      if (error) {
-        status.textContent = 'Database error: ' + error.message;
-        return;
-      }
-
-      $('audio-file').value = '';
-      status.textContent = 'Uploaded successfully!';
-      setTimeout(() => status.textContent = '', 3000);
-      loadAudio();
     }
 
     async function loadSchedule() {
-      const { data, error } = await supabase
-        .from('schedule')
-        .select('*')
-        .order('sort', { ascending: true })
-        .order('id', { ascending: true });
-      if (error) { console.error(error); return; }
-      const tbody = $('schedule-list');
-      tbody.innerHTML = '';
-      for (const row of data || []) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.grp}</td>` +
-          `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
-        tr.querySelector('button').addEventListener('click', async () => {
-          if (!(await ensureAdmin())) return alert('Not an admin.');
-          const { error } = await supabase.from('schedule').delete().eq('id', row.id);
-          if (error) return alert(error.message);
-          loadSchedule();
-        });
-        tbody.appendChild(tr);
+      try {
+        const res = await fetch('data/schedule.json');
+        const data = await res.json();
+        const tbody = $('schedule-list');
+        tbody.innerHTML = '';
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td>` +
+            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
+          tr.querySelector('button').addEventListener('click', () => deleteSchedule(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load schedule error:', e);
+      }
+    }
+
+    async function deleteSchedule(index) {
+      if (!confirm('Delete this schedule entry?')) return;
+
+      try {
+        const res = await fetch('data/schedule.json');
+        const schedule = await res.json();
+        schedule.splice(index, 1);
+
+        alert(`Copy this JSON to data/schedule.json:\n\n${JSON.stringify(schedule, null, 2)}`);
+        await loadSchedule();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
     async function handleAddSchedule() {
-      if (!(await ensureAdmin())) return alert('Not an admin.');
       const day = $('sch-day').value.trim();
       const startTime = $('sch-start-time').value.trim();
       const endTime = $('sch-end-time').value.trim();
@@ -491,161 +445,143 @@
       };
       const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
 
-      const { error } = await supabase.from('schedule').insert({ day, time, grp, sort: 0 });
-      if (error) {
-        console.error('Error adding schedule:', error);
-        return alert(error.message);
+      try {
+        const res = await fetch('data/schedule.json');
+        const schedule = await res.json();
+        schedule.push({ day, time, group: grp });
+
+        alert(`Copy this JSON to data/schedule.json:\n\n${JSON.stringify(schedule, null, 2)}`);
+
+        $('sch-day').value = '';
+        $('sch-start-time').value = '';
+        $('sch-end-time').value = '';
+        $('sch-group').value = '';
+        loadSchedule();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
-      $('sch-day').value = '';
-      $('sch-start-time').value = '';
-      $('sch-end-time').value = '';
-      $('sch-group').value = '';
-      loadSchedule();
     }
 
     async function loadTournaments() {
-      const { data, error } = await supabase
-        .from('tournaments')
-        .select('*')
-        .order('date', { ascending: true })
-        .order('id', { ascending: true });
-      if (error) { console.error(error); return; }
-      const tbody = $('tournament-list');
-      tbody.innerHTML = '';
-      for (const row of data || []) {
-        const tr = document.createElement('tr');
-        const d = row.date ? new Date(row.date).toLocaleDateString() : '';
-        const weighin = row.weighin_time || 'N/A';
-        const link = row.registration_url ? `<a href="${row.registration_url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
-        tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighin}</td><td>${link}</td>` +
-          `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
-        tr.querySelector('button').addEventListener('click', async () => {
-          if (!(await ensureAdmin())) return alert('Not an admin.');
-          const { error } = await supabase.from('tournaments').delete().eq('id', row.id);
-          if (error) {
-            console.error('Error deleting tournament:', error);
-            return alert(error.message);
-          }
-          loadTournaments();
-        });
-        tbody.appendChild(tr);
+      try {
+        const res = await fetch('data/tournaments.json');
+        const data = await res.json();
+        const tbody = $('tournament-list');
+        tbody.innerHTML = '';
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          const d = row.date ? new Date(row.date).toLocaleDateString() : '';
+          const link = row.url ? `<a href="${row.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
+          tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${link}</td>` +
+            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
+          tr.querySelector('button').addEventListener('click', () => deleteTournament(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load tournaments error:', e);
+      }
+    }
+
+    async function deleteTournament(index) {
+      if (!confirm('Delete this tournament?')) return;
+
+      try {
+        const res = await fetch('data/tournaments.json');
+        const tournaments = await res.json();
+        tournaments.splice(index, 1);
+
+        alert(`Copy this JSON to data/tournaments.json:\n\n${JSON.stringify(tournaments, null, 2)}`);
+        await loadTournaments();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
     async function handleAddTournament() {
-      if (!(await ensureAdmin())) return alert('Not an admin.');
       const date = $('t-date').value;
       const event = $('t-event').value.trim();
       const location = $('t-location').value.trim();
-      const weighinTime = $('t-weighin').value.trim();
       const link = $('t-link') ? $('t-link').value.trim() : '';
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
-      // Format weigh-in time if provided
-      let weighinFormatted = null;
-      if (weighinTime) {
-        const [hours, minutes] = weighinTime.split(':');
-        const hour = parseInt(hours);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const hour12 = hour % 12 || 12;
-        weighinFormatted = `${hour12}:${minutes} ${ampm}`;
-      }
+      try {
+        const res = await fetch('data/tournaments.json');
+        const tournaments = await res.json();
+        tournaments.push({ date, event, location, url: link });
 
-      const { error } = await supabase.from('tournaments').insert({
-        date,
-        event,
-        location,
-        weighin_time: weighinFormatted,
-        registration_url: link || null
-      });
-      if (error) {
-        console.error('Error adding tournament:', error);
-        return alert(error.message);
+        alert(`Copy this JSON to data/tournaments.json:\n\n${JSON.stringify(tournaments, null, 2)}`);
+
+        $('t-date').value = '';
+        $('t-event').value = '';
+        $('t-location').value = '';
+        if ($('t-link')) $('t-link').value = '';
+        loadTournaments();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
-      $('t-date').value = '';
-      $('t-event').value = '';
-      $('t-location').value = '';
-      $('t-weighin').value = '';
-      if ($('t-link')) $('t-link').value = '';
-      loadTournaments();
     }
 
     // Winter Sign Ups management
     async function loadWinterSignups() {
-      console.log('🔄 Loading winter signups...');
-      const { data, error } = await supabase
-        .from('winter_signups_2025')
-        .select('*')
-        .order('submitted_at', { ascending: false });
+      try {
+        const res = await fetch('data/winter-signups.json');
+        const data = await res.json();
+        const tbody = $('winter-signups-list');
+        tbody.innerHTML = '';
 
-      if (error) {
-        console.error('❌ Error loading winter signups:', error);
-        return;
-      }
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
+          return;
+        }
 
-      console.log('✅ Winter signups loaded:', data?.length || 0, 'registrations');
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          const submittedDate = row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : '';
+          const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';
+          const dob = row.wrestler_dob ? new Date(row.wrestler_dob).toLocaleDateString() : '';
 
-      const tbody = $('winter-signups-list');
-      tbody.innerHTML = '';
-
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
-        return;
-      }
-
-      for (const row of data) {
-        const tr = document.createElement('tr');
-        const submittedDate = row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : '';
-        const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';
-        const dob = row.wrestler_dob ? new Date(row.wrestler_dob).toLocaleDateString() : '';
-
-        tr.innerHTML = `
-          <td>${row.parent_name || ''}</td>
-          <td><strong>${row.wrestler_name || ''}</strong></td>
-          <td>${dob}</td>
-          <td>${row.wrestler_grade || ''}</td>
-          <td>${row.phone || ''}</td>
-          <td>${row.email || ''}</td>
-          <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
-          <td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>
-        `;
-        tr.querySelector('button').addEventListener('click', async () => {
-          if (!(await ensureAdmin())) return alert('Not an admin.');
-          if (!confirm(`Delete registration for ${row.wrestler_name}?`)) return;
-          const { error } = await supabase.from('winter_signups_2025').delete().eq('id', row.id);
-          if (error) {
-            console.error('Error deleting signup:', error);
-            return alert(error.message);
-          }
-          loadWinterSignups();
-        });
-        tbody.appendChild(tr);
+          tr.innerHTML = `
+            <td>${row.parent_name || ''}</td>
+            <td><strong>${row.wrestler_name || ''}</strong></td>
+            <td>${dob}</td>
+            <td>${row.wrestler_grade || ''}</td>
+            <td>${row.phone || ''}</td>
+            <td>${row.email || ''}</td>
+            <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
+            <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
+          `;
+          tr.querySelector('button').addEventListener('click', () => deleteSignup(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load winter signups error:', e);
       }
     }
 
-    // Initialize auth and UI
-    async function refreshUI(session) {
-      const loggedIn = !!session?.user;
-      authView.classList.toggle('hidden', loggedIn);
-      userView.classList.toggle('hidden', !loggedIn);
-      dash.classList.toggle('hidden', !loggedIn);
-      $('user-email').textContent = session?.user?.email || '';
-      if (loggedIn) {
-        await loadData();
-        attachEventListeners();
+    async function deleteSignup(index) {
+      if (!confirm('Delete this signup?')) return;
+
+      try {
+        const res = await fetch('data/winter-signups.json');
+        const signups = await res.json();
+        signups.splice(index, 1);
+
+        alert(`Copy this JSON to data/winter-signups.json:\n\n${JSON.stringify(signups, null, 2)}`);
+        await loadWinterSignups();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
+    // Attach event listeners
     function attachEventListeners() {
-      console.log('Attaching event listeners...');
-
-      // Remove any existing listeners by cloning and replacing elements
       const addSlideBtn = $('add-slide');
       if (addSlideBtn) {
         const newAddSlideBtn = addSlideBtn.cloneNode(true);
         addSlideBtn.parentNode.replaceChild(newAddSlideBtn, addSlideBtn);
         $('add-slide').addEventListener('click', handleAddSlide);
-        console.log('✅ Add slide listener attached');
       }
 
       const uploadAudioBtn = $('upload-audio');
@@ -653,7 +589,6 @@
         const newUploadAudioBtn = uploadAudioBtn.cloneNode(true);
         uploadAudioBtn.parentNode.replaceChild(newUploadAudioBtn, uploadAudioBtn);
         $('upload-audio').addEventListener('click', handleUploadAudio);
-        console.log('✅ Upload audio listener attached');
       }
 
       const addScheduleBtn = $('add-schedule');
@@ -661,7 +596,6 @@
         const newAddScheduleBtn = addScheduleBtn.cloneNode(true);
         addScheduleBtn.parentNode.replaceChild(newAddScheduleBtn, addScheduleBtn);
         $('add-schedule').addEventListener('click', handleAddSchedule);
-        console.log('✅ Add schedule listener attached');
       }
 
       const addTournamentBtn = $('add-tournament');
@@ -669,148 +603,14 @@
         const newAddTournamentBtn = addTournamentBtn.cloneNode(true);
         addTournamentBtn.parentNode.replaceChild(newAddTournamentBtn, addTournamentBtn);
         $('add-tournament').addEventListener('click', handleAddTournament);
-        console.log('✅ Add tournament listener attached');
       }
     }
 
-	    // Attach listeners on initial load as well (idempotent)
-	    attachEventListeners();
-
-
-    // Auth actions
-    $('sign-in').addEventListener('click', async () => {
-      const email = $('email').value.trim();
-      const password = $('password').value;
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) alert(error.message);
-    });
-    $('sign-out').addEventListener('click', async () => {
-      console.log('Sign out clicked');
-      // Primary: clear storage (works even if supabase client isn't ready)
-      localStorage.clear();
-      sessionStorage.clear();
-      // Secondary: call supabase signOut if available
-      try {
-        if (typeof supabase !== 'undefined' && supabase.auth) {
-          await supabase.auth.signOut();
-        }
-      } catch (e) {
-        console.warn('supabase.auth.signOut error (non-fatal)', e);
-      }
-      // Reload to show sign-in form
-      location.href = location.href.split('?')[0];
-    });
-
-    supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      await refreshUI(session);
-    })();
+    // Attach listeners on initial load
+    attachEventListeners();
   </script>
 
-  <!--
-  SQL (run once in Supabase SQL Editor):
-
-  -- Tables
-  create table if not exists admins (
-    email text primary key
-  );
-
-  create table if not exists schedule (
-    id bigserial primary key,
-    day text not null,
-    time text not null,
-    grp text not null,
-    sort int default 0
-  );
-
-  create table if not exists tournaments (
-    id bigserial primary key,
-    date date not null,
-    event text not null,
-    location text not null,
-    weighin_time text
-  );
-
-  create table if not exists slides (
-    id bigserial primary key,
-    media_url text not null,
-    media_type text not null check (media_type in ('image', 'video')),
-    caption text,
-    storage_path text,
-    sort int default 0,
-    created_at timestamptz default now()
-  );
-
-  create table if not exists site_settings (
-    key text primary key,
-    value text,
-    updated_at timestamptz default now()
-  );
-
-  create table if not exists winter_signups_2025 (
-    id bigserial primary key,
-    parent_name text not null,
-    wrestler_name text not null,
-    wrestler_dob date not null,
-    wrestler_grade text not null,
-    phone text not null,
-    email text not null,
-    submitted_at timestamptz default now()
-  );
-
-  -- Storage bucket (run this in SQL or create via Storage UI)
-  insert into storage.buckets (id, name, public)
-  values ('media', 'media', true)
-  on conflict (id) do nothing;
-
-  -- Enable RLS
-  alter table schedule enable row level security;
-  alter table tournaments enable row level security;
-  alter table admins enable row level security;
-  alter table slides enable row level security;
-  alter table site_settings enable row level security;
-  alter table winter_signups_2025 enable row level security;
-
-  -- Public read policies
-  create policy if not exists "public read schedule" on schedule for select using (true);
-  create policy if not exists "public read tournaments" on tournaments for select using (true);
-  create policy if not exists "public read slides" on slides for select using (true);
-  create policy if not exists "public read settings" on site_settings for select using (true);
-
-  -- Admin write policies
-  create policy if not exists "admins write schedule" on schedule for all using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-  create policy if not exists "admins write tournaments" on tournaments for all using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-  create policy if not exists "admins write slides" on slides for all using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-  create policy if not exists "admins write settings" on site_settings for all using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-
-  -- Winter signups policies (public can insert, admins can read/delete)
-  create policy if not exists "public insert winter signups" on winter_signups_2025 for insert with check (true);
-  create policy if not exists "admins read winter signups" on winter_signups_2025 for select using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-  create policy if not exists "admins delete winter signups" on winter_signups_2025 for delete using (
-    exists(select 1 from admins a where a.email = auth.email())
-  );
-
-  -- Storage policies
-  create policy if not exists "public read media" on storage.objects for select using (bucket_id = 'media');
-  create policy if not exists "admins upload media" on storage.objects for insert with check (
-    bucket_id = 'media' and exists(select 1 from admins a where a.email = auth.email())
-  );
-  create policy if not exists "admins delete media" on storage.objects for delete using (
-    bucket_id = 'media' and exists(select 1 from admins a where a.email = auth.email())
-  );
-
-  -->
+  <footer>&copy; 2025 Weekend Warriors Wrestling Club.</footer>
 </body>
 </html>
 
