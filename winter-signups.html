@@ -111,69 +111,43 @@
     }
 
     #wwwc-logo {
-      animation: collideFromLeft 2.6s ease-in-out forwards;
+      animation: slideInLeft 2s ease-out forwards;
     }
 
     #wywc-logo {
-      animation: collideFromRight 2.6s ease-in-out forwards;
+      animation: slideInRight 2s ease-out forwards;
     }
 
-    /* Explosion flash element */
+    /* Explosion flash element (disabled for original animation style) */
     .explosion-flash {
-      position: absolute;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(77, 184, 255, 0.7) 35%,
-        rgba(230, 0, 0, 0.4) 60%,
-        transparent 80%);
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      opacity: 0;
-      animation: explosion 1s ease-out 2.4s forwards;
-      z-index: 5;
-      pointer-events: none;
+      display: none;
     }
 
     #combined-logo {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.9);
-      animation: fadeInSmooth 2.8s ease-out 2.9s forwards;
+      transform: translate(-50%, -50%) scale(0);
+      animation: explodeIn 1s ease-out 2.5s forwards;
       z-index: 10;
     }
 
-    /* Logos move straight to the center, overlap (collision), then vanish */
-    @keyframes collideFromLeft {
-      0%   { transform: translate(-50%, -50%) translateX(-560px) scale(1); opacity: 0; }
-      55%  { transform: translate(-50%, -50%) translateX(-160px) scale(1); opacity: 1; }
-      80%  { transform: translate(-50%, -50%) translateX(-40px)  scale(1.02); opacity: 1; }
-      88%  { transform: translate(-50%, -50%) translateX(0)      scale(1.06); opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(0)      scale(0);    opacity: 0; }
+    /* Original-style slide-in with rotation (keeps current placement at center) */
+    @keyframes slideInLeft {
+      0% { transform: translate(-50%, -50%) translateX(-200%) rotate(-180deg); opacity: 0; }
+      70% { transform: translate(-50%, -50%) translateX(-120px) rotate(0deg);   opacity: 1; }
+      100%{ transform: translate(-50%, -50%) translateX(-100px) rotate(0deg);   opacity: 1; }
     }
 
-    @keyframes collideFromRight {
-      0%   { transform: translate(-50%, -50%) translateX(560px) scale(1); opacity: 0; }
-      55%  { transform: translate(-50%, -50%) translateX(160px) scale(1); opacity: 1; }
-      80%  { transform: translate(-50%, -50%) translateX(40px)  scale(1.02); opacity: 1; }
-      88%  { transform: translate(-50%, -50%) translateX(0)     scale(1.06); opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(0)     scale(0);    opacity: 0; }
+    @keyframes slideInRight {
+      0% { transform: translate(-50%, -50%) translateX(200%) rotate(180deg); opacity: 0; }
+      70% { transform: translate(-50%, -50%) translateX(120px) rotate(0deg);   opacity: 1; }
+      100%{ transform: translate(-50%, -50%) translateX(100px) rotate(0deg);   opacity: 1; }
     }
 
-    /* Explosion effect (lightweight) */
-    @keyframes explosion {
-      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-      25%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.0); }
-    }
-
-    /* Smooth, performant fade-in */
-    @keyframes fadeInSmooth {
-      0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.92); }
-      60%  { opacity: 0.6; transform: translate(-50%, -50%) scale(1.02); }
-      100% { opacity: 1;   transform: translate(-50%, -50%) scale(1); }
+    /* Original explode-in for combined logo (adapted to centered translate) */
+    @keyframes explodeIn {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+      50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(180deg); filter: drop-shadow(0 0 40px rgba(77,184,255,1)) drop-shadow(0 0 60px rgba(230,0,0,0.8)); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(360deg); filter: drop-shadow(0 0 30px rgba(77,184,255,0.7)); }
     }
 
     .partnership-title {
