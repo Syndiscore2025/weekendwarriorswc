@@ -9,23 +9,43 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    .admin-wrap { max-width: 1000px; margin: 0 auto; }
+    .admin-wrap { max-width: 1200px; margin: 0 auto; padding: 1rem; }
     .muted { color: #aaa; font-size: .95rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: .5rem; align-items: center; }
-    .stack { display: grid; gap: .75rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: .75rem; align-items: center; }
+    .stack { display: grid; gap: 1rem; }
     .card { background: linear-gradient(135deg, rgba(20,20,20,.9), rgba(10,0,0,.9)); border: 2px solid #e60000; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
-    .danger { background: transparent; border: 1px solid #ff5252; color: #ff9b9b; padding: .4rem .6rem; border-radius: 6px; cursor: pointer; }
-    .success { background: #1b5e20; border: 1px solid #2e7d32; color: #c8e6c9; padding: .4rem .6rem; border-radius: 6px; cursor: pointer; }
+    .danger { background: transparent; border: 1px solid #ff5252; color: #ff9b9b; padding: .5rem .8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+    .danger:hover { background: rgba(255,82,82,0.1); }
+    .success { background: #1b5e20; border: 1px solid #2e7d32; color: #c8e6c9; padding: .5rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+    .success:hover { background: #2e7d32; }
     .right { text-align: right; }
-    .note { font-size: .9rem; color: #ddd; }
-    input, select { width: 100%; }
+    .note { font-size: .9rem; color: #ddd; margin-bottom: .5rem; }
+    input, select {
+      width: 100%;
+      padding: .6rem;
+      border: 1px solid #444;
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      border-radius: 6px;
+      font-size: .95rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #e60000;
+      background: rgba(0,0,0,0.5);
+    }
     .hidden { display: none; }
-    .topbar { display:flex; justify-content: space-between; align-items:center; gap: 1rem; }
+    .topbar { display:flex; justify-content: space-between; align-items:center; gap: 1rem; padding: 1rem; background: rgba(230,0,0,0.1); border-radius: 8px; margin-bottom: 1rem; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     .kbd { border: 1px solid #888; padding: 0 .35rem; border-radius: 6px; font-size: .85rem; }
-    .small-btn { padding: .45rem .7rem; border-radius: 8px; border: 1px solid #e60000; background: rgba(230,0,0,.15); color: #fff; cursor: pointer; }
-    table.admin-list td { text-align: left; }
+    .small-btn { padding: .5rem .9rem; border-radius: 8px; border: 1px solid #e60000; background: rgba(230,0,0,.15); color: #fff; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+    .small-btn:hover { background: rgba(230,0,0,.3); }
+    table.admin-list { border-collapse: collapse; margin-top: .5rem; }
+    table.admin-list th { background: rgba(230,0,0,0.2); padding: .75rem; text-align: left; font-weight: 600; }
+    table.admin-list td { text-align: left; padding: .75rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    table.admin-list tr:hover { background: rgba(255,255,255,0.05); }
     table.admin-list img, table.admin-list video { border-radius: 4px; border: 1px solid #444; }
+    .content-card h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; color: #e60000; }
   </style>
 </head>
 <body>
@@ -101,9 +121,19 @@
       <div class="content-card">
         <h2>Practice Schedule</h2>
         <div class="stack">
-          <div class="row">
-            <input id="sch-day" placeholder="Day (e.g., Monday)" />
-            <input id="sch-time" placeholder="Time (e.g., 5:00 PM - 6:30 PM)" />
+          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 2fr auto;">
+            <select id="sch-day">
+              <option value="">Select Day</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+            <input id="sch-start-time" type="time" placeholder="Start Time" />
+            <input id="sch-end-time" type="time" placeholder="End Time" />
             <input id="sch-group" placeholder="Group (e.g., Beginners 6-10)" />
             <button id="add-schedule" class="success">Add</button>
           </div>
@@ -117,14 +147,15 @@
       <div class="content-card">
         <h2>Upcoming Tournaments</h2>
         <div class="stack">
-          <div class="row">
-            <input id="t-date" type="date" />
-            <input id="t-event" placeholder="Event" />
+          <div class="row" style="grid-template-columns: 1fr 2fr 2fr 1fr auto;">
+            <input id="t-date" type="date" placeholder="Tournament Date" />
+            <input id="t-event" placeholder="Event Name" />
             <input id="t-location" placeholder="Location" />
+            <input id="t-weighin" type="time" placeholder="Weigh-in Time" />
             <button id="add-tournament" class="success">Add</button>
           </div>
           <table class="admin-list" style="width:100%">
-            <thead><tr><th>Date</th><th>Event</th><th>Location</th><th class="right">Actions</th></tr></thead>
+            <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Weigh-in</th><th class="right">Actions</th></tr></thead>
             <tbody id="tournament-list"></tbody>
           </table>
         </div>
@@ -193,10 +224,23 @@
 
     async function ensureAdmin() {
       // Backend RLS is the real protection. This is a light UX check.
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-      const { data: admins } = await supabase.from('admins').select('email').eq('email', user.email).limit(1);
-      return Array.isArray(admins) && admins.length > 0;
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error('Error getting user:', userError);
+        return false;
+      }
+      if (!user) {
+        console.error('No user logged in');
+        return false;
+      }
+      const { data: admins, error: adminError } = await supabase.from('admins').select('email').eq('email', user.email).limit(1);
+      if (adminError) {
+        console.error('Error checking admin status:', adminError);
+        return false;
+      }
+      const isAdmin = Array.isArray(admins) && admins.length > 0;
+      console.log('Admin check for', user.email, ':', isAdmin);
+      return isAdmin;
     }
 
     // Slides management
@@ -353,12 +397,30 @@
     $('add-schedule').addEventListener('click', async () => {
       if (!(await ensureAdmin())) return alert('Not an admin.');
       const day = $('sch-day').value.trim();
-      const time = $('sch-time').value.trim();
+      const startTime = $('sch-start-time').value.trim();
+      const endTime = $('sch-end-time').value.trim();
       const grp = $('sch-group').value.trim();
-      if (!day || !time || !grp) return alert('All fields required');
+      if (!day || !startTime || !endTime || !grp) return alert('All fields required');
+
+      // Format time as "5:00 PM - 6:30 PM"
+      const formatTime = (time24) => {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      };
+      const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
       const { error } = await supabase.from('schedule').insert({ day, time, grp, sort: 0 });
-      if (error) return alert(error.message);
-      $('sch-day').value = $('sch-time').value = $('sch-group').value = '';
+      if (error) {
+        console.error('Error adding schedule:', error);
+        return alert(error.message);
+      }
+      $('sch-day').value = '';
+      $('sch-start-time').value = '';
+      $('sch-end-time').value = '';
+      $('sch-group').value = '';
       loadSchedule();
     });
 
@@ -374,12 +436,16 @@
       for (const row of data || []) {
         const tr = document.createElement('tr');
         const d = row.date ? new Date(row.date).toLocaleDateString() : '';
-        tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td>` +
+        const weighin = row.weighin_time || 'N/A';
+        tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighin}</td>` +
           `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
         tr.querySelector('button').addEventListener('click', async () => {
           if (!(await ensureAdmin())) return alert('Not an admin.');
           const { error } = await supabase.from('tournaments').delete().eq('id', row.id);
-          if (error) return alert(error.message);
+          if (error) {
+            console.error('Error deleting tournament:', error);
+            return alert(error.message);
+          }
           loadTournaments();
         });
         tbody.appendChild(tr);
@@ -391,10 +457,33 @@
       const date = $('t-date').value;
       const event = $('t-event').value.trim();
       const location = $('t-location').value.trim();
-      if (!date || !event || !location) return alert('All fields required');
-      const { error } = await supabase.from('tournaments').insert({ date, event, location });
-      if (error) return alert(error.message);
-      $('t-date').value = $('t-event').value = $('t-location').value = '';
+      const weighinTime = $('t-weighin').value.trim();
+      if (!date || !event || !location) return alert('Date, event, and location are required');
+
+      // Format weigh-in time if provided
+      let weighinFormatted = null;
+      if (weighinTime) {
+        const [hours, minutes] = weighinTime.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        weighinFormatted = `${hour12}:${minutes} ${ampm}`;
+      }
+
+      const { error } = await supabase.from('tournaments').insert({
+        date,
+        event,
+        location,
+        weighin_time: weighinFormatted
+      });
+      if (error) {
+        console.error('Error adding tournament:', error);
+        return alert(error.message);
+      }
+      $('t-date').value = '';
+      $('t-event').value = '';
+      $('t-location').value = '';
+      $('t-weighin').value = '';
       loadTournaments();
     });
   </script>
@@ -419,7 +508,8 @@
     id bigserial primary key,
     date date not null,
     event text not null,
-    location text not null
+    location text not null,
+    weighin_time text
   );
 
   create table if not exists slides (

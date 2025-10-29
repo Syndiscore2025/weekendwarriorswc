@@ -62,7 +62,8 @@ create table if not exists tournaments (
   id bigserial primary key,
   date date not null,
   event text not null,
-  location text not null
+  location text not null,
+  weighin_time text
 );
 
 create table if not exists slides (
