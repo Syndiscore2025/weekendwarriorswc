@@ -14,6 +14,8 @@ DROP POLICY IF EXISTS "Admins can update schedule" ON schedule;
 DROP POLICY IF EXISTS "Admins can delete schedule" ON schedule;
 DROP POLICY IF EXISTS "public_read_schedule" ON schedule;
 DROP POLICY IF EXISTS "admin_all_schedule" ON schedule;
+DROP POLICY IF EXISTS "Public can read schedule" ON schedule;
+DROP POLICY IF EXISTS "Admins can write schedule" ON schedule;
 
 -- Drop policies on tournaments table
 DROP POLICY IF EXISTS "public read tournaments" ON tournaments;
@@ -23,6 +25,8 @@ DROP POLICY IF EXISTS "Admins can update tournaments" ON tournaments;
 DROP POLICY IF EXISTS "Admins can delete tournaments" ON tournaments;
 DROP POLICY IF EXISTS "public_read_tournaments" ON tournaments;
 DROP POLICY IF EXISTS "admin_all_tournaments" ON tournaments;
+DROP POLICY IF EXISTS "Public can read tournaments" ON tournaments;
+DROP POLICY IF EXISTS "Admins can write tournaments" ON tournaments;
 
 -- Drop policies on slides table
 DROP POLICY IF EXISTS "public read slides" ON slides;
@@ -32,6 +36,8 @@ DROP POLICY IF EXISTS "Admins can update slides" ON slides;
 DROP POLICY IF EXISTS "Admins can delete slides" ON slides;
 DROP POLICY IF EXISTS "public_read_slides" ON slides;
 DROP POLICY IF EXISTS "admin_all_slides" ON slides;
+DROP POLICY IF EXISTS "Public can read slides" ON slides;
+DROP POLICY IF EXISTS "Admins can write slides" ON slides;
 
 -- Drop policies on site_settings table
 DROP POLICY IF EXISTS "public read settings" ON site_settings;
@@ -41,6 +47,8 @@ DROP POLICY IF EXISTS "Admins can update site_settings" ON site_settings;
 DROP POLICY IF EXISTS "Admins can delete site_settings" ON site_settings;
 DROP POLICY IF EXISTS "public_read_site_settings" ON site_settings;
 DROP POLICY IF EXISTS "admin_all_site_settings" ON site_settings;
+DROP POLICY IF EXISTS "Public can read site_settings" ON site_settings;
+DROP POLICY IF EXISTS "Admins can write site_settings" ON site_settings;
 
 -- Drop policies on winter_signups_2025 table
 DROP POLICY IF EXISTS "public insert winter signups" ON winter_signups_2025;
@@ -49,10 +57,14 @@ DROP POLICY IF EXISTS "admins delete winter signups" ON winter_signups_2025;
 DROP POLICY IF EXISTS "Public can insert winter_signups" ON winter_signups_2025;
 DROP POLICY IF EXISTS "Admins can read winter_signups" ON winter_signups_2025;
 DROP POLICY IF EXISTS "Admins can delete winter_signups" ON winter_signups_2025;
+DROP POLICY IF EXISTS "public_insert_winter_signups" ON winter_signups_2025;
+DROP POLICY IF EXISTS "admin_read_winter_signups" ON winter_signups_2025;
+DROP POLICY IF EXISTS "admin_delete_winter_signups" ON winter_signups_2025;
 
 -- Drop policies on admins table
 DROP POLICY IF EXISTS "admins_read_admins" ON admins;
 DROP POLICY IF EXISTS "Admins can read admins" ON admins;
+DROP POLICY IF EXISTS "admin_read_admins" ON admins;
 
 -- Drop storage policies
 DROP POLICY IF EXISTS "public read media" ON storage.objects;
@@ -61,6 +73,9 @@ DROP POLICY IF EXISTS "admins delete media" ON storage.objects;
 DROP POLICY IF EXISTS "Public can read media" ON storage.objects;
 DROP POLICY IF EXISTS "Admins can upload media" ON storage.objects;
 DROP POLICY IF EXISTS "Admins can delete media" ON storage.objects;
+DROP POLICY IF EXISTS "public_read_media" ON storage.objects;
+DROP POLICY IF EXISTS "admin_upload_media" ON storage.objects;
+DROP POLICY IF EXISTS "admin_delete_media" ON storage.objects;
 
 
 -- STEP 2: Ensure tables exist with correct structure
@@ -236,12 +251,12 @@ CREATE POLICY "admin_delete_media"
 -- ============================================
 
 -- IMPORTANT: Replace 'your-email@example.com' with your actual admin email
-INSERT INTO admins (email) 
-VALUES ('your-email@example.com')
+INSERT INTO admins (email)
+VALUES ('michael.horak01@gmail.com')
 ON CONFLICT (email) DO NOTHING;
 
 -- You can add more admin emails here:
--- INSERT INTO admins (email) VALUES ('another-admin@example.com') ON CONFLICT DO NOTHING;
+-- INSERT INTO admins (email) VALUES ('micha') ON CONFLICT DO NOTHING;
 
 
 -- ============================================
