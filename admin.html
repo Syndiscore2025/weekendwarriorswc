@@ -294,46 +294,80 @@
     }
 
     $('add-slide').addEventListener('click', async () => {
-      if (!(await ensureAdmin())) return alert('Not an admin.');
+      console.log('Upload button clicked');
+
+      if (!(await ensureAdmin())) {
+        console.error('User is not an admin');
+        return alert('Not an admin.');
+      }
+
       const file = $('slide-file').files[0];
       const caption = $('slide-caption').value.trim();
-      if (!file) return alert('Please select a file');
+
+      console.log('File selected:', file ? file.name : 'none');
+      console.log('Caption:', caption);
+
+      if (!file) {
+        console.error('No file selected');
+        return alert('Please select a file');
+      }
 
       const status = $('slide-upload-status');
       status.textContent = 'Uploading...';
+      status.style.color = '#4db8ff';
 
-      const ext = file.name.split('.').pop();
-      const fileName = `slide-${Date.now()}.${ext}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('media')
-        .upload(fileName, file);
+      try {
+        const ext = file.name.split('.').pop();
+        const fileName = `slide-${Date.now()}.${ext}`;
 
-      if (uploadError) {
-        status.textContent = 'Upload failed: ' + uploadError.message;
-        return;
+        console.log('Uploading to storage:', fileName);
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('media')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          console.error('Storage upload error:', uploadError);
+          status.textContent = 'Upload failed: ' + uploadError.message;
+          status.style.color = '#e60000';
+          return;
+        }
+
+        console.log('Upload successful, getting public URL');
+
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
+        const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+
+        console.log('Inserting into database:', { publicUrl, mediaType, caption });
+
+        const { error } = await supabase.from('slides').insert({
+          media_url: publicUrl,
+          media_type: mediaType,
+          caption: caption || null,
+          storage_path: fileName,
+          sort: 0
+        });
+
+        if (error) {
+          console.error('Database insert error:', error);
+          status.textContent = 'Database error: ' + error.message;
+          status.style.color = '#e60000';
+          return;
+        }
+
+        console.log('Upload complete!');
+
+        $('slide-file').value = '';
+        $('slide-caption').value = '';
+        status.textContent = 'Uploaded successfully!';
+        status.style.color = '#00ff00';
+        setTimeout(() => status.textContent = '', 3000);
+        loadSlides();
+      } catch (err) {
+        console.error('Unexpected error during upload:', err);
+        status.textContent = 'Unexpected error: ' + err.message;
+        status.style.color = '#e60000';
       }
-
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
-      const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
-
-      const { error } = await supabase.from('slides').insert({
-        media_url: publicUrl,
-        media_type: mediaType,
-        caption: caption || null,
-        storage_path: fileName,
-        sort: 0
-      });
-
-      if (error) {
-        status.textContent = 'Database error: ' + error.message;
-        return;
-      }
-
-      $('slide-file').value = '';
-      $('slide-caption').value = '';
-      status.textContent = 'Uploaded successfully!';
-      setTimeout(() => status.textContent = '', 3000);
-      loadSlides();
     });
 
     // Audio management
