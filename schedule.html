@@ -21,6 +21,7 @@
     <a href="about.html">About</a>
     <a href="schedule.html" class="active" aria-current="page">Schedule</a>
     <a href="contact.html">Contact</a>
+    <a href="admin.html">Admin</a>
   </nav>
 
   <section>
@@ -38,7 +39,8 @@
             <th>Group</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="schedule-rows">
+          <!-- Default content below is a fallback. When Supabase is configured, it will be replaced at runtime. -->
           <tr>
             <td>Monday</td>
             <td>5:00 PM - 6:30 PM</td>
@@ -78,7 +80,8 @@
             <th>Location</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tournament-rows">
+          <!-- Fallback rows; will be replaced when Supabase is configured -->
           <tr>
             <td>February 15, 2025</td>
             <td>Regional Championship</td>
@@ -101,6 +104,50 @@
           </tr>
         </tbody>
       </table>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    // Fill with your Supabase project values to enable dynamic schedule
+    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+
+    function configured() {
+      return SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR-ANON-KEY';
+    }
+
+    async function run() {
+      if (!configured()) return; // keep fallback HTML
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const schTbody = document.getElementById('schedule-rows');
+      const tTbody = document.getElementById('tournament-rows');
+
+      // Load schedule
+      const { data: schedule } = await supabase
+        .from('schedule')
+        .select('*')
+        .order('sort', { ascending: true })
+        .order('id', { ascending: true });
+      if (Array.isArray(schedule) && schedule.length) {
+        schTbody.innerHTML = schedule.map(r => `<tr><td>${r.day}</td><td>${r.time}</td><td>${r.grp}</td></tr>`).join('');
+      }
+
+      // Load tournaments
+      const { data: tournaments } = await supabase
+        .from('tournaments')
+        .select('*')
+        .order('date', { ascending: true })
+        .order('id', { ascending: true });
+      if (Array.isArray(tournaments) && tournaments.length) {
+        tTbody.innerHTML = tournaments.map(r => {
+          const d = r.date ? new Date(r.date).toLocaleDateString() : '';
+          return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td></tr>`;
+        }).join('');
+      }
+    }
+
+    run();
+  </script>
     </div>
   </section>
 
