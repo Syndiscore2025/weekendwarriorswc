@@ -657,6 +657,10 @@
       }
     }
 
+	    // Attach listeners on initial load as well (idempotent)
+	    attachEventListeners();
+
+
     // Auth actions
     $('sign-in').addEventListener('click', async () => {
       const email = $('email').value.trim();
