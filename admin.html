@@ -536,14 +536,28 @@
 
     // Winter Sign Ups management
     async function loadWinterSignups() {
+      console.log('🔄 Loading winter signups...');
       const { data, error } = await supabase
         .from('winter_signups_2025')
         .select('*')
         .order('submitted_at', { ascending: false });
-      if (error) { console.error(error); return; }
+
+      if (error) {
+        console.error('❌ Error loading winter signups:', error);
+        return;
+      }
+
+      console.log('✅ Winter signups loaded:', data?.length || 0, 'registrations');
+
       const tbody = $('winter-signups-list');
       tbody.innerHTML = '';
-      for (const row of data || []) {
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
+        return;
+      }
+
+      for (const row of data) {
         const tr = document.createElement('tr');
         const submittedDate = row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : '';
         const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';

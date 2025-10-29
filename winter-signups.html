@@ -79,13 +79,15 @@
     .logo-animation-container {
       position: relative;
       width: 100%;
-      max-width: 800px;
+      max-width: 1000px; /* Increased to accommodate animation */
       height: 400px;
       margin: 2rem auto;
+      padding: 0 2rem; /* Add padding to prevent clipping */
       display: flex;
       align-items: center;
       justify-content: center;
       perspective: 1000px;
+      overflow: visible; /* Ensure logos are not clipped */
     }
 
     .logo-wrapper {
@@ -420,16 +422,20 @@
         submitted_at: new Date().toISOString()
       };
 
+      console.log('📝 Submitting registration:', formData);
+
       try {
         const { data, error } = await supabase
           .from('winter_signups_2025')
           .insert([formData]);
 
         if (error) {
-          console.error('Error submitting form:', error);
+          console.error('❌ Error submitting form:', error);
           alert('Error submitting registration. Please try again or contact us directly.');
           return;
         }
+
+        console.log('✅ Registration submitted successfully!', data);
 
         // Show success message
         successMessage.classList.add('show');
@@ -441,7 +447,7 @@
         }, 5000);
 
       } catch (err) {
-        console.error('Unexpected error:', err);
+        console.error('❌ Unexpected error:', err);
         alert('Error submitting registration. Please try again.');
       }
     });
