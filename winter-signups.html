@@ -111,11 +111,20 @@
     }
 
     #wwwc-logo {
-      animation: crossFromLeft 2.6s ease-in-out forwards;
+      animation: crossFromRight 2.6s ease-in-out forwards;
     }
 
     #wywc-logo {
-      animation: crossFromRight 2.6s ease-in-out forwards;
+      animation: crossFromLeft 2.6s ease-in-out forwards;
+    }
+
+    /* Smooth spin on the images themselves (independent of movement) */
+    #wwwc-logo img,
+    #wywc-logo img {
+      animation: spinLinear 2.6s linear forwards;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform: translateZ(0);
     }
 
     /* Explosion flash element (disabled for original animation style) */
@@ -130,21 +139,23 @@
       z-index: 10;
     }
 
-    /* Cross-over animation: each logo starts off-screen, spins, crosses the center, and continues to the opposite side (stays visible) */
+    /* Cross-over movement only: translate across center to the opposite side (no rotation here) */
     @keyframes crossFromLeft {
-      0%   { transform: translate(-50%, -50%) translateX(-600px) rotate(-360deg); opacity: 0; }
-      30%  { transform: translate(-50%, -50%) translateX(-260px) rotate(-200deg); opacity: 1; }
-      50%  { transform: translate(-50%, -50%) translateX(0)       rotate(0deg)     scale(1.04); opacity: 1; }
-      75%  { transform: translate(-50%, -50%) translateX(260px)  rotate(180deg);   opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(340px)  rotate(360deg)    scale(1.0);  opacity: 1; }
+      0%   { transform: translate(-50%, -50%) translateX(-600px); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(340px);  opacity: 1; }
     }
 
     @keyframes crossFromRight {
-      0%   { transform: translate(-50%, -50%) translateX(600px) rotate(360deg); opacity: 0; }
-      30%  { transform: translate(-50%, -50%) translateX(260px)  rotate(200deg);  opacity: 1; }
-      50%  { transform: translate(-50%, -50%) translateX(0)      rotate(0deg)     scale(1.04); opacity: 1; }
-      75%  { transform: translate(-50%, -50%) translateX(-260px) rotate(-180deg); opacity: 1; }
-      100% { transform: translate(-50%, -50%) translateX(-340px) rotate(-360deg)  scale(1.0);  opacity: 1; }
+      0%   { transform: translate(-50%, -50%) translateX(600px); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(-340px); opacity: 1; }
+    }
+
+    /* Smooth, continuous spin for side logos (applied to the <img> elements) */
+    @keyframes spinLinear {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(720deg); }
     }
 
     /* Combined logo appears after the cross, larger than the others */
