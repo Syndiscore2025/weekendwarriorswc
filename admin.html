@@ -59,6 +59,7 @@
     <a href="about.html">About</a>
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
+    <a href="winter-signups.html">Winter Sign Ups</a>
     <a href="admin.html" class="active" aria-current="page">Admin</a>
   </nav>
 
@@ -162,6 +163,35 @@
       </div>
 
       <div class="content-card">
+        <h2>❄️ Winter 2025 Sign Ups</h2>
+        <p class="note">Partnership with Wethersfield Youth Wrestling Club - View all registrations</p>
+        <div class="stack">
+          <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+            <img src="IMG_6531.png" alt="WWWC Logo" style="width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(230,0,0,0.5));">
+            <span style="font-size: 2rem; color: #4db8ff;">×</span>
+            <img src="IMG_6549-Picsart-BackgroundRemover.jpeg" alt="WYWC Logo" style="width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(77,184,255,0.5));">
+            <span style="font-size: 2rem; color: #4db8ff;">=</span>
+            <img src="IMG_6550-Picsart-BackgroundRemover.jpeg" alt="Eagle Warrior Logo" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(230,0,0,0.7));">
+          </div>
+          <table class="admin-list" style="width:100%">
+            <thead>
+              <tr>
+                <th>Parent Name</th>
+                <th>Wrestler Name</th>
+                <th>DOB</th>
+                <th>Grade</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Submitted</th>
+                <th class="right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="winter-signups-list"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-card">
         <h2>First-time setup (read-only)</h2>
         <ol class="note" style="text-align:left; margin: 0 auto; max-width: 800px;">
           <li>Create a free project at supabase.com</li>
@@ -219,7 +249,7 @@
 
     // Data ops
     async function loadData() {
-      await Promise.all([loadSlides(), loadAudio(), loadSchedule(), loadTournaments()]);
+      await Promise.all([loadSlides(), loadAudio(), loadSchedule(), loadTournaments(), loadWinterSignups()]);
     }
 
     async function ensureAdmin() {
@@ -486,6 +516,45 @@
       $('t-weighin').value = '';
       loadTournaments();
     });
+
+    // Winter Sign Ups management
+    async function loadWinterSignups() {
+      const { data, error } = await supabase
+        .from('winter_signups_2025')
+        .select('*')
+        .order('submitted_at', { ascending: false });
+      if (error) { console.error(error); return; }
+      const tbody = $('winter-signups-list');
+      tbody.innerHTML = '';
+      for (const row of data || []) {
+        const tr = document.createElement('tr');
+        const submittedDate = row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : '';
+        const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';
+        const dob = row.wrestler_dob ? new Date(row.wrestler_dob).toLocaleDateString() : '';
+
+        tr.innerHTML = `
+          <td>${row.parent_name || ''}</td>
+          <td><strong>${row.wrestler_name || ''}</strong></td>
+          <td>${dob}</td>
+          <td>${row.wrestler_grade || ''}</td>
+          <td>${row.phone || ''}</td>
+          <td>${row.email || ''}</td>
+          <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
+          <td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>
+        `;
+        tr.querySelector('button').addEventListener('click', async () => {
+          if (!(await ensureAdmin())) return alert('Not an admin.');
+          if (!confirm(`Delete registration for ${row.wrestler_name}?`)) return;
+          const { error } = await supabase.from('winter_signups_2025').delete().eq('id', row.id);
+          if (error) {
+            console.error('Error deleting signup:', error);
+            return alert(error.message);
+          }
+          loadWinterSignups();
+        });
+        tbody.appendChild(tr);
+      }
+    }
   </script>
 
   <!--
@@ -528,6 +597,17 @@
     updated_at timestamptz default now()
   );
 
+  create table if not exists winter_signups_2025 (
+    id bigserial primary key,
+    parent_name text not null,
+    wrestler_name text not null,
+    wrestler_dob date not null,
+    wrestler_grade text not null,
+    phone text not null,
+    email text not null,
+    submitted_at timestamptz default now()
+  );
+
   -- Storage bucket (run this in SQL or create via Storage UI)
   insert into storage.buckets (id, name, public)
   values ('media', 'media', true)
@@ -539,6 +619,7 @@
   alter table admins enable row level security;
   alter table slides enable row level security;
   alter table site_settings enable row level security;
+  alter table winter_signups_2025 enable row level security;
 
   -- Public read policies
   create policy if not exists "public read schedule" on schedule for select using (true);
@@ -557,6 +638,15 @@
     exists(select 1 from admins a where a.email = auth.email())
   );
   create policy if not exists "admins write settings" on site_settings for all using (
+    exists(select 1 from admins a where a.email = auth.email())
+  );
+
+  -- Winter signups policies (public can insert, admins can read/delete)
+  create policy if not exists "public insert winter signups" on winter_signups_2025 for insert with check (true);
+  create policy if not exists "admins read winter signups" on winter_signups_2025 for select using (
+    exists(select 1 from admins a where a.email = auth.email())
+  );
+  create policy if not exists "admins delete winter signups" on winter_signups_2025 for delete using (
     exists(select 1 from admins a where a.email = auth.email())
   );
 

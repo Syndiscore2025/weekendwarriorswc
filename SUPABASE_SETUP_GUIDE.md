@@ -82,6 +82,17 @@ create table if not exists site_settings (
   updated_at timestamptz default now()
 );
 
+create table if not exists winter_signups_2025 (
+  id bigserial primary key,
+  parent_name text not null,
+  wrestler_name text not null,
+  wrestler_dob date not null,
+  wrestler_grade text not null,
+  phone text not null,
+  email text not null,
+  submitted_at timestamptz default now()
+);
+
 -- Storage bucket (run this in SQL or create via Storage UI)
 insert into storage.buckets (id, name, public) 
 values ('media', 'media', true)
@@ -93,6 +104,7 @@ alter table tournaments enable row level security;
 alter table admins enable row level security;
 alter table slides enable row level security;
 alter table site_settings enable row level security;
+alter table winter_signups_2025 enable row level security;
 
 -- Public read policies
 create policy if not exists "public read schedule" on schedule for select using (true);
@@ -111,6 +123,15 @@ create policy if not exists "admins write slides" on slides for all using (
   exists(select 1 from admins a where a.email = auth.email())
 );
 create policy if not exists "admins write settings" on site_settings for all using (
+  exists(select 1 from admins a where a.email = auth.email())
+);
+
+-- Winter signups policies (public can insert, admins can read/delete)
+create policy if not exists "public insert winter signups" on winter_signups_2025 for insert with check (true);
+create policy if not exists "admins read winter signups" on winter_signups_2025 for select using (
+  exists(select 1 from admins a where a.email = auth.email())
+);
+create policy if not exists "admins delete winter signups" on winter_signups_2025 for delete using (
   exists(select 1 from admins a where a.email = auth.email())
 );
 

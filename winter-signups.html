@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winter 2025 Sign Ups - Weekend Warriors x Wethersfield Wrestling</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Winter Ice Theme */
+    body {
+      background: linear-gradient(135deg, #001a33 0%, #003d5c 25%, #001a33 50%, #002b4d 75%, #001a33 100%);
+      background-attachment: fixed;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated snowflakes */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      z-index: 1;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.5rem;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    /* Ice crystal overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(135, 206, 250, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(173, 216, 230, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(176, 224, 230, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      background: linear-gradient(180deg, rgba(0, 26, 51, 0.95) 0%, rgba(0, 45, 77, 0.9) 100%);
+      border-bottom: 4px solid #4db8ff;
+      box-shadow: 0 4px 20px rgba(77, 184, 255, 0.3);
+    }
+
+    header::before {
+      background: radial-gradient(circle at 50% 50%, rgba(77, 184, 255, 0.28) 0%, transparent 72%);
+    }
+
+    header h1 {
+      color: #4db8ff;
+      text-shadow: 0 0 20px rgba(77, 184, 255, 0.6), 0 0 40px rgba(77, 184, 255, 0.3);
+    }
+
+    nav {
+      background: linear-gradient(90deg, #001a33 0%, #002b4d 50%, #001a33 100%);
+      border-top: 2px solid #4db8ff;
+      border-bottom: 2px solid #4db8ff;
+    }
+
+    nav a:hover, nav a.active {
+      background: rgba(77, 184, 255, 0.2);
+      color: #4db8ff;
+      border-bottom: 3px solid #4db8ff;
+    }
+
+    /* Logo Animation Container */
+    .logo-animation-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 400px;
+      margin: 2rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .logo-wrapper {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px rgba(77, 184, 255, 0.5));
+    }
+
+    #wwwc-logo {
+      left: 10%;
+      animation: slideInLeft 2s ease-out forwards;
+    }
+
+    #wywc-logo {
+      right: 10%;
+      animation: slideInRight 2s ease-out forwards;
+    }
+
+    #combined-logo {
+      opacity: 0;
+      transform: scale(0);
+      animation: explodeIn 1s ease-out 2.5s forwards;
+      z-index: 10;
+    }
+
+    @keyframes slideInLeft {
+      0% { transform: translateX(-200%) rotate(-180deg); opacity: 0; }
+      70% { transform: translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(calc(50vw - 50% - 100px)) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      0% { transform: translateX(200%) rotate(180deg); opacity: 0; }
+      70% { transform: translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(calc(-50vw + 50% + 100px)) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes explodeIn {
+      0% { 
+        opacity: 0; 
+        transform: scale(0) rotate(0deg);
+      }
+      50% { 
+        opacity: 1; 
+        transform: scale(1.3) rotate(180deg);
+        filter: drop-shadow(0 0 40px rgba(77, 184, 255, 1)) drop-shadow(0 0 60px rgba(230, 0, 0, 0.8));
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) rotate(360deg);
+        filter: drop-shadow(0 0 30px rgba(77, 184, 255, 0.7));
+      }
+    }
+
+    .partnership-title {
+      text-align: center;
+      margin: 3rem auto 2rem;
+      max-width: 900px;
+    }
+
+    .partnership-title h2 {
+      color: #4db8ff;
+      font-size: 3rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(77, 184, 255, 0.8), 0 0 40px rgba(77, 184, 255, 0.4);
+      margin-bottom: 1rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(77, 184, 255, 0.8), 0 0 40px rgba(77, 184, 255, 0.4); }
+      to { text-shadow: 0 0 30px rgba(77, 184, 255, 1), 0 0 60px rgba(77, 184, 255, 0.6); }
+    }
+
+    .partnership-title p {
+      color: #b3e0ff;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    /* Sign Up Form */
+    .signup-form-container {
+      background: linear-gradient(135deg, rgba(0, 45, 77, 0.9) 0%, rgba(0, 26, 51, 0.9) 100%);
+      border: 3px solid #4db8ff;
+      border-radius: 15px;
+      padding: 3rem;
+      margin: 3rem auto;
+      max-width: 700px;
+      box-shadow: 0 12px 40px rgba(77, 184, 255, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .signup-form-container h3 {
+      color: #4db8ff;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #b3e0ff;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #4db8ff;
+      background: rgba(0, 26, 51, 0.6);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #80d4ff;
+      background: rgba(0, 45, 77, 0.8);
+      box-shadow: 0 0 15px rgba(77, 184, 255, 0.4);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #4db8ff 0%, #0080ff 100%);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #80d4ff 0%, #4db8ff 100%);
+      box-shadow: 0 8px 25px rgba(77, 184, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .success-message {
+      display: none;
+      background: rgba(76, 175, 80, 0.2);
+      border: 2px solid #4caf50;
+      color: #a5d6a7;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    section h2 {
+      color: #4db8ff;
+      text-shadow: 0 0 15px rgba(77, 184, 255, 0.5);
+    }
+
+    section h2::after {
+      background: linear-gradient(90deg, transparent, #4db8ff, transparent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo">
+    <h1>Winter 2025 Sign Ups</h1>
+    <p>Weekend Warriors x Wethersfield Youth Wrestling Partnership</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="contact.html">Contact</a>
+    <a href="winter-signups.html" class="active" aria-current="page">Winter Sign Ups</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+
+  <!-- Snowflakes -->
+  <div id="snowflakes-container"></div>
+
+  <section style="position: relative; z-index: 2;">
+    <div class="partnership-title">
+      <h2>❄️ Winter 2025 Partnership ❄️</h2>
+      <p>Weekend Warriors Wrestling Club × Wethersfield Youth Wrestling Club</p>
+    </div>
+
+    <!-- Logo Animation -->
+    <div class="logo-animation-container">
+      <div class="logo-wrapper" id="wwwc-logo">
+        <img src="IMG_6531.png" alt="Weekend Warriors Logo">
+      </div>
+      <div class="logo-wrapper" id="wywc-logo">
+        <img src="IMG_6549-Picsart-BackgroundRemover.jpeg" alt="Wethersfield Wrestling Logo">
+      </div>
+      <div class="logo-wrapper" id="combined-logo">
+        <img src="IMG_6550-Picsart-BackgroundRemover.jpeg" alt="Eagle Warrior Combined Logo">
+      </div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div class="signup-form-container">
+      <h3>🏆 Register Your Wrestler 🏆</h3>
+      <form id="winter-signup-form">
+        <div class="form-group">
+          <label for="parent-name">Parent/Guardian Name *</label>
+          <input type="text" id="parent-name" name="parent-name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="wrestler-name">Wrestler Name *</label>
+          <input type="text" id="wrestler-name" name="wrestler-name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="wrestler-dob">Wrestler Date of Birth *</label>
+          <input type="date" id="wrestler-dob" name="wrestler-dob" required>
+        </div>
+
+        <div class="form-group">
+          <label for="wrestler-grade">Wrestler Grade *</label>
+          <select id="wrestler-grade" name="wrestler-grade" required>
+            <option value="">Select Grade</option>
+            <option value="4th">4th Grade</option>
+            <option value="5th">5th Grade</option>
+            <option value="6th">6th Grade</option>
+            <option value="7th">7th Grade</option>
+            <option value="8th">8th Grade</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" placeholder="parent@example.com" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Registration</button>
+      </form>
+
+      <div class="success-message" id="success-message">
+        ✅ Registration submitted successfully! We'll contact you soon.
+      </div>
+    </div>
+  </section>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL = 'https://wiaswnogkcbatjbqyfvj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXN3bm9na2NiYXRqYnF5ZnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4OTYsImV4cCI6MjA3NzMxMTg5Nn0.E5FXlE363ut4U6BiQ4Kon6uqXkBluuacLatvXRrPbsI';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Create snowflakes
+    function createSnowflakes() {
+      const container = document.getElementById('snowflakes-container');
+      for (let i = 0; i < 50; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = '❄';
+        snowflake.style.left = Math.random() * 100 + '%';
+        snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        snowflake.style.animationDelay = Math.random() * 5 + 's';
+        snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+        snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'rem';
+        container.appendChild(snowflake);
+      }
+    }
+
+    createSnowflakes();
+
+    // Handle form submission
+    const form = document.getElementById('winter-signup-form');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        parent_name: document.getElementById('parent-name').value.trim(),
+        wrestler_name: document.getElementById('wrestler-name').value.trim(),
+        wrestler_dob: document.getElementById('wrestler-dob').value,
+        wrestler_grade: document.getElementById('wrestler-grade').value,
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        submitted_at: new Date().toISOString()
+      };
+
+      try {
+        const { data, error } = await supabase
+          .from('winter_signups_2025')
+          .insert([formData]);
+
+        if (error) {
+          console.error('Error submitting form:', error);
+          alert('Error submitting registration. Please try again or contact us directly.');
+          return;
+        }
+
+        // Show success message
+        successMessage.classList.add('show');
+        form.reset();
+
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          successMessage.classList.remove('show');
+        }, 5000);
+
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        alert('Error submitting registration. Please try again.');
+      }
+    });
+  </script>
+
+  <footer>
+    <div>&copy; 2025 Weekend Warriors Wrestling Club × Wethersfield Youth Wrestling Club</div>
+    <div style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer" style="color: #4db8ff; text-decoration: none; font-weight: 600;">syndiscore.ai</a>
+    </div>
+  </footer>
+</body>
+</html>
+
