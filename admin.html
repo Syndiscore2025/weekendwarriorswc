@@ -210,60 +210,6 @@
     const userView = $('user-view');
     const dash = $('dash');
 
-    async function refreshUI(session) {
-      const loggedIn = !!session?.user;
-      authView.classList.toggle('hidden', loggedIn);
-      userView.classList.toggle('hidden', !loggedIn);
-      dash.classList.toggle('hidden', !loggedIn);
-      $('user-email').textContent = session?.user?.email || '';
-      if (loggedIn) {
-        await loadData();
-        attachEventListeners();
-      }
-    }
-
-    function attachEventListeners() {
-      // Remove any existing listeners by cloning and replacing elements
-      const addSlideBtn = $('add-slide');
-      const newAddSlideBtn = addSlideBtn.cloneNode(true);
-      addSlideBtn.parentNode.replaceChild(newAddSlideBtn, addSlideBtn);
-
-      const uploadAudioBtn = $('upload-audio');
-      const newUploadAudioBtn = uploadAudioBtn.cloneNode(true);
-      uploadAudioBtn.parentNode.replaceChild(newUploadAudioBtn, uploadAudioBtn);
-
-      const addScheduleBtn = $('add-schedule');
-      const newAddScheduleBtn = addScheduleBtn.cloneNode(true);
-      addScheduleBtn.parentNode.replaceChild(newAddScheduleBtn, addScheduleBtn);
-
-      const addTournamentBtn = $('add-tournament');
-      const newAddTournamentBtn = addTournamentBtn.cloneNode(true);
-      addTournamentBtn.parentNode.replaceChild(newAddTournamentBtn, addTournamentBtn);
-
-      // Attach fresh event listeners
-      $('add-slide').addEventListener('click', handleAddSlide);
-      $('upload-audio').addEventListener('click', handleUploadAudio);
-      $('add-schedule').addEventListener('click', handleAddSchedule);
-      $('add-tournament').addEventListener('click', handleAddTournament);
-    }
-
-    // Auth actions
-    $('sign-in').addEventListener('click', async () => {
-      const email = $('email').value.trim();
-      const password = $('password').value;
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) alert(error.message);
-    });
-    $('sign-out').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-    });
-
-    supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      await refreshUI(session);
-    })();
-
     // Data ops
     async function loadData() {
       await Promise.all([loadSlides(), loadAudio(), loadSchedule(), loadTournaments(), loadWinterSignups()]);
@@ -653,6 +599,73 @@
         tbody.appendChild(tr);
       }
     }
+
+    // Initialize auth and UI
+    async function refreshUI(session) {
+      const loggedIn = !!session?.user;
+      authView.classList.toggle('hidden', loggedIn);
+      userView.classList.toggle('hidden', !loggedIn);
+      dash.classList.toggle('hidden', !loggedIn);
+      $('user-email').textContent = session?.user?.email || '';
+      if (loggedIn) {
+        await loadData();
+        attachEventListeners();
+      }
+    }
+
+    function attachEventListeners() {
+      console.log('Attaching event listeners...');
+
+      // Remove any existing listeners by cloning and replacing elements
+      const addSlideBtn = $('add-slide');
+      if (addSlideBtn) {
+        const newAddSlideBtn = addSlideBtn.cloneNode(true);
+        addSlideBtn.parentNode.replaceChild(newAddSlideBtn, addSlideBtn);
+        $('add-slide').addEventListener('click', handleAddSlide);
+        console.log('✅ Add slide listener attached');
+      }
+
+      const uploadAudioBtn = $('upload-audio');
+      if (uploadAudioBtn) {
+        const newUploadAudioBtn = uploadAudioBtn.cloneNode(true);
+        uploadAudioBtn.parentNode.replaceChild(newUploadAudioBtn, uploadAudioBtn);
+        $('upload-audio').addEventListener('click', handleUploadAudio);
+        console.log('✅ Upload audio listener attached');
+      }
+
+      const addScheduleBtn = $('add-schedule');
+      if (addScheduleBtn) {
+        const newAddScheduleBtn = addScheduleBtn.cloneNode(true);
+        addScheduleBtn.parentNode.replaceChild(newAddScheduleBtn, addScheduleBtn);
+        $('add-schedule').addEventListener('click', handleAddSchedule);
+        console.log('✅ Add schedule listener attached');
+      }
+
+      const addTournamentBtn = $('add-tournament');
+      if (addTournamentBtn) {
+        const newAddTournamentBtn = addTournamentBtn.cloneNode(true);
+        addTournamentBtn.parentNode.replaceChild(newAddTournamentBtn, addTournamentBtn);
+        $('add-tournament').addEventListener('click', handleAddTournament);
+        console.log('✅ Add tournament listener attached');
+      }
+    }
+
+    // Auth actions
+    $('sign-in').addEventListener('click', async () => {
+      const email = $('email').value.trim();
+      const password = $('password').value;
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) alert(error.message);
+    });
+    $('sign-out').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+    });
+
+    supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      await refreshUI(session);
+    })();
   </script>
 
   <!--
