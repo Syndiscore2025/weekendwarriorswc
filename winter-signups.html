@@ -111,11 +111,11 @@
     }
 
     #wwwc-logo {
-      animation: slideInLeft 2s ease-out forwards;
+      animation: crossFromLeft 2.6s ease-in-out forwards;
     }
 
     #wywc-logo {
-      animation: slideInRight 2s ease-out forwards;
+      animation: crossFromRight 2.6s ease-in-out forwards;
     }
 
     /* Explosion flash element (disabled for original animation style) */
@@ -125,29 +125,33 @@
 
     #combined-logo {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0);
-      animation: explodeIn 1s ease-out 2.5s forwards;
+      transform: translate(-50%, -50%) scale(0.5);
+      animation: centerRevealBig 1.1s ease-out 1.6s forwards;
       z-index: 10;
     }
 
-    /* Original-style slide-in with rotation (keeps current placement at center) */
-    @keyframes slideInLeft {
-      0% { transform: translate(-50%, -50%) translateX(-200%) rotate(-180deg); opacity: 0; }
-      70% { transform: translate(-50%, -50%) translateX(-120px) rotate(0deg);   opacity: 1; }
-      100%{ transform: translate(-50%, -50%) translateX(-100px) rotate(0deg);   opacity: 1; }
+    /* Cross-over animation: each logo starts off-screen, spins, crosses the center, and continues to the opposite side (stays visible) */
+    @keyframes crossFromLeft {
+      0%   { transform: translate(-50%, -50%) translateX(-600px) rotate(-360deg); opacity: 0; }
+      30%  { transform: translate(-50%, -50%) translateX(-260px) rotate(-200deg); opacity: 1; }
+      50%  { transform: translate(-50%, -50%) translateX(0)       rotate(0deg)     scale(1.04); opacity: 1; }
+      75%  { transform: translate(-50%, -50%) translateX(260px)  rotate(180deg);   opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(340px)  rotate(360deg)    scale(1.0);  opacity: 1; }
     }
 
-    @keyframes slideInRight {
-      0% { transform: translate(-50%, -50%) translateX(200%) rotate(180deg); opacity: 0; }
-      70% { transform: translate(-50%, -50%) translateX(120px) rotate(0deg);   opacity: 1; }
-      100%{ transform: translate(-50%, -50%) translateX(100px) rotate(0deg);   opacity: 1; }
+    @keyframes crossFromRight {
+      0%   { transform: translate(-50%, -50%) translateX(600px) rotate(360deg); opacity: 0; }
+      30%  { transform: translate(-50%, -50%) translateX(260px)  rotate(200deg);  opacity: 1; }
+      50%  { transform: translate(-50%, -50%) translateX(0)      rotate(0deg)     scale(1.04); opacity: 1; }
+      75%  { transform: translate(-50%, -50%) translateX(-260px) rotate(-180deg); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translateX(-340px) rotate(-360deg)  scale(1.0);  opacity: 1; }
     }
 
-    /* Original explode-in for combined logo (adapted to centered translate) */
-    @keyframes explodeIn {
-      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
-      50%  { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(180deg); filter: drop-shadow(0 0 40px rgba(77,184,255,1)) drop-shadow(0 0 60px rgba(230,0,0,0.8)); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(360deg); filter: drop-shadow(0 0 30px rgba(77,184,255,0.7)); }
+    /* Combined logo appears after the cross, larger than the others */
+    @keyframes centerRevealBig {
+      0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.5); }
+      60%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.35); filter: drop-shadow(0 0 32px rgba(77,184,255,0.9)); }
+      100% { opacity: 1;   transform: translate(-50%, -50%) scale(1.25); filter: drop-shadow(0 0 20px rgba(77,184,255,0.7)); }
     }
 
     .partnership-title {
