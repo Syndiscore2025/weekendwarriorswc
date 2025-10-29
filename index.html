@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekend Warriors Wrestling Club - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="IMG_6531.jpeg" alt="Weekend Warriors Wrestling Club Logo" class="logo">
+    <h1>Weekend Warriors Wrestling Club</h1>
+    <p>Building Strength, Discipline, and Champions</p>
+  </header>
+
+  <nav>
+    <a href="index.html" class="active" aria-current="page">Home</a>
+    <a href="about.html">About</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <section class="hero-slider" aria-label="Showcase">
+    <div class="slides">
+      <div class="slide is-active" style="background-image:url('IMG_6531.jpeg');">
+        <div class="caption">Weekend Warriors</div>
+      </div>
+      <div class="slide" style="background-image:url('images/wrestlers/slide-1.jpg');">
+        <div class="caption">Hard Work. Discipline. Respect.</div>
+      </div>
+      <div class="slide" style="background-image:url('images/wrestlers/slide-2.jpg');">
+        <div class="caption">Champions in the Making</div>
+      </div>
+    </div>
+    <button class="slider-arrow prev" aria-label="Previous">&#10094;</button>
+    <button class="slider-arrow next" aria-label="Next">&#10095;</button>
+    <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
+  </section>
+
+  <script>
+    (function(){
+      const slider = document.querySelector('.hero-slider');
+      if(!slider) return;
+      const slides = Array.from(slider.querySelectorAll('.slide'));
+      if (slides.length === 0) return;
+
+      let index = 0;
+      const dotsWrap = slider.querySelector('.slider-dots');
+      const prevBtn = slider.querySelector('.prev');
+      const nextBtn = slider.querySelector('.next');
+
+      // Build dots
+      slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.setAttribute('aria-label', 'Go to slide ' + (i+1));
+        b.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(b);
+      });
+
+      function update() {
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+        Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === index));
+      }
+
+      function goTo(i) {
+        index = (i + slides.length) % slides.length;
+        update();
+      }
+
+      prevBtn.addEventListener('click', () => goTo(index - 1));
+      nextBtn.addEventListener('click', () => goTo(index + 1));
+
+      update();
+
+      // Autoplay
+      let timer = setInterval(() => goTo(index + 1), 5000);
+      slider.addEventListener('mouseenter', () => clearInterval(timer));
+      slider.addEventListener('mouseleave', () => timer = setInterval(() => goTo(index + 1), 5000));
+    })();
+  </script>
+
+
+  <section class="content-card">
+    <h2>Welcome to Weekend Warriors</h2>
+    <p>
+      We are dedicated to developing young athletes through the sport of wrestling.
+      Our program focuses on building physical strength, mental discipline, and the
+      character of true champions. Join us and become part of a community that values
+      hard work, respect, and excellence.
+    </p>
+  </section>
+
+  <footer>
+    &copy; 2025 Weekend Warriors Wrestling Club.
+  </footer>
+</body>
+</html>
+
