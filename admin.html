@@ -25,6 +25,7 @@
     .kbd { border: 1px solid #888; padding: 0 .35rem; border-radius: 6px; font-size: .85rem; }
     .small-btn { padding: .45rem .7rem; border-radius: 8px; border: 1px solid #e60000; background: rgba(230,0,0,.15); color: #fff; cursor: pointer; }
     table.admin-list td { text-align: left; }
+    table.admin-list img, table.admin-list video { border-radius: 4px; border: 1px solid #444; }
   </style>
 </head>
 <body>
@@ -67,6 +68,36 @@
     </div>
 
     <div id="dash" class="hidden">
+      <div class="content-card">
+        <h2>Homepage Slideshow</h2>
+        <div class="stack">
+          <div class="note">Upload images (JPG, PNG) or videos (MP4, WebM). Max 50MB per file. Videos will auto-play muted.</div>
+          <div class="row" style="grid-template-columns: 2fr 1fr auto;">
+            <input id="slide-file" type="file" accept="image/*,video/*" />
+            <input id="slide-caption" placeholder="Caption (optional)" />
+            <button id="add-slide" class="success">Upload</button>
+          </div>
+          <div id="slide-upload-status" class="muted"></div>
+          <table class="admin-list" style="width:100%">
+            <thead><tr><th>Preview</th><th>Caption</th><th>Type</th><th class="right">Actions</th></tr></thead>
+            <tbody id="slides-list"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>Background Audio</h2>
+        <div class="stack">
+          <div class="note">Upload an MP3 file for background music. It will auto-loop and start muted (user can unmute).</div>
+          <div class="row" style="grid-template-columns: 1fr auto;">
+            <input id="audio-file" type="file" accept="audio/mp3,audio/mpeg" />
+            <button id="upload-audio" class="success">Upload</button>
+          </div>
+          <div id="audio-upload-status" class="muted"></div>
+          <div id="current-audio"></div>
+        </div>
+      </div>
+
       <div class="content-card">
         <h2>Practice Schedule</h2>
         <div class="stack">
@@ -157,7 +188,7 @@
 
     // Data ops
     async function loadData() {
-      await Promise.all([loadSchedule(), loadTournaments()]);
+      await Promise.all([loadSlides(), loadAudio(), loadSchedule(), loadTournaments()]);
     }
 
     async function ensureAdmin() {
@@ -167,6 +198,134 @@
       const { data: admins } = await supabase.from('admins').select('email').eq('email', user.email).limit(1);
       return Array.isArray(admins) && admins.length > 0;
     }
+
+    // Slides management
+    async function loadSlides() {
+      const { data, error } = await supabase
+        .from('slides')
+        .select('*')
+        .order('sort', { ascending: true })
+        .order('id', { ascending: true });
+      if (error) { console.error(error); return; }
+      const tbody = $('slides-list');
+      tbody.innerHTML = '';
+      for (const row of data || []) {
+        const tr = document.createElement('tr');
+        const isVideo = row.media_type === 'video';
+        const preview = isVideo
+          ? `<video src="${row.media_url}" style="width:80px;height:45px;object-fit:cover;" muted></video>`
+          : `<img src="${row.media_url}" style="width:80px;height:45px;object-fit:cover;" />`;
+        tr.innerHTML = `<td>${preview}</td><td>${row.caption || ''}</td><td>${row.media_type}</td>` +
+          `<td class='right'><button class='danger' data-id='${row.id}'>Delete</button></td>`;
+        tr.querySelector('button').addEventListener('click', async () => {
+          if (!(await ensureAdmin())) return alert('Not an admin.');
+          // Delete from storage
+          if (row.storage_path) {
+            await supabase.storage.from('media').remove([row.storage_path]);
+          }
+          const { error } = await supabase.from('slides').delete().eq('id', row.id);
+          if (error) return alert(error.message);
+          loadSlides();
+        });
+        tbody.appendChild(tr);
+      }
+    }
+
+    $('add-slide').addEventListener('click', async () => {
+      if (!(await ensureAdmin())) return alert('Not an admin.');
+      const file = $('slide-file').files[0];
+      const caption = $('slide-caption').value.trim();
+      if (!file) return alert('Please select a file');
+
+      const status = $('slide-upload-status');
+      status.textContent = 'Uploading...';
+
+      const ext = file.name.split('.').pop();
+      const fileName = `slide-${Date.now()}.${ext}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        status.textContent = 'Upload failed: ' + uploadError.message;
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
+      const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+
+      const { error } = await supabase.from('slides').insert({
+        media_url: publicUrl,
+        media_type: mediaType,
+        caption: caption || null,
+        storage_path: fileName,
+        sort: 0
+      });
+
+      if (error) {
+        status.textContent = 'Database error: ' + error.message;
+        return;
+      }
+
+      $('slide-file').value = '';
+      $('slide-caption').value = '';
+      status.textContent = 'Uploaded successfully!';
+      setTimeout(() => status.textContent = '', 3000);
+      loadSlides();
+    });
+
+    // Audio management
+    async function loadAudio() {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('*')
+        .eq('key', 'background_audio')
+        .single();
+
+      const div = $('current-audio');
+      if (data?.value) {
+        div.innerHTML = `<div class="note">Current: <audio src="${data.value}" controls style="width:100%;max-width:400px;"></audio></div>`;
+      } else {
+        div.innerHTML = '<div class="muted">No audio uploaded yet.</div>';
+      }
+    }
+
+    $('upload-audio').addEventListener('click', async () => {
+      if (!(await ensureAdmin())) return alert('Not an admin.');
+      const file = $('audio-file').files[0];
+      if (!file) return alert('Please select an audio file');
+
+      const status = $('audio-upload-status');
+      status.textContent = 'Uploading...';
+
+      const fileName = `bg-audio-${Date.now()}.mp3`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        status.textContent = 'Upload failed: ' + uploadError.message;
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
+
+      // Upsert setting
+      const { error } = await supabase.from('site_settings').upsert({
+        key: 'background_audio',
+        value: publicUrl
+      });
+
+      if (error) {
+        status.textContent = 'Database error: ' + error.message;
+        return;
+      }
+
+      $('audio-file').value = '';
+      status.textContent = 'Uploaded successfully!';
+      setTimeout(() => status.textContent = '', 3000);
+      loadAudio();
+    });
 
     async function loadSchedule() {
       const { data, error } = await supabase
@@ -243,6 +402,7 @@
   <!--
   SQL (run once in Supabase SQL Editor):
 
+  -- Tables
   create table if not exists admins (
     email text primary key
   );
@@ -262,20 +422,61 @@
     location text not null
   );
 
+  create table if not exists slides (
+    id bigserial primary key,
+    media_url text not null,
+    media_type text not null check (media_type in ('image', 'video')),
+    caption text,
+    storage_path text,
+    sort int default 0,
+    created_at timestamptz default now()
+  );
+
+  create table if not exists site_settings (
+    key text primary key,
+    value text,
+    updated_at timestamptz default now()
+  );
+
+  -- Storage bucket (run this in SQL or create via Storage UI)
+  insert into storage.buckets (id, name, public)
+  values ('media', 'media', true)
+  on conflict (id) do nothing;
+
+  -- Enable RLS
   alter table schedule enable row level security;
   alter table tournaments enable row level security;
   alter table admins enable row level security;
+  alter table slides enable row level security;
+  alter table site_settings enable row level security;
 
-  -- Public read
+  -- Public read policies
   create policy if not exists "public read schedule" on schedule for select using (true);
   create policy if not exists "public read tournaments" on tournaments for select using (true);
+  create policy if not exists "public read slides" on slides for select using (true);
+  create policy if not exists "public read settings" on site_settings for select using (true);
 
-  -- Only admins (by email) can write
+  -- Admin write policies
   create policy if not exists "admins write schedule" on schedule for all using (
     exists(select 1 from admins a where a.email = auth.email())
   );
   create policy if not exists "admins write tournaments" on tournaments for all using (
     exists(select 1 from admins a where a.email = auth.email())
+  );
+  create policy if not exists "admins write slides" on slides for all using (
+    exists(select 1 from admins a where a.email = auth.email())
+  );
+  create policy if not exists "admins write settings" on site_settings for all using (
+    exists(select 1 from admins a where a.email = auth.email())
+  );
+
+  -- Storage policies
+  create policy if not exists "public read media" on storage.objects for select using (bucket_id = 'media');
+  create policy if not exists "admins upload media" on storage.objects for insert with check (
+    bucket_id = 'media' and exists(select 1 from admins a where a.email = auth.email())
+  );
+  create policy if not exists "admins delete media" on storage.objects for delete using (
+    bucket_id = 'media' and exists(select 1 from admins a where a.email = auth.email())
   );
 
   -->
