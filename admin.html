@@ -205,6 +205,22 @@
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // Project ref derived from SUPABASE_URL for clearing local auth storage on static hosting
+    const PROJECT_REF = (() => {
+      try { return new URL(SUPABASE_URL).host.split('.')[0]; } catch { return 'wiaswnogkcbatjbqyfvj'; }
+    })();
+
+    function hardLocalSignOut() {
+      try {
+        localStorage.removeItem(`sb-${PROJECT_REF}-auth-token`);
+        sessionStorage.removeItem(`sb-${PROJECT_REF}-auth-token`);
+        localStorage.removeItem('supabase.auth.token'); // legacy key fallback
+      } catch (e) {
+        console.warn('Local sign-out cleanup error', e);
+      }
+    }
+
+
     const $ = (id) => document.getElementById(id);
     const authView = $('auth-view');
     const userView = $('user-view');
@@ -669,7 +685,15 @@
       if (error) alert(error.message);
     });
     $('sign-out').addEventListener('click', async () => {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.warn('signOut error', e);
+      }
+      // Extra safety for static hosting: clear local/session storage keys
+      if (typeof hardLocalSignOut === 'function') hardLocalSignOut();
+      // Reload to reset any in-memory state and UI
+      location.reload();
     });
 
     supabase.auth.onAuthStateChange((_e, session) => refreshUI(session));
