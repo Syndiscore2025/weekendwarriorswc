@@ -108,12 +108,12 @@
 
     #wwwc-logo {
       left: 10%;
-      animation: slideInLeft 2.5s ease-in-out forwards;
+      animation: slideInLeft 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
 
     #wywc-logo {
       right: 10%;
-      animation: slideInRight 2.5s ease-in-out forwards;
+      animation: slideInRight 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
 
     /* Explosion flash element */
@@ -128,28 +128,54 @@
         rgba(230, 0, 0, 0.6) 40%,
         transparent 70%);
       opacity: 0;
-      animation: explosion 1s ease-out 2.5s forwards;
+      animation: explosion 1s ease-out 3s forwards;
       z-index: 5;
       pointer-events: none;
     }
 
     #combined-logo {
       opacity: 0;
-      transform: scale(0.5);
-      animation: fadeInSlow 2.5s ease-out 3.5s forwards;
+      transform: scale(0.3);
+      animation: fadeInSlow 3s cubic-bezier(0.4, 0.0, 0.2, 1) 4s forwards;
       z-index: 10;
     }
 
     @keyframes slideInLeft {
-      0% { transform: translateX(-200%) rotate(-180deg); opacity: 0; }
-      60% { transform: translateX(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateX(0) rotate(720deg) scale(0); opacity: 0; }
+      0% {
+        transform: translateX(-200%) rotate(-180deg);
+        opacity: 0;
+      }
+      50% {
+        transform: translateX(-20%) rotate(-90deg);
+        opacity: 1;
+      }
+      80% {
+        transform: translateX(calc(50% - 100px)) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(50% - 100px)) rotate(720deg) scale(0);
+        opacity: 0;
+      }
     }
 
     @keyframes slideInRight {
-      0% { transform: translateX(200%) rotate(180deg); opacity: 0; }
-      60% { transform: translateX(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateX(0) rotate(-720deg) scale(0); opacity: 0; }
+      0% {
+        transform: translateX(200%) rotate(180deg);
+        opacity: 0;
+      }
+      50% {
+        transform: translateX(20%) rotate(90deg);
+        opacity: 1;
+      }
+      80% {
+        transform: translateX(calc(-50% + 100px)) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(-50% + 100px)) rotate(-720deg) scale(0);
+        opacity: 0;
+      }
     }
 
     /* Explosion effect */
@@ -176,22 +202,37 @@
       }
     }
 
-    /* Slow fade in for combined logo */
+    /* Smooth slow fade in for combined logo */
     @keyframes fadeInSlow {
       0% {
         opacity: 0;
-        transform: scale(0.5);
-        filter: blur(10px);
+        transform: scale(0.3);
+        filter: blur(20px) brightness(2);
       }
-      50% {
-        opacity: 0.5;
+      20% {
+        opacity: 0.2;
+        transform: scale(0.5);
+        filter: blur(15px) brightness(1.8) drop-shadow(0 0 40px rgba(77, 184, 255, 0.9));
+      }
+      40% {
+        opacity: 0.4;
+        transform: scale(0.65);
+        filter: blur(10px) brightness(1.5) drop-shadow(0 0 35px rgba(77, 184, 255, 0.85));
+      }
+      60% {
+        opacity: 0.6;
         transform: scale(0.8);
-        filter: blur(5px) drop-shadow(0 0 30px rgba(77, 184, 255, 0.8));
+        filter: blur(6px) brightness(1.2) drop-shadow(0 0 30px rgba(77, 184, 255, 0.8));
+      }
+      80% {
+        opacity: 0.85;
+        transform: scale(0.95);
+        filter: blur(2px) brightness(1.05) drop-shadow(0 0 25px rgba(77, 184, 255, 0.75));
       }
       100% {
         opacity: 1;
         transform: scale(1);
-        filter: blur(0) drop-shadow(0 0 30px rgba(77, 184, 255, 0.7));
+        filter: blur(0) brightness(1) drop-shadow(0 0 30px rgba(77, 184, 255, 0.7));
       }
     }
 
