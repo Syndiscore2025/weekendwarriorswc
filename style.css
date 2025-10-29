@@ -24,6 +24,7 @@ header {
   border-bottom: 4px solid #e60000;
   box-shadow: 0 4px 20px rgba(230, 0, 0, 0.3);
   position: relative;
+  isolation: isolate;
 }
 
 header::before {
@@ -33,7 +34,7 @@ header::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(230, 0, 0, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(230, 0, 0, 0.28) 0%, transparent 72%);
   pointer-events: none;
 }
 
@@ -42,7 +43,7 @@ header img.logo {
   max-width: 90%;
   display: block;
   margin: 0 auto 1.5rem auto;
-  filter: drop-shadow(0 0 20px rgba(230, 0, 0, 0.5));
+  filter: none;
   transition: transform 0.3s ease;
   position: relative;
   mix-blend-mode: screen;
