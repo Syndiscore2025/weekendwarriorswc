@@ -19,22 +19,32 @@ const octokit = new Octokit({ auth: GITHUB_TOKEN });
 // Helper function to update a file in GitHub
 async function updateGitHubFile(path, content, message) {
   try {
+    console.log(`Updating GitHub file: ${path}`);
+
+    if (!GITHUB_TOKEN) {
+      throw new Error('GITHUB_TOKEN environment variable is not set');
+    }
+
     // Get current file SHA
     let sha;
     try {
+      console.log(`Getting current SHA for: ${path}`);
       const { data } = await octokit.repos.getContent({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path,
       });
       sha = data.sha;
+      console.log(`Found existing file with SHA: ${sha}`);
     } catch (err) {
       // File doesn't exist yet
+      console.log(`File doesn't exist yet: ${path}`);
       sha = null;
     }
 
     // Update or create file
-    await octokit.repos.createOrUpdateFileContents({
+    console.log(`Creating/updating file: ${path}`);
+    const result = await octokit.repos.createOrUpdateFileContents({
       owner: REPO_OWNER,
       repo: REPO_NAME,
       path,
@@ -43,9 +53,15 @@ async function updateGitHubFile(path, content, message) {
       sha,
     });
 
+    console.log(`Successfully updated: ${path}`);
     return { success: true };
   } catch (error) {
-    console.error('GitHub API Error:', error);
+    console.error('GitHub API Error:', error.message);
+    console.error('Error details:', {
+      status: error.status,
+      message: error.message,
+      path,
+    });
     throw error;
   }
 }
@@ -130,21 +146,25 @@ app.post('/api/upload-media', async (req, res) => {
 // Generic save endpoint (used by admin panel)
 app.post('/save', async (req, res) => {
   try {
+    console.log('Save request received:', { file: req.body.file });
     const { file, content } = req.body;
 
-    if (!file || !content) {
+    if (!file || content === undefined) {
+      console.error('Missing file or content:', { file, hasContent: content !== undefined });
       return res.status(400).json({ success: false, error: 'Missing file or content' });
     }
 
+    console.log('Updating GitHub file:', file);
     await updateGitHubFile(
       file,
       content,
       `Update ${file} via admin panel`
     );
 
+    console.log('File saved successfully:', file);
     res.json({ success: true, message: 'File saved successfully' });
   } catch (error) {
-    console.error('Save error:', error);
+    console.error('Save error:', error.message, error.stack);
     res.status(500).json({ success: false, error: error.message });
   }
 });
