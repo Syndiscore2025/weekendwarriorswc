@@ -123,6 +123,7 @@
   function startPlayback() {
     const savedTrackIndex = parseInt(localStorage.getItem(STORAGE_KEYS.CURRENT_TRACK) || '0');
     const savedTime = parseFloat(localStorage.getItem(STORAGE_KEYS.CURRENT_TIME) || '0');
+    const hasPlayedBefore = localStorage.getItem('wwwc_has_played') === 'true';
 
     currentTrackIndex = savedTrackIndex % audioTracks.length;
     currentAudioElement = bgAudio1;
@@ -133,15 +134,16 @@
 
     currentAudioElement.src = track.url;
     currentAudioElement.currentTime = savedTime || startTime;
-    currentAudioElement.volume = isMuted ? 0 : 0; // Start at 0 for fade-in
+    currentAudioElement.volume = isMuted ? 0 : (hasPlayedBefore ? 1 : 0); // Start at 0 only for first visit
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
-      // Always fade in when entering a page
-      if (!isMuted) {
-        fadeIn(currentAudioElement, 5000); // 5 second fade-in
+      // Only fade in on very first visit to the site
+      if (!isMuted && !hasPlayedBefore) {
+        fadeIn(currentAudioElement, 5000); // 5 second fade-in on first visit
+        localStorage.setItem('wwwc_has_played', 'true');
       }
       setupTimeUpdateListeners();
       updateMuteUI();
@@ -166,16 +168,13 @@
 
     currentAudioElement.src = track.url;
     currentAudioElement.currentTime = savedTime;
-    currentAudioElement.volume = isMuted ? 0 : 0; // Start at 0 for fade-in
+    currentAudioElement.volume = isMuted ? 0 : 1; // Full volume for continuous playback
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
-      // Always fade in when entering a page
-      if (!isMuted) {
-        fadeIn(currentAudioElement, 5000); // 5 second fade-in
-      }
+      // No fade-in when navigating between pages - continuous playback
       setupTimeUpdateListeners();
     }).catch(err => {
       console.log('Sync playback failed:', err);
