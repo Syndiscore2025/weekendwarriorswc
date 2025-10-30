@@ -194,7 +194,7 @@
 
     .partnership-title {
       text-align: center;
-      margin: 1rem auto 2rem;
+      margin: 0.5rem auto 1.5rem;
       max-width: 900px;
     }
 
@@ -206,6 +206,10 @@
       text-shadow: 0 0 20px rgba(77, 184, 255, 0.8), 0 0 40px rgba(77, 184, 255, 0.4);
       margin-bottom: 1rem;
       animation: glow 2s ease-in-out infinite alternate;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
     }
 
     @keyframes glow {
@@ -225,7 +229,7 @@
       border: 3px solid #4db8ff;
       border-radius: 15px;
       padding: 3rem;
-      margin: 3rem auto;
+      margin: 1.5rem auto 3rem;
       max-width: 700px;
       box-shadow: 0 12px 40px rgba(77, 184, 255, 0.3);
       position: relative;
@@ -239,6 +243,10 @@
       margin-bottom: 2rem;
       text-transform: uppercase;
       letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
     }
 
     .form-group {
@@ -381,8 +389,13 @@
       }
 
       .partnership-title h2 {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         letter-spacing: 2px;
+        gap: 0.8rem;
+      }
+
+      .partnership-title h2 span {
+        font-size: 1.2rem;
       }
 
       .partnership-title p {
@@ -391,12 +404,17 @@
 
       .signup-form-container {
         padding: 2rem 1.5rem;
-        margin: 2rem 1rem;
+        margin: 1rem 1rem 2rem;
         width: calc(100% - 2rem);
       }
 
       .signup-form-container h3 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        gap: 0.8rem;
+      }
+
+      .signup-form-container h3 span {
+        font-size: 1.1rem;
       }
 
       .form-group input,
@@ -465,13 +483,13 @@
     </div>
 
     <div class="partnership-title">
-      <h2>❄️ Winter 2025 Partnership ❄️</h2>
+      <h2><span>❄️</span> Winter 2025 Partnership <span>❄️</span></h2>
       <p>Weekend Warriors Wrestling Club × Wethersfield Youth Wrestling Club</p>
     </div>
 
     <!-- Sign Up Form -->
     <div class="signup-form-container">
-      <h3 style="text-align: center;">🥇 Register Your Wrestler 🥇</h3>
+      <h3><span>🥇</span> Register Your Wrestler <span>🥇</span></h3>
       <form id="winter-signup-form">
         <div class="form-group">
           <label for="parent-name">Parent/Guardian Name *</label>
