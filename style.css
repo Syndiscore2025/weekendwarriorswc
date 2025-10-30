@@ -27,7 +27,7 @@ body {
 /* HEADER - Enhanced with depth and animation */
 header {
   text-align: center;
-  padding: 1.5rem 2rem;
+  padding: 3rem 1rem 2rem;
   background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(20,0,0,0.95) 100%);
   border-bottom: 4px solid #e60000;
   box-shadow:
@@ -63,16 +63,16 @@ header::before {
 }
 
 header img.logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
+  width: 220px;
+  max-width: 90%;
+  display: block;
+  margin: 0 auto 1.5rem auto;
   filter: drop-shadow(0 4px 12px rgba(230, 0, 0, 0.5));
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   mix-blend-mode: screen;
   background: transparent;
   z-index: 1;
-  margin-bottom: 0.5rem;
 }
 
 header img.logo:hover {
@@ -82,15 +82,15 @@ header img.logo:hover {
 
 header h1 {
   color: #e60000;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-shadow:
     0 0 20px rgba(230, 0, 0, 0.8),
     0 0 40px rgba(230, 0, 0, 0.5),
     0 4px 8px rgba(0, 0, 0, 0.8);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   position: relative;
   z-index: 1;
   animation: titleGlow 3s ease-in-out infinite alternate;
@@ -112,7 +112,7 @@ header h1 {
 }
 
 header p {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
@@ -555,7 +555,7 @@ section p {
 
 .hero-slider .slide {
   position: absolute;
-  inset: 0; /* No padding - full slideshow area */
+  inset: 1in; /* 1 inch padding from all sides */
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -570,7 +570,7 @@ section p {
 .hero-slider .slide::after {
   content: '';
   position: absolute;
-  inset: 0; /* Overlay covers full slideshow area */
+  inset: -1in; /* Extend overlay to full slideshow area */
   background: radial-gradient(circle at 50% 80%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 70%);
   pointer-events: none;
   z-index: 1;
@@ -998,16 +998,18 @@ footer a:hover {
     width: 80px;
     height: 80px;
   }
+  header {
+    padding: 2rem 1rem 1.5rem;
+  }
   header img.logo {
-    width: 90px;
-    height: 90px;
+    width: 150px;
   }
   header h1 {
-    font-size: 1.4rem;
-    letter-spacing: 1px;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
   }
   header p {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   nav {
     flex-wrap: wrap;
