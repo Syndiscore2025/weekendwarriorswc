@@ -44,23 +44,25 @@
 
   <section>
     <div class="content-card">
-      <h2>Practice Schedule</h2>
+      <h2>PRACTICE SCHEDULE</h2>
       <p style="margin-bottom: 2rem;">
         Join us for regular practices and tournaments throughout the season.
         All practices are held at our training facility.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Time</th>
-            <th>Group</th>
-          </tr>
-        </thead>
-        <tbody id="schedule-rows">
-          <!-- Practice schedule loaded from Supabase -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="admin-list">
+          <thead>
+            <tr>
+              <th style="width: 33%;">DAY</th>
+              <th style="width: 34%;">TIME</th>
+              <th style="width: 33%;">GROUP</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-rows">
+            <!-- Practice schedule loaded from JSON -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="content-card tournament-card">
@@ -84,6 +86,7 @@
           </tbody>
         </table>
       </div>
+    </div>
 
   <script>
     async function run() {
