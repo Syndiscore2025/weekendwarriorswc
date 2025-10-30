@@ -28,11 +28,16 @@
       color: #fff;
       border-radius: 6px;
       font-size: .95rem;
+      box-sizing: border-box;
     }
     input:focus, select:focus {
       outline: none;
       border-color: #e60000;
       background: rgba(0,0,0,0.5);
+    }
+    input[type="time"] {
+      font-size: .85rem;
+      padding: .5rem;
     }
     .hidden { display: none; }
     .topbar { display:flex; justify-content: space-between; align-items:center; gap: 1rem; padding: 1rem; background: rgba(230,0,0,0.1); border-radius: 8px; margin-bottom: 1rem; }
@@ -180,16 +185,31 @@
       <div class="content-card">
         <h2>Upcoming Tournaments</h2>
         <div class="stack">
-          <div class="row" style="grid-template-columns: 1fr 2fr 2fr 1fr 2fr auto;">
+          <div class="row" style="display: grid; grid-template-columns: 1fr 2fr 2fr 1fr 1fr 1fr 1fr 2fr auto; gap: 0.5rem; align-items: center;">
             <input id="t-date" type="date" placeholder="Tournament Date" />
             <input id="t-event" placeholder="Event Name" />
             <input id="t-location" placeholder="Location" />
-            <input id="t-weighin" type="time" placeholder="Weigh-in Time" />
+            <input id="t-weighin-es" type="time" placeholder="ES Weigh-in" />
+            <input id="t-start-es" type="time" placeholder="ES Start" />
+            <input id="t-weighin-ms" type="time" placeholder="MS Weigh-in" />
+            <input id="t-start-ms" type="time" placeholder="MS Start" />
             <input id="t-link" type="url" placeholder="Registration URL (optional)" />
             <button id="add-tournament" class="success">Add</button>
           </div>
           <table class="admin-list" style="width:100%">
-            <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Weigh-in</th><th>Registration</th><th class="right">Actions</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Event</th>
+                <th>Location</th>
+                <th>ES Weigh-in</th>
+                <th>ES Start</th>
+                <th>MS Weigh-in</th>
+                <th>MS Start</th>
+                <th>Registration</th>
+                <th class="right">Actions</th>
+              </tr>
+            </thead>
             <tbody id="tournament-list"></tbody>
           </table>
         </div>
@@ -956,8 +976,12 @@
           const row = data[i];
           const tr = document.createElement('tr');
           const d = row.date ? new Date(row.date).toLocaleDateString() : '';
+          const weighinES = row.weighinES || row.weighin || '-';
+          const startES = row.startES || '-';
+          const weighinMS = row.weighinMS || '-';
+          const startMS = row.startMS || '-';
           const link = row.url ? `<a href="${row.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
-          tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${link}</td>` +
+          tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighinES}</td><td>${startES}</td><td>${weighinMS}</td><td>${startMS}</td><td>${link}</td>` +
             `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
           tr.querySelector('button').addEventListener('click', () => deleteTournament(i));
           tbody.appendChild(tr);
@@ -1001,14 +1025,26 @@
       const date = $('t-date').value;
       const event = $('t-event').value.trim();
       const location = $('t-location').value.trim();
-      const weighin = $('t-weighin').value.trim();
+      const weighinES = $('t-weighin-es').value.trim();
+      const startES = $('t-start-es').value.trim();
+      const weighinMS = $('t-weighin-ms').value.trim();
+      const startMS = $('t-start-ms').value.trim();
       const link = $('t-link') ? $('t-link').value.trim() : '';
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
       try {
         const res = await fetch('data/tournaments.json');
         const tournaments = await res.json();
-        tournaments.push({ date, event, location, weighin, url: link });
+        tournaments.push({
+          date,
+          event,
+          location,
+          weighinES,
+          startES,
+          weighinMS,
+          startMS,
+          url: link
+        });
 
         // Save to API
         const saveRes = await fetch(`${API_URL}/save`, {
@@ -1026,7 +1062,10 @@
           $('t-date').value = '';
           $('t-event').value = '';
           $('t-location').value = '';
-          $('t-weighin').value = '';
+          $('t-weighin-es').value = '';
+          $('t-start-es').value = '';
+          $('t-weighin-ms').value = '';
+          $('t-start-ms').value = '';
           if ($('t-link')) $('t-link').value = '';
           await loadTournaments();
         } else {

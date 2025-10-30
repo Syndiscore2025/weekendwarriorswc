@@ -74,6 +74,10 @@
             <th>Date</th>
             <th>Event</th>
             <th>Location</th>
+            <th>ES Weigh-in</th>
+            <th>ES Start</th>
+            <th>MS Weigh-in</th>
+            <th>MS Start</th>
             <th>Registration</th>
           </tr>
         </thead>
@@ -101,7 +105,12 @@
         if (Array.isArray(tournaments) && tournaments.length) {
           tTbody.innerHTML = tournaments.map(r => {
             const d = r.date ? new Date(r.date).toLocaleDateString() : '';
-            return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>` + (r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-') + `</td></tr>`;
+            const weighinES = r.weighinES || r.weighin || '-';
+            const startES = r.startES || '-';
+            const weighinMS = r.weighinMS || '-';
+            const startMS = r.startMS || '-';
+            const regLink = r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
+            return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>${weighinES}</td><td>${startES}</td><td>${weighinMS}</td><td>${startMS}</td><td>${regLink}</td></tr>`;
           }).join('');
         }
       } catch (e) {
