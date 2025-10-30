@@ -40,12 +40,13 @@
     .kbd { border: 1px solid #888; padding: 0 .35rem; border-radius: 6px; font-size: .85rem; }
     .small-btn { padding: .5rem .9rem; border-radius: 8px; border: 1px solid #e60000; background: rgba(230,0,0,.15); color: #fff; cursor: pointer; transition: all 0.2s; font-weight: 500; }
     .small-btn:hover { background: rgba(230,0,0,.3); }
-    table.admin-list { border-collapse: collapse; margin-top: .5rem; }
-    table.admin-list th { background: rgba(230,0,0,0.2); padding: .75rem; text-align: left; font-weight: 600; }
-    table.admin-list td { text-align: left; padding: .75rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    table.admin-list { border-collapse: collapse; margin-top: .5rem; width: 100%; }
+    table.admin-list th { background: rgba(230,0,0,0.2); padding: .75rem; text-align: left; font-weight: 600; white-space: nowrap; }
+    table.admin-list td { text-align: left; padding: .75rem; border-bottom: 1px solid rgba(255,255,255,0.1); word-wrap: break-word; }
     table.admin-list tr:hover { background: rgba(255,255,255,0.05); }
     table.admin-list img, table.admin-list video { border-radius: 4px; border: 1px solid #444; }
     .content-card h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1.5rem; color: #e60000; }
+    .table-wrapper { overflow-x: auto; width: 100%; }
   </style>
 </head>
 <body>
@@ -174,20 +175,23 @@
       </div>
 
       <div class="content-card">
-        <h2>❄️ 25-26 Winter Season Sign-Ups</h2>
+        <h2 style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">❄️</span>
+          <span>25-26 Winter Season Sign-Ups</span>
+        </h2>
         <p class="note">Partnership with Wethersfield Youth Wrestling Club - View all registrations</p>
-        <div class="stack">
-          <table class="admin-list" style="width:100%">
+        <div class="table-wrapper">
+          <table class="admin-list" style="table-layout: fixed;">
             <thead>
               <tr>
-                <th>Parent Name</th>
-                <th>Wrestler Name</th>
-                <th>DOB</th>
-                <th>Grade</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Submitted</th>
-                <th class="right">Actions</th>
+                <th style="text-transform: none; width: 11%;">Parent Name</th>
+                <th style="text-transform: none; width: 11%;">Wrestler Name</th>
+                <th style="text-transform: none; width: 9%;">DOB</th>
+                <th style="text-transform: none; width: 6%;">Grade</th>
+                <th style="text-transform: none; width: 11%;">Phone</th>
+                <th style="text-transform: none; width: 18%;">Email</th>
+                <th style="text-transform: none; width: 13%;">Submitted</th>
+                <th class="right" style="text-transform: none; width: 10%;">Actions</th>
               </tr>
             </thead>
             <tbody id="winter-signups-list"></tbody>
