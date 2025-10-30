@@ -252,21 +252,40 @@
 
     // Data ops
     async function loadData() {
-      await Promise.allSettled([
+      console.log('Loading all data...');
+      const results = await Promise.allSettled([
         loadSlides(),
         loadAudio(),
         loadSchedule(),
         loadTournaments(),
         loadWinterSignups()
       ]);
+
+      results.forEach((result, index) => {
+        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups'];
+        if (result.status === 'rejected') {
+          console.error(`Failed to load ${names[index]}:`, result.reason);
+        } else {
+          console.log(`✓ ${names[index]} loaded successfully`);
+        }
+      });
     }
 
     // Slides management
     async function loadSlides() {
       try {
+        console.log('Loading slides...');
         const res = await fetch('data/slides.json');
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
         const data = await res.json();
+        console.log('Slides data:', data);
         const tbody = $('slides-list');
+        if (!tbody) {
+          console.error('slides-list element not found!');
+          return;
+        }
         tbody.innerHTML = '';
         for (let i = 0; i < data.length; i++) {
           const row = data[i];
@@ -280,8 +299,10 @@
           tr.querySelector('button').addEventListener('click', () => deleteSlide(i));
           tbody.appendChild(tr);
         }
+        console.log(`Loaded ${data.length} slides`);
       } catch (e) {
         console.error('Load slides error:', e);
+        alert('Failed to load slides: ' + e.message);
       }
     }
 
