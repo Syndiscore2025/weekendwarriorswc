@@ -134,7 +134,7 @@
             <input id="sch-start-time" type="time" placeholder="Start Time" />
             <input id="sch-end-time" type="time" placeholder="End Time" />
             <input id="sch-group" placeholder="Group (e.g., Beginners 6-10)" />
-            <button id="add-schedule" class="success">Add</button>
+            <button id="add-schedule" type="button" class="success">Add</button>
           </div>
           <table class="admin-list" style="width:100%">
             <thead><tr><th>Day</th><th>Time</th><th>Group</th><th class="right">Actions</th></tr></thead>
@@ -247,6 +247,7 @@
       authView.classList.add('hidden');
       userView.classList.remove('hidden');
       dash.classList.remove('hidden');
+      attachEventListeners();
       loadData();
     }
 

@@ -133,7 +133,7 @@ app.post('/api/upload-media', async (req, res) => {
     // fileContent should be base64 encoded
     await updateGitHubFile(
       `media/${fileName}`,
-      Buffer.from(fileContent, 'base64').toString(),
+      Buffer.from(fileContent, 'base64'),
       `Upload ${fileType} file: ${fileName}`
     );
 
@@ -181,7 +181,7 @@ app.post('/upload', async (req, res) => {
     // content is base64 encoded
     await updateGitHubFile(
       path,
-      Buffer.from(content, 'base64').toString('binary'),
+      Buffer.from(content, 'base64'),
       `Upload file: ${path}`
     );
 
