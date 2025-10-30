@@ -7,12 +7,13 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
 
 // GitHub configuration
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const REPO_OWNER = process.env.REPO_OWNER || 'rakinplaban';
+const REPO_OWNER = process.env.REPO_OWNER || 'Syndiscore2025';
 const REPO_NAME = process.env.REPO_NAME || 'weekendwarriorswc';
+const REPO_BRANCH = process.env.REPO_BRANCH || 'main';
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
@@ -33,6 +34,7 @@ async function updateGitHubFile(path, content, message) {
         owner: REPO_OWNER,
         repo: REPO_NAME,
         path,
+        ref: REPO_BRANCH,
       });
       sha = data.sha;
       console.log(`Found existing file with SHA: ${sha}`);
@@ -51,6 +53,7 @@ async function updateGitHubFile(path, content, message) {
       message,
       content: Buffer.from(content).toString('base64'),
       sha,
+      branch: REPO_BRANCH,
     });
 
     console.log(`Successfully updated: ${path}`);
