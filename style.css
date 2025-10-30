@@ -26,10 +26,8 @@ body {
 
 /* HEADER - Enhanced with depth and animation */
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
+  text-align: center;
+  padding: 1.5rem 2rem;
   background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(20,0,0,0.95) 100%);
   border-bottom: 4px solid #e60000;
   box-shadow:
@@ -39,7 +37,6 @@ header {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  gap: 2rem;
 }
 
 header::before {
@@ -66,8 +63,8 @@ header::before {
 }
 
 header img.logo {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(230, 0, 0, 0.5));
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -75,7 +72,7 @@ header img.logo {
   mix-blend-mode: screen;
   background: transparent;
   z-index: 1;
-  flex-shrink: 0;
+  margin-bottom: 0.5rem;
 }
 
 header img.logo:hover {
@@ -83,15 +80,9 @@ header img.logo:hover {
   filter: drop-shadow(0 8px 20px rgba(230, 0, 0, 0.8));
 }
 
-.header-text {
-  text-align: center;
-  flex: 1;
-  z-index: 1;
-}
-
-.header-text h1 {
+header h1 {
   color: #e60000;
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -120,7 +111,7 @@ header img.logo:hover {
   }
 }
 
-.header-text p {
+header p {
   font-size: 1rem;
   color: #fff;
   font-weight: 500;
@@ -1007,14 +998,15 @@ footer a:hover {
     width: 80px;
     height: 80px;
   }
-  .logo-right {
-    display: none;
+  header img.logo {
+    width: 90px;
+    height: 90px;
   }
-  .header-text h1 {
+  header h1 {
     font-size: 1.4rem;
     letter-spacing: 1px;
   }
-  .header-text p {
+  header p {
     font-size: 0.9rem;
   }
   nav {
