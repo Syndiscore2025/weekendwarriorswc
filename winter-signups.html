@@ -286,19 +286,39 @@
 
     .success-message {
       display: none;
-      background: rgba(76, 175, 80, 0.2);
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(46, 125, 50, 0.2));
       border: 2px solid #4caf50;
-      color: #a5d6a7;
-      padding: 1.5rem;
-      border-radius: 10px;
+      color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
       text-align: center;
       margin-top: 2rem;
-      font-size: 1.1rem;
+      box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
     }
 
     .success-message.show {
       display: block;
       animation: fadeIn 0.5s ease-in;
+    }
+
+    .success-message h3 {
+      color: #4caf50;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .success-message p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      color: #a5d6a7;
+    }
+
+    .success-message .checkmark {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
     }
 
     @keyframes fadeIn {
@@ -389,7 +409,7 @@
     <a href="about.html">About</a>
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
-    <a href="winter-signups.html" class="active" aria-current="page">Winter Sign Ups</a>
+    <a href="winter-signups.html" class="active winter-nav" aria-current="page">❄️ 25-26 Winter Season Sign-Ups</a>
     <a href="admin.html">Admin</a>
   </nav>
 
@@ -462,7 +482,11 @@
       </form>
 
       <div class="success-message" id="success-message">
-        ✅ Registration submitted successfully! We'll contact you soon.
+        <span class="checkmark">✅</span>
+        <h3>Thank You for Registering!</h3>
+        <p>Your registration has been submitted successfully.</p>
+        <p>Someone from our team will be reaching out to you soon with more information.</p>
+        <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">Redirecting to homepage in <span id="countdown">5</span> seconds...</p>
       </div>
     </div>
   </section>
@@ -541,10 +565,27 @@
           successMessage.classList.add('show');
           form.reset();
 
-          // Redirect to main site after 2 seconds
+          // Scroll to success message
+          successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Countdown timer
+          let countdown = 5;
+          const countdownElement = document.getElementById('countdown');
+
+          const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdownElement) {
+              countdownElement.textContent = countdown;
+            }
+            if (countdown <= 0) {
+              clearInterval(countdownInterval);
+            }
+          }, 1000);
+
+          // Redirect to main site after 5 seconds
           setTimeout(() => {
             window.location.href = 'index.html';
-          }, 2000);
+          }, 5000);
         } else {
           alert('❌ Error submitting registration: ' + result.error);
           submitBtn.textContent = originalBtnText;
