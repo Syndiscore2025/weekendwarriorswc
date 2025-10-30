@@ -139,13 +139,9 @@
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
-      // Fade in on first play or when resuming from start
+      // Always fade in when entering a page
       if (!isMuted) {
-        if (savedTime === 0 || savedTime < 1) {
-          fadeIn(currentAudioElement, 3000); // 3 second fade-in
-        } else {
-          currentAudioElement.volume = 1; // Resume at full volume
-        }
+        fadeIn(currentAudioElement, 5000); // 5 second fade-in
       }
       setupTimeUpdateListeners();
       updateMuteUI();
@@ -170,12 +166,16 @@
 
     currentAudioElement.src = track.url;
     currentAudioElement.currentTime = savedTime;
-    currentAudioElement.volume = isMuted ? 0 : 1;
+    currentAudioElement.volume = isMuted ? 0 : 0; // Start at 0 for fade-in
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
+      // Always fade in when entering a page
+      if (!isMuted) {
+        fadeIn(currentAudioElement, 5000); // 5 second fade-in
+      }
       setupTimeUpdateListeners();
     }).catch(err => {
       console.log('Sync playback failed:', err);
