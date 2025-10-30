@@ -133,23 +133,31 @@
 
     currentAudioElement.src = track.url;
     currentAudioElement.currentTime = savedTime || startTime;
-    currentAudioElement.volume = isMuted ? 0 : 1;
+    currentAudioElement.volume = isMuted ? 0 : 0; // Start at 0 for fade-in
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
-      if (!isMuted && savedTime === 0) {
-        fadeIn(currentAudioElement, 3000);
+      // Fade in on first play or when resuming from start
+      if (!isMuted) {
+        if (savedTime === 0 || savedTime < 1) {
+          fadeIn(currentAudioElement, 3000); // 3 second fade-in
+        } else {
+          currentAudioElement.volume = 1; // Resume at full volume
+        }
       }
       setupTimeUpdateListeners();
+      updateMuteUI();
     }).catch(err => {
-      console.log('Autoplay blocked:', err);
+      console.log('Autoplay may be blocked - music will start on user interaction:', err);
       isPlaying = false;
+      // Show unmuted icon to indicate music is ready
+      updateMuteUI();
     });
   }
 
-  // Sync to playback happening in another tab
+  // Sync to playback happening in another tab/page
   function syncToExistingPlayback() {
     const savedTrackIndex = parseInt(localStorage.getItem(STORAGE_KEYS.CURRENT_TRACK) || '0');
     const savedTime = parseFloat(localStorage.getItem(STORAGE_KEYS.CURRENT_TIME) || '0');
@@ -166,14 +174,13 @@
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
-    // Mute this instance to avoid echo
-    currentAudioElement.volume = 0;
-    
     currentAudioElement.play().then(() => {
       isPlaying = true;
       setupTimeUpdateListeners();
     }).catch(err => {
       console.log('Sync playback failed:', err);
+      // If sync fails, try starting fresh
+      startPlayback();
     });
   }
 

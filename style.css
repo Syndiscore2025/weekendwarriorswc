@@ -73,20 +73,10 @@ header img.logo {
   mix-blend-mode: screen;
   background: transparent;
   z-index: 1;
-  animation: logoFloat 6s ease-in-out infinite;
-}
-
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
 header img.logo:hover {
-  transform: scale(1.08) rotate(2deg);
+  transform: scale(1.05);
   filter: drop-shadow(0 8px 20px rgba(230, 0, 0, 0.8));
 }
 
