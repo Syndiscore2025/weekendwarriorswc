@@ -60,6 +60,7 @@
     let index = 0;
     let timer;
     let isMuted = false;
+    let sliderInterval = 5000; // Default 5 seconds
 
     // Fade in audio over specified duration
     function fadeIn(audio, duration) {
@@ -81,6 +82,11 @@
 
     async function loadSlides() {
       try {
+        // Load settings for slider interval
+        const settingsRes = await fetch('data/settings.json');
+        const settingsData = await settingsRes.json();
+        sliderInterval = (settingsData.sliderInterval || 5) * 1000; // Convert to milliseconds
+
         // Load slides from JSON
         const slidesRes = await fetch('data/slides.json');
         const slidesData = await slidesRes.json();
@@ -164,9 +170,9 @@
       nextBtn.addEventListener('click', () => goTo(index + 1));
 
       update();
-      timer = setInterval(() => goTo(index + 1), 5000);
+      timer = setInterval(() => goTo(index + 1), sliderInterval);
       slider.addEventListener('mouseenter', () => clearInterval(timer));
-      slider.addEventListener('mouseleave', () => timer = setInterval(() => goTo(index + 1), 5000));
+      slider.addEventListener('mouseleave', () => timer = setInterval(() => goTo(index + 1), sliderInterval));
     }
 
     function update() {

@@ -91,6 +91,15 @@
         <h2>Homepage Slideshow</h2>
         <div class="stack">
           <div class="note">Upload images (JPG, PNG) or videos (MP4, WebM). Max 50MB per file. Videos will auto-play muted.</div>
+
+          <!-- Slider Time Control -->
+          <div class="row" style="grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; background: rgba(230, 0, 0, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(230, 0, 0, 0.3);">
+            <label for="slider-time" style="font-weight: 600; color: #e60000;">Slide Duration:</label>
+            <input id="slider-time" type="range" min="2" max="15" step="1" value="5" style="flex: 1;" />
+            <span id="slider-time-display" style="font-weight: 700; color: #e60000; min-width: 80px; text-align: center;">5 seconds</span>
+          </div>
+          <div id="slider-time-status" class="muted"></div>
+
           <div class="row" style="grid-template-columns: 2fr 1fr auto;">
             <input id="slide-file" type="file" accept="image/*,video/*" />
             <input id="slide-caption" placeholder="Caption (optional)" />
@@ -259,7 +268,8 @@
         loadAudio(),
         loadSchedule(),
         loadTournaments(),
-        loadWinterSignups()
+        loadWinterSignups(),
+        loadSliderSettings()
       ]);
 
       results.forEach((result, index) => {
@@ -778,6 +788,60 @@
       }
     }
 
+    // Load slider time settings
+    async function loadSliderSettings() {
+      try {
+        const res = await fetch('data/settings.json');
+        const settings = await res.json();
+        const sliderTime = settings.sliderInterval || 5;
+
+        const sliderInput = $('slider-time');
+        const sliderDisplay = $('slider-time-display');
+
+        if (sliderInput && sliderDisplay) {
+          sliderInput.value = sliderTime;
+          sliderDisplay.textContent = `${sliderTime} seconds`;
+        }
+      } catch (e) {
+        console.error('Error loading slider settings:', e);
+      }
+    }
+
+    // Update slider time
+    async function updateSliderTime(seconds) {
+      const status = $('slider-time-status');
+
+      try {
+        status.textContent = 'Saving...';
+        status.style.color = '#4db8ff';
+
+        const settings = { sliderInterval: parseInt(seconds) };
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/settings.json',
+            content: JSON.stringify(settings, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          status.textContent = '✅ Slider time updated!';
+          status.style.color = '#00ff00';
+          setTimeout(() => {
+            status.textContent = '';
+          }, 2000);
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (e) {
+        status.textContent = '❌ Error: ' + e.message;
+        status.style.color = '#ff0000';
+      }
+    }
+
     // Attach event listeners
     function attachEventListeners() {
       const addSlideBtn = $('add-slide');
@@ -806,6 +870,21 @@
         const newAddTournamentBtn = addTournamentBtn.cloneNode(true);
         addTournamentBtn.parentNode.replaceChild(newAddTournamentBtn, addTournamentBtn);
         $('add-tournament').addEventListener('click', handleAddTournament);
+      }
+
+      // Slider time control
+      const sliderTimeInput = $('slider-time');
+      const sliderTimeDisplay = $('slider-time-display');
+      if (sliderTimeInput && sliderTimeDisplay) {
+        sliderTimeInput.addEventListener('input', (e) => {
+          const value = e.target.value;
+          sliderTimeDisplay.textContent = `${value} seconds`;
+        });
+
+        sliderTimeInput.addEventListener('change', (e) => {
+          const value = e.target.value;
+          updateSliderTime(value);
+        });
       }
     }
 
