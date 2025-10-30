@@ -125,10 +125,17 @@
       currentTrackIndex = (currentTrackIndex + 1) % audioTracks.length;
       const nextTrack = audioTracks[currentTrackIndex];
 
-      // Set up next audio element
+      // Set up next audio element with start/end times
       nextAudioElement.src = nextTrack.url;
       nextAudioElement.volume = 0;
-      nextAudioElement.currentTime = 0;
+
+      // Set start time if specified
+      const startTime = nextTrack.startTime || 0;
+      nextAudioElement.currentTime = startTime;
+
+      // Store end time for monitoring
+      nextAudioElement.dataset.endTime = nextTrack.endTime || '';
+      nextAudioElement.dataset.trackIndex = currentTrackIndex;
 
       // Start playing next track
       nextAudioElement.play().then(() => {
@@ -162,6 +169,14 @@
       currentAudioElement.src = firstTrack.url;
       currentAudioElement.volume = 0;
 
+      // Set start time if specified
+      const startTime = firstTrack.startTime || 0;
+      currentAudioElement.currentTime = startTime;
+
+      // Store end time for monitoring
+      currentAudioElement.dataset.endTime = firstTrack.endTime || '';
+      currentAudioElement.dataset.trackIndex = '0';
+
       currentAudioElement.play().then(() => {
         // Fade in first track over 3 seconds
         fadeIn(currentAudioElement, 3000);
@@ -177,12 +192,24 @@
 
       // Set up event listener for when track is about to end
       currentAudioElement.addEventListener('timeupdate', function checkCrossfade() {
-        const timeLeft = this.duration - this.currentTime;
-        // Start crossfade 7 seconds before track ends
-        if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
+        // Check if we have a custom end time
+        const customEndTime = this.dataset.endTime ? parseFloat(this.dataset.endTime) : null;
+        const effectiveEndTime = customEndTime || this.duration;
+        const timeLeft = effectiveEndTime - this.currentTime;
+
+        // If we've reached the custom end time, trigger crossfade immediately
+        if (customEndTime && this.currentTime >= customEndTime - (crossfadeDuration / 1000)) {
+          if (!this.dataset.crossfading) {
+            this.dataset.crossfading = 'true';
+            crossfadeToNextTrack();
+          }
+        }
+        // Otherwise, start crossfade 7 seconds before track ends
+        else if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
           this.dataset.crossfading = 'true';
           crossfadeToNextTrack();
         }
+
         // Reset crossfading flag when track restarts
         if (this.currentTime < 1) {
           delete this.dataset.crossfading;
@@ -191,11 +218,21 @@
 
       // Also set up for the second audio element
       nextAudioElement.addEventListener('timeupdate', function checkCrossfade() {
-        const timeLeft = this.duration - this.currentTime;
-        if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
+        const customEndTime = this.dataset.endTime ? parseFloat(this.dataset.endTime) : null;
+        const effectiveEndTime = customEndTime || this.duration;
+        const timeLeft = effectiveEndTime - this.currentTime;
+
+        if (customEndTime && this.currentTime >= customEndTime - (crossfadeDuration / 1000)) {
+          if (!this.dataset.crossfading) {
+            this.dataset.crossfading = 'true';
+            crossfadeToNextTrack();
+          }
+        }
+        else if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
           this.dataset.crossfading = 'true';
           crossfadeToNextTrack();
         }
+
         if (this.currentTime < 1) {
           delete this.dataset.crossfading;
         }

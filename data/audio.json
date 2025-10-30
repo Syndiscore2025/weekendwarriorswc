@@ -2,7 +2,9 @@
   "tracks": [
     {
       "url": "media/audio-1761829015024.mp3",
-      "name": "Track 1"
+      "name": "Track 1",
+      "startTime": 0,
+      "endTime": null
     }
   ]
 }

@@ -118,12 +118,14 @@
       </div>
 
       <div class="content-card">
-        <h2>Background Music Playlist</h2>
+        <h2>🎵 Advanced Music Playlist Manager</h2>
         <div class="stack">
-          <div class="note">Upload multiple MP3 files to create a playlist. Tracks will play sequentially with a 7-second crossfade between songs.</div>
+          <div class="note" style="background: rgba(77,184,255,0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #4db8ff;">
+            <strong>Features:</strong> Upload multiple MP3s • Drag to reorder • Set start/end times for partial playback • 7-second crossfade between all tracks
+          </div>
           <div class="row" style="grid-template-columns: 1fr auto;">
             <input id="audio-file" type="file" accept="audio/mp3,audio/mpeg" multiple />
-            <button id="upload-audio" class="success">Upload Track(s)</button>
+            <button id="upload-audio" class="success">📤 Upload Track(s)</button>
           </div>
           <div id="audio-upload-status" class="muted"></div>
           <div id="current-audio"></div>
@@ -184,11 +186,11 @@
           <table class="admin-list" style="table-layout: fixed;">
             <thead>
               <tr>
-                <th style="text-transform: none; width: 11%; white-space: normal;">Parent Name</th>
-                <th style="text-transform: none; width: 11%; white-space: normal;">Wrestler Name</th>
-                <th style="text-transform: none; width: 9%; white-space: normal;">DOB</th>
-                <th style="text-transform: none; width: 6%; white-space: normal;">Grade</th>
-                <th style="text-transform: none; width: 11%; white-space: normal;">Phone</th>
+                <th style="text-transform: none; width: 12%; white-space: normal;">Parent Name</th>
+                <th style="text-transform: none; width: 12%; white-space: normal;">Wrestler Name</th>
+                <th style="text-transform: none; width: 10%; white-space: normal;">DOB</th>
+                <th style="text-transform: none; width: 8%; white-space: normal;">Grade</th>
+                <th style="text-transform: none; width: 12%; white-space: normal;">Phone</th>
                 <th style="text-transform: none; width: 18%; white-space: normal;">Email</th>
                 <th style="text-transform: none; width: 13%; white-space: normal;">Submitted</th>
                 <th class="right" style="text-transform: none; width: 10%; white-space: normal;">Actions</th>
@@ -421,6 +423,8 @@
     }
 
     // Audio management
+    let draggedTrackIndex = null;
+
     async function loadAudio() {
       try {
         const res = await fetch('data/audio.json');
@@ -437,18 +441,94 @@
         }
 
         if (tracks.length > 0) {
-          let html = '<div class="stack" style="gap: 0.75rem;">';
-          html += `<div class="note" style="font-weight: 600; color: #4db8ff;">Playlist (${tracks.length} track${tracks.length > 1 ? 's' : ''})</div>`;
+          let html = '<div class="stack" style="gap: 1rem;">';
+          html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(77,184,255,0.15); border-radius: 8px; border: 1px solid rgba(77,184,255,0.3);">
+              <div style="font-weight: 600; color: #4db8ff; font-size: 1.1rem;">
+                🎼 Playlist: ${tracks.length} track${tracks.length > 1 ? 's' : ''}
+              </div>
+              <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">
+                💡 Drag tracks to reorder • Click times to edit playback range
+              </div>
+            </div>
+          `;
 
           tracks.forEach((track, index) => {
             const trackName = track.name || `Track ${index + 1}`;
+            const startTime = track.startTime || 0;
+            const endTime = track.endTime || null;
+            const endTimeDisplay = endTime ? formatTime(endTime) : 'End';
+
             html += `
-              <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="flex: 1; min-width: 200px;">
-                  <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem;">${trackName}</div>
-                  <audio src="${track.url}" controls style="width:100%;max-width:400px;"></audio>
+              <div class="playlist-track" draggable="true" data-index="${index}"
+                   style="display: grid; grid-template-columns: auto 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem;
+                          background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%);
+                          border-radius: 12px; border: 2px solid rgba(255,255,255,0.1);
+                          transition: all 0.3s ease; cursor: move;">
+
+                <!-- Drag Handle -->
+                <div style="font-size: 1.5rem; cursor: grab; opacity: 0.5; user-select: none;" title="Drag to reorder">
+                  ⋮⋮
                 </div>
-                <button class="danger delete-track-btn" data-index="${index}">Delete</button>
+
+                <!-- Track Info & Controls -->
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; min-width: 0;">
+                  <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 1.2rem; font-weight: 700; color: #4db8ff;">
+                      #${index + 1}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${trackName}
+                      </div>
+                      <audio src="${track.url}" controls style="width:100%; max-width: 500px; height: 32px;"></audio>
+                    </div>
+                  </div>
+
+                  <!-- Playback Range Controls -->
+                  <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(77,184,255,0.2);">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.7);">
+                      ⏱️ Playback Range:
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <label style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Start:</label>
+                      <input type="text" class="track-start-time" data-index="${index}"
+                             value="${formatTime(startTime)}"
+                             placeholder="0:00"
+                             style="width: 60px; padding: 0.4rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+                                    border-radius: 4px; color: #fff; text-align: center; font-family: monospace; font-size: 0.9rem;" />
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <label style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">End:</label>
+                      <input type="text" class="track-end-time" data-index="${index}"
+                             value="${endTimeDisplay}"
+                             placeholder="End"
+                             style="width: 60px; padding: 0.4rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+                                    border-radius: 4px; color: #fff; text-align: center; font-family: monospace; font-size: 0.9rem;" />
+                    </div>
+                    <button class="small-btn apply-time-btn" data-index="${index}"
+                            style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: rgba(77,184,255,0.2); border-color: #4db8ff;">
+                      ✓ Apply
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  <button class="small-btn move-up-btn" data-index="${index}"
+                          style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" ${index === 0 ? 'disabled' : ''}>
+                    ↑
+                  </button>
+                  <button class="small-btn move-down-btn" data-index="${index}"
+                          style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" ${index === tracks.length - 1 ? 'disabled' : ''}>
+                    ↓
+                  </button>
+                </div>
+
+                <button class="danger delete-track-btn" data-index="${index}"
+                        style="padding: 0.6rem 1rem; white-space: nowrap;">
+                  🗑️ Delete
+                </button>
               </div>
             `;
           });
@@ -456,19 +536,96 @@
           html += '</div>';
           div.innerHTML = html;
 
-          // Add delete event listeners
-          div.querySelectorAll('.delete-track-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              const index = parseInt(e.target.dataset.index);
-              await deleteTrack(index);
-            });
-          });
+          // Add event listeners
+          setupPlaylistEventListeners();
         } else {
-          div.innerHTML = '<div class="muted">No tracks uploaded yet. Upload MP3 files to create your playlist.</div>';
+          div.innerHTML = '<div class="muted" style="text-align: center; padding: 2rem; font-size: 1.1rem;">📭 No tracks uploaded yet. Upload MP3 files to create your playlist.</div>';
         }
       } catch (e) {
         console.error('Load audio error:', e);
       }
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function parseTime(timeStr) {
+      if (!timeStr || timeStr.toLowerCase() === 'end') return null;
+      const parts = timeStr.split(':');
+      if (parts.length === 2) {
+        return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      }
+      return parseInt(timeStr) || 0;
+    }
+
+    function setupPlaylistEventListeners() {
+      const div = $('current-audio');
+
+      // Delete buttons
+      div.querySelectorAll('.delete-track-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const index = parseInt(e.target.dataset.index);
+          await deleteTrack(index);
+        });
+      });
+
+      // Move up/down buttons
+      div.querySelectorAll('.move-up-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const index = parseInt(e.target.dataset.index);
+          await moveTrack(index, index - 1);
+        });
+      });
+
+      div.querySelectorAll('.move-down-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const index = parseInt(e.target.dataset.index);
+          await moveTrack(index, index + 1);
+        });
+      });
+
+      // Apply time range buttons
+      div.querySelectorAll('.apply-time-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const index = parseInt(e.target.dataset.index);
+          await updateTrackTime(index);
+        });
+      });
+
+      // Drag and drop
+      div.querySelectorAll('.playlist-track').forEach(track => {
+        track.addEventListener('dragstart', (e) => {
+          draggedTrackIndex = parseInt(e.target.dataset.index);
+          e.target.style.opacity = '0.5';
+        });
+
+        track.addEventListener('dragend', (e) => {
+          e.target.style.opacity = '1';
+        });
+
+        track.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.target.closest('.playlist-track').style.borderColor = '#4db8ff';
+        });
+
+        track.addEventListener('dragleave', (e) => {
+          e.target.closest('.playlist-track').style.borderColor = 'rgba(255,255,255,0.1)';
+        });
+
+        track.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          const dropIndex = parseInt(e.target.closest('.playlist-track').dataset.index);
+          e.target.closest('.playlist-track').style.borderColor = 'rgba(255,255,255,0.1)';
+
+          if (draggedTrackIndex !== null && draggedTrackIndex !== dropIndex) {
+            await moveTrack(draggedTrackIndex, dropIndex);
+          }
+          draggedTrackIndex = null;
+        });
+      });
     }
 
     async function deleteTrack(index) {
@@ -503,6 +660,78 @@
           await loadAudio();
         } else {
           alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function moveTrack(fromIndex, toIndex) {
+      if (fromIndex === toIndex || toIndex < 0) return;
+
+      try {
+        const res = await fetch('data/audio.json');
+        const data = await res.json();
+        let tracks = data?.tracks || [];
+
+        if (toIndex >= tracks.length) return;
+
+        // Remove track from old position and insert at new position
+        const [movedTrack] = tracks.splice(fromIndex, 1);
+        tracks.splice(toIndex, 0, movedTrack);
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/audio.json',
+            content: JSON.stringify({ tracks }, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          await loadAudio();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function updateTrackTime(index) {
+      try {
+        const startInput = document.querySelector(`.track-start-time[data-index="${index}"]`);
+        const endInput = document.querySelector(`.track-end-time[data-index="${index}"]`);
+
+        const startTime = parseTime(startInput.value);
+        const endTime = parseTime(endInput.value);
+
+        const res = await fetch('data/audio.json');
+        const data = await res.json();
+        let tracks = data?.tracks || [];
+
+        if (tracks[index]) {
+          tracks[index].startTime = startTime;
+          tracks[index].endTime = endTime;
+
+          const saveRes = await fetch(`${API_URL}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file: 'data/audio.json',
+              content: JSON.stringify({ tracks }, null, 2)
+            })
+          });
+
+          const result = await saveRes.json();
+          if (result.success) {
+            alert('✅ Playback range updated!');
+            await loadAudio();
+          } else {
+            alert('❌ Error: ' + result.error);
+          }
         }
       } catch (e) {
         alert('Error: ' + e.message);
@@ -561,9 +790,14 @@
             throw new Error(uploadResult.error);
           }
 
-          // Add to tracks array
+          // Add to tracks array with default playback settings
           const trackName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
-          tracks.push({ url, name: trackName });
+          tracks.push({
+            url,
+            name: trackName,
+            startTime: 0,
+            endTime: null
+          });
         }
 
         // Save updated tracks to audio.json
