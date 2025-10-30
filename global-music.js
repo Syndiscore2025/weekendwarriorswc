@@ -96,17 +96,18 @@
       // Show audio toggle
       audioToggle.style.display = 'flex';
 
-      // Check if music is already playing in another tab
+      // Check if this is a navigation (within last 2 seconds) or a fresh page load
       const lastUpdate = parseInt(localStorage.getItem(STORAGE_KEYS.LAST_UPDATE) || '0');
       const timeSinceUpdate = Date.now() - lastUpdate;
+      const isNavigation = timeSinceUpdate < 2000; // 2 second window for navigation
 
-      if (timeSinceUpdate < PAGE_TIMEOUT) {
-        // Music is playing in another tab, sync to it
-        console.log('Syncing to existing playback...');
+      if (isNavigation) {
+        // Continue playback from where we left off (navigation between pages)
+        console.log('Continuing playback from navigation...');
         syncToExistingPlayback();
       } else {
-        // Start fresh playback
-        console.log('Starting fresh playback...');
+        // Fresh page load - ALWAYS start from track 1
+        console.log('Fresh page load - starting from track 1...');
         startPlayback();
       }
 
@@ -119,13 +120,10 @@
     }
   }
 
-  // Start playback from beginning or saved position
+  // Start playback from beginning - ALWAYS reset to track 1 on page load
   function startPlayback() {
-    const savedTrackIndex = parseInt(localStorage.getItem(STORAGE_KEYS.CURRENT_TRACK) || '0');
-    const savedTime = parseFloat(localStorage.getItem(STORAGE_KEYS.CURRENT_TIME) || '0');
-    const hasPlayedBefore = localStorage.getItem('wwwc_has_played') === 'true';
-
-    currentTrackIndex = savedTrackIndex % audioTracks.length;
+    // ALWAYS start from track 0 (first track) at the beginning
+    currentTrackIndex = 0;
     currentAudioElement = bgAudio1;
     nextAudioElement = bgAudio2;
 
@@ -133,17 +131,16 @@
     const startTime = track.startTime || 0;
 
     currentAudioElement.src = track.url;
-    currentAudioElement.currentTime = savedTime || startTime;
-    currentAudioElement.volume = isMuted ? 0 : (hasPlayedBefore ? 1 : 0); // Start at 0 only for first visit
+    currentAudioElement.currentTime = startTime; // Always start at beginning of track
+    currentAudioElement.volume = isMuted ? 0 : 0; // Start at 0 for fade-in
     currentAudioElement.dataset.endTime = track.endTime || '';
     currentAudioElement.dataset.trackIndex = currentTrackIndex.toString();
 
     currentAudioElement.play().then(() => {
       isPlaying = true;
-      // Only fade in on very first visit to the site
-      if (!isMuted && !hasPlayedBefore) {
-        fadeIn(currentAudioElement, 5000); // 5 second fade-in on first visit
-        localStorage.setItem('wwwc_has_played', 'true');
+      // ALWAYS fade in over 5 seconds on page load
+      if (!isMuted) {
+        fadeIn(currentAudioElement, 5000); // 5 second fade-in
       }
       setupTimeUpdateListeners();
       updateMuteUI();
