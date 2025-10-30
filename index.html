@@ -108,6 +108,16 @@
       initSlider();
     }
 
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => goTo(index + 1), sliderInterval);
+    }
+
+    function stopTimer() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
     function initSlider() {
       if (!slider) return;
       slides = Array.from(slider.querySelectorAll('.slide'));
@@ -128,9 +138,17 @@
       nextBtn.addEventListener('click', () => goTo(index + 1));
 
       update();
-      timer = setInterval(() => goTo(index + 1), sliderInterval);
-      slider.addEventListener('mouseenter', () => clearInterval(timer));
-      slider.addEventListener('mouseleave', () => timer = setInterval(() => goTo(index + 1), sliderInterval));
+      startTimer();
+
+      // Pause on hover, resume on leave
+      slider.addEventListener('mouseenter', stopTimer);
+      slider.addEventListener('mouseleave', startTimer);
+
+      // Keep timer running even when page is scrolled
+      // Restart timer periodically to ensure it's always running
+      setInterval(() => {
+        if (!timer) startTimer();
+      }, sliderInterval + 1000);
     }
 
     function update() {

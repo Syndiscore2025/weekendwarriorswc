@@ -65,17 +65,15 @@
 
     <div class="content-card">
       <h2>Upcoming Tournaments</h2>
-      <table>
+      <table class="tournament-table">
         <thead>
           <tr>
             <th>Date</th>
             <th>Event</th>
             <th>Location</th>
-            <th>ES Weigh-in</th>
+            <th>ES Weigh-In</th>
             <th>ES Start</th>
-            <th>MS Weigh-in</th>
-            <th>MS Start</th>
-            <th>Registration</th>
+            <th>MS Weigh-In</th>
           </tr>
         </thead>
         <tbody id="tournament-rows">
@@ -107,7 +105,24 @@
             const weighinMS = r.weighinMS || '-';
             const startMS = r.startMS || '-';
             const regLink = r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
-            return `<tr><td>${d}</td><td>${r.event}</td><td>${r.location}</td><td>${weighinES}</td><td>${startES}</td><td>${weighinMS}</td><td>${startMS}</td><td>${regLink}</td></tr>`;
+
+            // First row: Date, Event, Location, ES Weigh-In, ES Start, MS Weigh-In
+            const row1 = `<tr class="tournament-row-main">
+              <td rowspan="2" class="tournament-date">${d}</td>
+              <td rowspan="2" class="tournament-event">${r.event}</td>
+              <td rowspan="2" class="tournament-location">${r.location}</td>
+              <td>${weighinES}</td>
+              <td>${startES}</td>
+              <td>${weighinMS}</td>
+            </tr>`;
+
+            // Second row: MS Start and Registration (spans across the time columns)
+            const row2 = `<tr class="tournament-row-sub">
+              <td class="tournament-ms-start"><strong>MS Start:</strong> ${startMS}</td>
+              <td colspan="2" class="tournament-registration"><strong>Registration:</strong> ${regLink}</td>
+            </tr>`;
+
+            return row1 + row2;
           }).join('');
         }
       } catch (e) {

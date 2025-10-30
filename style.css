@@ -794,6 +794,62 @@ tbody tr:hover td {
   border-color: rgba(230, 0, 0, 0.4);
 }
 
+/* Tournament Table - Two Row Layout */
+.tournament-table .tournament-row-main td {
+  border-bottom: 1px solid rgba(230, 0, 0, 0.1);
+}
+
+.tournament-table .tournament-row-sub td {
+  background-color: rgba(15, 15, 15, 0.9);
+  border-bottom: 2px solid rgba(230, 0, 0, 0.3);
+  font-size: 0.9rem;
+}
+
+.tournament-table .tournament-date,
+.tournament-table .tournament-event,
+.tournament-table .tournament-location {
+  vertical-align: middle;
+  font-weight: 600;
+}
+
+.tournament-table .tournament-event {
+  text-align: left;
+  padding-left: 1.5rem;
+}
+
+.tournament-table .tournament-location {
+  text-align: left;
+}
+
+.tournament-table .tournament-ms-start,
+.tournament-table .tournament-registration {
+  text-align: center;
+}
+
+.tournament-table .tournament-registration a {
+  color: #4db8ff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.tournament-table .tournament-registration a:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(77, 184, 255, 0.8);
+}
+
+/* Hover effect for tournament row groups */
+.tournament-table tbody tr.tournament-row-main:hover,
+.tournament-table tbody tr.tournament-row-main:hover + tr.tournament-row-sub {
+  transform: none;
+}
+
+.tournament-table tbody tr.tournament-row-main:hover td,
+.tournament-table tbody tr.tournament-row-main:hover + tr.tournament-row-sub td {
+  background-color: rgba(230, 0, 0, 0.15);
+  color: #fff;
+}
+
 /* CONTACT FORM - Enhanced with modern styling */
 form {
   width: 90%;
@@ -1034,12 +1090,19 @@ footer a:hover {
     width: 95%;
   }
   table {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     width: 100%;
+    min-width: 600px;
   }
   th, td {
-    padding: 0.7rem 0.4rem;
-    font-size: 0.85rem;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.8rem;
+  }
+  .tournament-table .tournament-event {
+    padding-left: 0.5rem;
+  }
+  .tournament-table .tournament-row-sub td {
+    font-size: 0.75rem;
   }
   .content-card {
     padding: 1.5rem;
