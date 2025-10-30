@@ -15,6 +15,14 @@ const REPO_OWNER = process.env.REPO_OWNER || 'Syndiscore2025';
 const REPO_NAME = process.env.REPO_NAME || 'weekendwarriorswc';
 const REPO_BRANCH = process.env.REPO_BRANCH || 'main';
 
+console.log('GitHub Config:', {
+  hasToken: !!GITHUB_TOKEN,
+  tokenPrefix: GITHUB_TOKEN ? GITHUB_TOKEN.substring(0, 4) + '...' : 'MISSING',
+  owner: REPO_OWNER,
+  repo: REPO_NAME,
+  branch: REPO_BRANCH
+});
+
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
 // Helper function to update a file in GitHub
@@ -40,7 +48,7 @@ async function updateGitHubFile(path, content, message) {
       console.log(`Found existing file with SHA: ${sha}`);
     } catch (err) {
       // File doesn't exist yet
-      console.log(`File doesn't exist yet: ${path}`);
+      console.log(`File doesn't exist yet: ${path}`, err.status, err.message);
       sha = null;
     }
 
@@ -64,6 +72,9 @@ async function updateGitHubFile(path, content, message) {
       status: error.status,
       message: error.message,
       path,
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      branch: REPO_BRANCH,
     });
     throw error;
   }
