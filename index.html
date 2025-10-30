@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="global-music.js" defer></script>
 </head>
 <body>
   <header>
@@ -55,189 +56,11 @@
     const dotsWrap = slider?.querySelector('.slider-dots');
     const prevBtn = slider?.querySelector('.prev');
     const nextBtn = slider?.querySelector('.next');
-    const bgAudio1 = document.getElementById('bg-audio-1');
-    const bgAudio2 = document.getElementById('bg-audio-2');
-    const audioToggle = document.getElementById('audio-toggle');
-    const audioIconMuted = document.getElementById('audio-icon-muted');
-    const audioIconPlaying = document.getElementById('audio-icon-playing');
 
     let slides = [];
     let index = 0;
     let timer;
-    let isMuted = false;
     let sliderInterval = 5000; // Default 5 seconds
-
-    // Audio playlist variables
-    let audioTracks = [];
-    let currentTrackIndex = 0;
-    let currentAudioElement = bgAudio1; // Start with audio1
-    let nextAudioElement = bgAudio2;
-    let crossfadeDuration = 7000; // 7 seconds crossfade
-    let isPlaying = false;
-
-    // Fade in audio over specified duration
-    function fadeIn(audio, duration) {
-      const steps = 60; // 60 steps for smooth fade
-      const stepDuration = duration / steps;
-      const volumeIncrement = 1 / steps;
-      let currentStep = 0;
-
-      const fadeInterval = setInterval(() => {
-        if (isMuted) {
-          clearInterval(fadeInterval);
-          return;
-        }
-        currentStep++;
-        audio.volume = Math.min(currentStep * volumeIncrement, 1);
-
-        if (currentStep >= steps) {
-          clearInterval(fadeInterval);
-          audio.volume = 1;
-        }
-      }, stepDuration);
-    }
-
-    // Fade out audio over specified duration
-    function fadeOut(audio, duration) {
-      const steps = 60;
-      const stepDuration = duration / steps;
-      const volumeDecrement = audio.volume / steps;
-      let currentStep = 0;
-
-      const fadeInterval = setInterval(() => {
-        currentStep++;
-        audio.volume = Math.max(audio.volume - volumeDecrement, 0);
-
-        if (currentStep >= steps || audio.volume <= 0) {
-          clearInterval(fadeInterval);
-          audio.volume = 0;
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      }, stepDuration);
-    }
-
-    // Crossfade to next track
-    function crossfadeToNextTrack() {
-      if (audioTracks.length === 0) return;
-
-      // Get next track index
-      currentTrackIndex = (currentTrackIndex + 1) % audioTracks.length;
-      const nextTrack = audioTracks[currentTrackIndex];
-
-      // Set up next audio element with start/end times
-      nextAudioElement.src = nextTrack.url;
-      nextAudioElement.volume = 0;
-
-      // Set start time if specified
-      const startTime = nextTrack.startTime || 0;
-      nextAudioElement.currentTime = startTime;
-
-      // Store end time for monitoring
-      nextAudioElement.dataset.endTime = nextTrack.endTime || '';
-      nextAudioElement.dataset.trackIndex = currentTrackIndex;
-
-      // Start playing next track
-      nextAudioElement.play().then(() => {
-        // Fade in next track
-        fadeIn(nextAudioElement, crossfadeDuration);
-        // Fade out current track
-        fadeOut(currentAudioElement, crossfadeDuration);
-
-        // Swap audio elements
-        setTimeout(() => {
-          const temp = currentAudioElement;
-          currentAudioElement = nextAudioElement;
-          nextAudioElement = temp;
-        }, crossfadeDuration);
-      }).catch(err => {
-        console.error('Error playing next track:', err);
-      });
-    }
-
-    // Start playing the playlist
-    function startPlaylist() {
-      if (audioTracks.length === 0 || isPlaying) return;
-
-      isPlaying = true;
-      currentTrackIndex = 0;
-      currentAudioElement = bgAudio1;
-      nextAudioElement = bgAudio2;
-
-      // Load and play first track
-      const firstTrack = audioTracks[0];
-      currentAudioElement.src = firstTrack.url;
-      currentAudioElement.volume = 0;
-
-      // Set start time if specified
-      const startTime = firstTrack.startTime || 0;
-      currentAudioElement.currentTime = startTime;
-
-      // Store end time for monitoring
-      currentAudioElement.dataset.endTime = firstTrack.endTime || '';
-      currentAudioElement.dataset.trackIndex = '0';
-
-      currentAudioElement.play().then(() => {
-        // Fade in first track over 3 seconds
-        fadeIn(currentAudioElement, 3000);
-        audioIconMuted.style.display = 'none';
-        audioIconPlaying.style.display = 'block';
-      }).catch(err => {
-        console.log('Autoplay blocked:', err);
-        currentAudioElement.volume = 1;
-        audioIconMuted.style.display = 'block';
-        audioIconPlaying.style.display = 'none';
-        isPlaying = false;
-      });
-
-      // Set up event listener for when track is about to end
-      currentAudioElement.addEventListener('timeupdate', function checkCrossfade() {
-        // Check if we have a custom end time
-        const customEndTime = this.dataset.endTime ? parseFloat(this.dataset.endTime) : null;
-        const effectiveEndTime = customEndTime || this.duration;
-        const timeLeft = effectiveEndTime - this.currentTime;
-
-        // If we've reached the custom end time, trigger crossfade immediately
-        if (customEndTime && this.currentTime >= customEndTime - (crossfadeDuration / 1000)) {
-          if (!this.dataset.crossfading) {
-            this.dataset.crossfading = 'true';
-            crossfadeToNextTrack();
-          }
-        }
-        // Otherwise, start crossfade 7 seconds before track ends
-        else if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
-          this.dataset.crossfading = 'true';
-          crossfadeToNextTrack();
-        }
-
-        // Reset crossfading flag when track restarts
-        if (this.currentTime < 1) {
-          delete this.dataset.crossfading;
-        }
-      });
-
-      // Also set up for the second audio element
-      nextAudioElement.addEventListener('timeupdate', function checkCrossfade() {
-        const customEndTime = this.dataset.endTime ? parseFloat(this.dataset.endTime) : null;
-        const effectiveEndTime = customEndTime || this.duration;
-        const timeLeft = effectiveEndTime - this.currentTime;
-
-        if (customEndTime && this.currentTime >= customEndTime - (crossfadeDuration / 1000)) {
-          if (!this.dataset.crossfading) {
-            this.dataset.crossfading = 'true';
-            crossfadeToNextTrack();
-          }
-        }
-        else if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
-          this.dataset.crossfading = 'true';
-          crossfadeToNextTrack();
-        }
-
-        if (this.currentTime < 1) {
-          delete this.dataset.crossfading;
-        }
-      });
-    }
 
     async function loadSlides() {
       try {
@@ -278,21 +101,6 @@
           });
         }
 
-        // Load audio playlist from JSON
-        const audioRes = await fetch('data/audio.json');
-        const audioData = await audioRes.json();
-
-        // Handle both old format (single url) and new format (tracks array)
-        if (audioData?.tracks && Array.isArray(audioData.tracks) && audioData.tracks.length > 0) {
-          audioTracks = audioData.tracks;
-          audioToggle.style.display = 'flex';
-          startPlaylist();
-        } else if (audioData?.url) {
-          // Convert old format to new format
-          audioTracks = [{ url: audioData.url, name: 'Track 1' }];
-          audioToggle.style.display = 'flex';
-          startPlaylist();
-        }
       } catch (e) {
         console.error('Error loading data:', e);
       }
@@ -343,32 +151,6 @@
       update();
     }
 
-    // Audio toggle
-    audioToggle.addEventListener('click', () => {
-      if (isMuted) {
-        // Unmute: restore volume
-        isMuted = false;
-        if (!isPlaying && audioTracks.length > 0) {
-          startPlaylist();
-        } else {
-          bgAudio1.volume = 1;
-          bgAudio2.volume = 1;
-          if (currentAudioElement.paused) {
-            currentAudioElement.play().catch(() => {});
-          }
-        }
-        audioIconMuted.style.display = 'none';
-        audioIconPlaying.style.display = 'block';
-      } else {
-        // Mute: set volume to 0
-        bgAudio1.volume = 0;
-        bgAudio2.volume = 0;
-        isMuted = true;
-        audioIconMuted.style.display = 'block';
-        audioIconPlaying.style.display = 'none';
-      }
-    });
-
     loadSlides();
   </script>
 
@@ -385,8 +167,8 @@
 
   <footer>
     <div>&copy; 2025 Weekend Warriors Wrestling Club.</div>
-    <div style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
-      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer" style="color: #e60000; text-decoration: none; font-weight: 600;">syndiscore.ai</a>
+    <div class="powered-by-syndiscore">
+      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
     </div>
   </footer>
 </body>

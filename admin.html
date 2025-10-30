@@ -120,6 +120,25 @@
       <div class="content-card">
         <h2>🎵 Advanced Music Playlist Manager</h2>
         <div class="stack">
+          <!-- Global Music Control -->
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; background: linear-gradient(135deg, rgba(230,0,0,0.15) 0%, rgba(180,0,0,0.15) 100%); border-radius: 10px; border: 2px solid rgba(230,0,0,0.4); margin-bottom: 1rem;">
+            <div>
+              <div style="font-size: 1.1rem; font-weight: 700; color: #e60000; margin-bottom: 0.25rem;">
+                🎛️ Global Music Control
+              </div>
+              <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                Enable or disable background music across the entire website
+              </div>
+            </div>
+            <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+              <span id="music-status-text" style="font-weight: 600; color: #4db8ff; font-size: 0.95rem;">Enabled</span>
+              <div style="position: relative; width: 60px; height: 30px; background: rgba(0,0,0,0.4); border-radius: 15px; border: 2px solid #4db8ff; transition: all 0.3s ease;" id="music-toggle-bg">
+                <input type="checkbox" id="global-music-toggle" checked style="opacity: 0; width: 0; height: 0;">
+                <div style="position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: #4db8ff; border-radius: 50%; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(77,184,255,0.5);" id="music-toggle-slider"></div>
+              </div>
+            </label>
+          </div>
+
           <div class="note" style="background: rgba(77,184,255,0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #4db8ff;">
             <strong>Features:</strong> Upload multiple MP3s • Drag to reorder • Set start/end times for partial playback • 7-second crossfade between all tracks
           </div>
@@ -204,7 +223,12 @@
     </div>
   </section>
 
-  <footer>&copy; 2025 Weekend Warriors Wrestling Club.</footer>
+  <footer>
+    <div>&copy; 2025 Weekend Warriors Wrestling Club.</div>
+    <div class="powered-by-syndiscore">
+      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
+    </div>
+  </footer>
 
   <script>
     const $ = (id) => document.getElementById(id);
@@ -1183,9 +1207,56 @@
 
     // Attach listeners on initial load
     attachEventListeners();
+
+    // Global Music Toggle
+    const globalMusicToggle = document.getElementById('global-music-toggle');
+    const musicStatusText = document.getElementById('music-status-text');
+    const musicToggleBg = document.getElementById('music-toggle-bg');
+    const musicToggleSlider = document.getElementById('music-toggle-slider');
+
+    // Load current state
+    const musicEnabled = localStorage.getItem('wwwc_music_enabled') !== 'false';
+    globalMusicToggle.checked = musicEnabled;
+    updateMusicToggleUI(musicEnabled);
+
+    // Handle toggle
+    globalMusicToggle.addEventListener('change', function() {
+      const enabled = this.checked;
+      localStorage.setItem('wwwc_music_enabled', enabled.toString());
+      updateMusicToggleUI(enabled);
+
+      if (enabled) {
+        alert('✅ Background music enabled! Music will play when you visit other pages.');
+      } else {
+        alert('🔇 Background music disabled globally. Music will stop on all pages.');
+      }
+    });
+
+    function updateMusicToggleUI(enabled) {
+      if (enabled) {
+        musicStatusText.textContent = 'Enabled';
+        musicStatusText.style.color = '#4db8ff';
+        musicToggleBg.style.borderColor = '#4db8ff';
+        musicToggleBg.style.background = 'rgba(77,184,255,0.2)';
+        musicToggleSlider.style.left = '32px';
+        musicToggleSlider.style.background = '#4db8ff';
+      } else {
+        musicStatusText.textContent = 'Disabled';
+        musicStatusText.style.color = '#999';
+        musicToggleBg.style.borderColor = '#666';
+        musicToggleBg.style.background = 'rgba(0,0,0,0.4)';
+        musicToggleSlider.style.left = '2px';
+        musicToggleSlider.style.background = '#666';
+      }
+    }
   </script>
 
-  <footer>&copy; 2025 Weekend Warriors Wrestling Club.</footer>
+  <footer>
+    <div>&copy; 2025 Weekend Warriors Wrestling Club.</div>
+    <div class="powered-by-syndiscore">
+      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
+    </div>
+  </footer>
 </body>
 </html>
 
