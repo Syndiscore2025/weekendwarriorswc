@@ -37,8 +37,9 @@
     <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
   </section>
 
-  <!-- Background audio -->
-  <audio id="bg-audio" loop></audio>
+  <!-- Background audio - dual audio elements for crossfade -->
+  <audio id="bg-audio-1"></audio>
+  <audio id="bg-audio-2"></audio>
   <div id="audio-toggle" class="audio-controls" style="display:none;" title="Toggle audio">
     <svg id="audio-icon-muted" viewBox="0 0 24 24">
       <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
@@ -54,7 +55,8 @@
     const dotsWrap = slider?.querySelector('.slider-dots');
     const prevBtn = slider?.querySelector('.prev');
     const nextBtn = slider?.querySelector('.next');
-    const bgAudio = document.getElementById('bg-audio');
+    const bgAudio1 = document.getElementById('bg-audio-1');
+    const bgAudio2 = document.getElementById('bg-audio-2');
     const audioToggle = document.getElementById('audio-toggle');
     const audioIconMuted = document.getElementById('audio-icon-muted');
     const audioIconPlaying = document.getElementById('audio-icon-playing');
@@ -65,6 +67,14 @@
     let isMuted = false;
     let sliderInterval = 5000; // Default 5 seconds
 
+    // Audio playlist variables
+    let audioTracks = [];
+    let currentTrackIndex = 0;
+    let currentAudioElement = bgAudio1; // Start with audio1
+    let nextAudioElement = bgAudio2;
+    let crossfadeDuration = 7000; // 7 seconds crossfade
+    let isPlaying = false;
+
     // Fade in audio over specified duration
     function fadeIn(audio, duration) {
       const steps = 60; // 60 steps for smooth fade
@@ -73,6 +83,10 @@
       let currentStep = 0;
 
       const fadeInterval = setInterval(() => {
+        if (isMuted) {
+          clearInterval(fadeInterval);
+          return;
+        }
         currentStep++;
         audio.volume = Math.min(currentStep * volumeIncrement, 1);
 
@@ -81,6 +95,111 @@
           audio.volume = 1;
         }
       }, stepDuration);
+    }
+
+    // Fade out audio over specified duration
+    function fadeOut(audio, duration) {
+      const steps = 60;
+      const stepDuration = duration / steps;
+      const volumeDecrement = audio.volume / steps;
+      let currentStep = 0;
+
+      const fadeInterval = setInterval(() => {
+        currentStep++;
+        audio.volume = Math.max(audio.volume - volumeDecrement, 0);
+
+        if (currentStep >= steps || audio.volume <= 0) {
+          clearInterval(fadeInterval);
+          audio.volume = 0;
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      }, stepDuration);
+    }
+
+    // Crossfade to next track
+    function crossfadeToNextTrack() {
+      if (audioTracks.length === 0) return;
+
+      // Get next track index
+      currentTrackIndex = (currentTrackIndex + 1) % audioTracks.length;
+      const nextTrack = audioTracks[currentTrackIndex];
+
+      // Set up next audio element
+      nextAudioElement.src = nextTrack.url;
+      nextAudioElement.volume = 0;
+      nextAudioElement.currentTime = 0;
+
+      // Start playing next track
+      nextAudioElement.play().then(() => {
+        // Fade in next track
+        fadeIn(nextAudioElement, crossfadeDuration);
+        // Fade out current track
+        fadeOut(currentAudioElement, crossfadeDuration);
+
+        // Swap audio elements
+        setTimeout(() => {
+          const temp = currentAudioElement;
+          currentAudioElement = nextAudioElement;
+          nextAudioElement = temp;
+        }, crossfadeDuration);
+      }).catch(err => {
+        console.error('Error playing next track:', err);
+      });
+    }
+
+    // Start playing the playlist
+    function startPlaylist() {
+      if (audioTracks.length === 0 || isPlaying) return;
+
+      isPlaying = true;
+      currentTrackIndex = 0;
+      currentAudioElement = bgAudio1;
+      nextAudioElement = bgAudio2;
+
+      // Load and play first track
+      const firstTrack = audioTracks[0];
+      currentAudioElement.src = firstTrack.url;
+      currentAudioElement.volume = 0;
+
+      currentAudioElement.play().then(() => {
+        // Fade in first track over 3 seconds
+        fadeIn(currentAudioElement, 3000);
+        audioIconMuted.style.display = 'none';
+        audioIconPlaying.style.display = 'block';
+      }).catch(err => {
+        console.log('Autoplay blocked:', err);
+        currentAudioElement.volume = 1;
+        audioIconMuted.style.display = 'block';
+        audioIconPlaying.style.display = 'none';
+        isPlaying = false;
+      });
+
+      // Set up event listener for when track is about to end
+      currentAudioElement.addEventListener('timeupdate', function checkCrossfade() {
+        const timeLeft = this.duration - this.currentTime;
+        // Start crossfade 7 seconds before track ends
+        if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
+          this.dataset.crossfading = 'true';
+          crossfadeToNextTrack();
+        }
+        // Reset crossfading flag when track restarts
+        if (this.currentTime < 1) {
+          delete this.dataset.crossfading;
+        }
+      });
+
+      // Also set up for the second audio element
+      nextAudioElement.addEventListener('timeupdate', function checkCrossfade() {
+        const timeLeft = this.duration - this.currentTime;
+        if (timeLeft <= crossfadeDuration / 1000 && timeLeft > 0 && !this.dataset.crossfading) {
+          this.dataset.crossfading = 'true';
+          crossfadeToNextTrack();
+        }
+        if (this.currentTime < 1) {
+          delete this.dataset.crossfading;
+        }
+      });
     }
 
     async function loadSlides() {
@@ -122,29 +241,20 @@
           });
         }
 
-        // Load audio from JSON
+        // Load audio playlist from JSON
         const audioRes = await fetch('data/audio.json');
         const audioData = await audioRes.json();
 
-        if (audioData?.url) {
-          bgAudio.src = audioData.url;
+        // Handle both old format (single url) and new format (tracks array)
+        if (audioData?.tracks && Array.isArray(audioData.tracks) && audioData.tracks.length > 0) {
+          audioTracks = audioData.tracks;
           audioToggle.style.display = 'flex';
-          bgAudio.volume = 0; // Start at 0 volume for fade-in
-
-          // Try to play (browsers may block autoplay)
-          bgAudio.play().then(() => {
-            // Fade in over 3 seconds
-            fadeIn(bgAudio, 3000);
-            // Update icon to show playing state
-            audioIconMuted.style.display = 'none';
-            audioIconPlaying.style.display = 'block';
-          }).catch((error) => {
-            console.log('Autoplay blocked, waiting for user interaction:', error);
-            // If autoplay is blocked, show muted icon
-            bgAudio.volume = 1; // Set to full volume for when user clicks
-            audioIconMuted.style.display = 'block';
-            audioIconPlaying.style.display = 'none';
-          });
+          startPlaylist();
+        } else if (audioData?.url) {
+          // Convert old format to new format
+          audioTracks = [{ url: audioData.url, name: 'Track 1' }];
+          audioToggle.style.display = 'flex';
+          startPlaylist();
         }
       } catch (e) {
         console.error('Error loading data:', e);
@@ -200,14 +310,22 @@
     audioToggle.addEventListener('click', () => {
       if (isMuted) {
         // Unmute: restore volume
-        bgAudio.volume = 1;
-        bgAudio.play().catch(() => {});
         isMuted = false;
+        if (!isPlaying && audioTracks.length > 0) {
+          startPlaylist();
+        } else {
+          bgAudio1.volume = 1;
+          bgAudio2.volume = 1;
+          if (currentAudioElement.paused) {
+            currentAudioElement.play().catch(() => {});
+          }
+        }
         audioIconMuted.style.display = 'none';
         audioIconPlaying.style.display = 'block';
       } else {
         // Mute: set volume to 0
-        bgAudio.volume = 0;
+        bgAudio1.volume = 0;
+        bgAudio2.volume = 0;
         isMuted = true;
         audioIconMuted.style.display = 'block';
         audioIconPlaying.style.display = 'none';

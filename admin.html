@@ -118,12 +118,12 @@
       </div>
 
       <div class="content-card">
-        <h2>Background Audio</h2>
+        <h2>Background Music Playlist</h2>
         <div class="stack">
-          <div class="note">Upload an MP3 file for background music. It will auto-loop and start muted (user can unmute).</div>
+          <div class="note">Upload multiple MP3 files to create a playlist. Tracks will play sequentially with a 7-second crossfade between songs.</div>
           <div class="row" style="grid-template-columns: 1fr auto;">
-            <input id="audio-file" type="file" accept="audio/mp3,audio/mpeg" />
-            <button id="upload-audio" class="success">Upload</button>
+            <input id="audio-file" type="file" accept="audio/mp3,audio/mpeg" multiple />
+            <button id="upload-audio" class="success">Upload Track(s)</button>
           </div>
           <div id="audio-upload-status" class="muted"></div>
           <div id="current-audio"></div>
@@ -427,67 +427,124 @@
         const data = await res.json();
         const div = $('current-audio');
 
-        if (data?.url) {
-          div.innerHTML = `
-            <div class="note" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
-                Current: <audio src="${data.url}" controls style="width:100%;max-width:400px;"></audio>
+        // Handle both old format (single url) and new format (tracks array)
+        let tracks = [];
+        if (data?.tracks && Array.isArray(data.tracks)) {
+          tracks = data.tracks;
+        } else if (data?.url) {
+          // Convert old format to new format
+          tracks = [{ url: data.url, name: 'Track 1' }];
+        }
+
+        if (tracks.length > 0) {
+          let html = '<div class="stack" style="gap: 0.75rem;">';
+          html += `<div class="note" style="font-weight: 600; color: #4db8ff;">Playlist (${tracks.length} track${tracks.length > 1 ? 's' : ''})</div>`;
+
+          tracks.forEach((track, index) => {
+            const trackName = track.name || `Track ${index + 1}`;
+            html += `
+              <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="flex: 1; min-width: 200px;">
+                  <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem;">${trackName}</div>
+                  <audio src="${track.url}" controls style="width:100%;max-width:400px;"></audio>
+                </div>
+                <button class="danger delete-track-btn" data-index="${index}">Delete</button>
               </div>
-              <button class="danger" id="delete-audio">Delete Audio</button>
-            </div>
-          `;
+            `;
+          });
 
-          const deleteBtn = document.getElementById('delete-audio');
-          if (deleteBtn) {
-            deleteBtn.addEventListener('click', async () => {
-              if (!confirm('Delete background audio?')) return;
+          html += '</div>';
+          div.innerHTML = html;
 
-              try {
-                const saveRes = await fetch(`${API_URL}/save`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    file: 'data/audio.json',
-                    content: JSON.stringify({ url: '' }, null, 2)
-                  })
-                });
-
-                const result = await saveRes.json();
-                if (result.success) {
-                  alert('✅ Audio deleted successfully!');
-                  await loadAudio();
-                } else {
-                  alert('❌ Error: ' + result.error);
-                }
-              } catch (e) {
-                alert('Error: ' + e.message);
-              }
+          // Add delete event listeners
+          div.querySelectorAll('.delete-track-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const index = parseInt(e.target.dataset.index);
+              await deleteTrack(index);
             });
-          }
+          });
         } else {
-          div.innerHTML = '<div class="muted">No audio uploaded yet.</div>';
+          div.innerHTML = '<div class="muted">No tracks uploaded yet. Upload MP3 files to create your playlist.</div>';
         }
       } catch (e) {
         console.error('Load audio error:', e);
       }
     }
 
+    async function deleteTrack(index) {
+      if (!confirm('Delete this track from the playlist?')) return;
+
+      try {
+        const res = await fetch('data/audio.json');
+        const data = await res.json();
+
+        // Handle both formats
+        let tracks = [];
+        if (data?.tracks && Array.isArray(data.tracks)) {
+          tracks = data.tracks;
+        } else if (data?.url) {
+          tracks = [{ url: data.url, name: 'Track 1' }];
+        }
+
+        tracks.splice(index, 1);
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/audio.json',
+            content: JSON.stringify({ tracks }, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Track deleted successfully!');
+          await loadAudio();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
     async function handleUploadAudio() {
-      const file = $('audio-file').files[0];
-      if (!file) return alert('Please select an audio file');
+      const files = $('audio-file').files;
+      if (!files || files.length === 0) return alert('Please select at least one audio file');
 
       const status = $('audio-upload-status');
-      status.textContent = 'Uploading...';
+      status.textContent = `Uploading ${files.length} track${files.length > 1 ? 's' : ''}...`;
       status.style.color = '#4db8ff';
 
       try {
-        const fileName = `audio-${Date.now()}.mp3`;
-        const url = `media/${fileName}`;
+        // Load existing tracks
+        const res = await fetch('data/audio.json');
+        const data = await res.json();
+        let tracks = [];
 
-        // Read file as base64
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const base64 = e.target.result.split(',')[1];
+        if (data?.tracks && Array.isArray(data.tracks)) {
+          tracks = data.tracks;
+        } else if (data?.url) {
+          // Convert old format
+          tracks = [{ url: data.url, name: 'Track 1' }];
+        }
+
+        // Upload each file
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          status.textContent = `Uploading track ${i + 1} of ${files.length}...`;
+
+          const fileName = `audio-${Date.now()}-${i}.mp3`;
+          const url = `media/${fileName}`;
+
+          // Read file as base64
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
 
           // Upload file
           const uploadRes = await fetch(`${API_URL}/upload`, {
@@ -504,28 +561,30 @@
             throw new Error(uploadResult.error);
           }
 
-          // Save audio.json
-          const saveRes = await fetch(`${API_URL}/save`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              file: 'data/audio.json',
-              content: JSON.stringify({ url }, null, 2)
-            })
-          });
+          // Add to tracks array
+          const trackName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+          tracks.push({ url, name: trackName });
+        }
 
-          const saveResult = await saveRes.json();
-          if (saveResult.success) {
-            status.textContent = '✅ Audio uploaded successfully!';
-            status.style.color = '#00ff00';
-            $('audio-file').value = '';
-            await loadAudio();
-          } else {
-            throw new Error(saveResult.error);
-          }
-        };
+        // Save updated tracks to audio.json
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/audio.json',
+            content: JSON.stringify({ tracks }, null, 2)
+          })
+        });
 
-        reader.readAsDataURL(file);
+        const saveResult = await saveRes.json();
+        if (saveResult.success) {
+          status.textContent = `✅ ${files.length} track${files.length > 1 ? 's' : ''} uploaded successfully!`;
+          status.style.color = '#00ff00';
+          $('audio-file').value = '';
+          await loadAudio();
+        } else {
+          throw new Error(saveResult.error);
+        }
       } catch (err) {
         status.textContent = '❌ Error: ' + err.message;
         status.style.color = '#e60000';
