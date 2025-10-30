@@ -26,10 +26,22 @@
       font-size: 1.5rem;
       animation: fall linear infinite;
       pointer-events: none;
+      will-change: transform;
     }
 
     @keyframes fall {
       to { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    #snowflakes-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
     }
 
     /* Ice crystal overlay */
@@ -87,7 +99,7 @@
       align-items: center;
       justify-content: center;
       perspective: 1000px;
-      overflow: visible; /* Ensure logos are not clipped */
+      overflow: hidden; /* Prevent logos from going off-screen */
     }
 
     .logo-wrapper {
@@ -302,6 +314,67 @@
     section h2::after {
       background: linear-gradient(90deg, transparent, #4db8ff, transparent);
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        overflow-x: hidden;
+      }
+
+      .logo-animation-container {
+        height: 200px;
+        padding: 0 1rem;
+        max-width: 100%;
+      }
+
+      .logo-wrapper {
+        width: 120px;
+        height: 120px;
+      }
+
+      /* Reduce animation distance on mobile */
+      @keyframes crossFromLeft {
+        0%   { transform: translate(-50%, -50%) translateX(-300px); opacity: 0; }
+        10%  { opacity: 1; }
+        100% { transform: translate(-50%, -50%) translateX(180px);  opacity: 1; }
+      }
+
+      @keyframes crossFromRight {
+        0%   { transform: translate(-50%, -50%) translateX(300px); opacity: 0; }
+        10%  { opacity: 1; }
+        100% { transform: translate(-50%, -50%) translateX(-180px); opacity: 1; }
+      }
+
+      .partnership-title h2 {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+      }
+
+      .partnership-title p {
+        font-size: 1rem;
+      }
+
+      .signup-form-container {
+        padding: 2rem 1.5rem;
+        margin: 2rem 1rem;
+        width: calc(100% - 2rem);
+      }
+
+      .signup-form-container h3 {
+        font-size: 1.5rem;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+      }
+
+      .submit-btn {
+        padding: 1rem;
+        font-size: 1.1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -399,7 +472,11 @@
     // Create snowflakes
     function createSnowflakes() {
       const container = document.getElementById('snowflakes-container');
-      for (let i = 0; i < 50; i++) {
+      // Reduce snowflakes on mobile for better performance
+      const isMobile = window.innerWidth <= 768;
+      const snowflakeCount = isMobile ? 25 : 50;
+
+      for (let i = 0; i < snowflakeCount; i++) {
         const snowflake = document.createElement('div');
         snowflake.className = 'snowflake';
         snowflake.textContent = '❄';

@@ -8,12 +8,20 @@
   font-family: 'Montserrat', 'Roboto', sans-serif;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
   background-attachment: fixed;
   color: #ccc;
   line-height: 1.8;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 /* HEADER */
@@ -348,15 +356,23 @@ section p {
 }
 
 /* SCHEDULE TABLE */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin: 2rem auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 table {
   width: 95%;
   max-width: 900px;
-  margin: 2rem auto;
+  margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(230, 0, 0, 0.3);
+  min-width: 300px;
 }
 
 th, td {
@@ -484,7 +500,7 @@ footer {
     text-align: center;
   }
   section {
-    padding: 3rem 1.5rem;
+    padding: 3rem 1rem;
   }
   header h1 {
     font-size: 1.8rem;
@@ -498,12 +514,19 @@ footer {
   }
   form {
     padding: 2rem 1.5rem;
+    width: 95%;
   }
   table {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    width: 100%;
   }
   th, td {
-    padding: 0.8rem 0.5rem;
+    padding: 0.7rem 0.4rem;
+    font-size: 0.85rem;
+  }
+  .content-card {
+    padding: 1.5rem;
+    margin: 1rem auto;
   }
 }
 
