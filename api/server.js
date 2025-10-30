@@ -85,6 +85,58 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Test GitHub connection
+app.get('/test-github', async (req, res) => {
+  try {
+    console.log('Testing GitHub connection...');
+
+    // Test 1: Check if we can access the repo
+    const repoInfo = await octokit.repos.get({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+    });
+
+    console.log('Repo access: OK', repoInfo.data.name);
+
+    // Test 2: Check if we can read a file
+    const fileInfo = await octokit.repos.getContent({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      path: 'data/schedule.json',
+      ref: REPO_BRANCH,
+    });
+
+    console.log('File read: OK', fileInfo.data.name);
+
+    res.json({
+      success: true,
+      config: {
+        owner: REPO_OWNER,
+        repo: REPO_NAME,
+        branch: REPO_BRANCH,
+        hasToken: !!GITHUB_TOKEN,
+      },
+      tests: {
+        repoAccess: 'OK',
+        fileRead: 'OK',
+      }
+    });
+  } catch (error) {
+    console.error('GitHub test failed:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      status: error.status,
+      config: {
+        owner: REPO_OWNER,
+        repo: REPO_NAME,
+        branch: REPO_BRANCH,
+        hasToken: !!GITHUB_TOKEN,
+      }
+    });
+  }
+});
+
 // Update schedule
 app.post('/api/schedule', async (req, res) => {
   try {
