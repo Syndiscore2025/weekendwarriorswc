@@ -202,6 +202,9 @@
     const dash = $('dash');
     const authError = $('auth-error');
 
+    // API Configuration
+    const API_URL = 'https://api.weekendwarriorswc.com';
+
     // Check if already signed in
     if (localStorage.getItem('admin-auth') === 'true') {
       showDashboard();
@@ -290,8 +293,23 @@
         const slides = await res.json();
         slides.splice(index, 1);
 
-        alert(`Copy this JSON to data/slides.json:\n\n${JSON.stringify(slides, null, 2)}`);
-        await loadSlides();
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/slides.json',
+            content: JSON.stringify(slides, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Slide deleted successfully!');
+          await loadSlides();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
@@ -306,7 +324,7 @@
         return alert('Please select a file');
       }
 
-      status.textContent = 'Preparing upload...';
+      status.textContent = 'Uploading...';
       status.style.color = '#4db8ff';
 
       try {
@@ -314,25 +332,58 @@
         const url = `media/${fileName}`;
         const type = file.type.startsWith('video') ? 'video' : 'image';
 
-        // Read current slides
-        const res = await fetch('data/slides.json');
-        const slides = await res.json();
+        // Read file as base64
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target.result.split(',')[1];
 
-        // Add new slide
-        slides.push({ url, caption, type });
+          // Read current slides
+          const res = await fetch('data/slides.json');
+          const slides = await res.json();
 
-        // Show instructions
-        status.innerHTML = `<div style="color:#00ff00;">
-          <strong>Step 1:</strong> Copy the file "${file.name}" to the "media" folder and rename it to "${fileName}"<br>
-          <strong>Step 2:</strong> Copy this JSON and save it to data/slides.json:<br>
-          <textarea readonly style="width:100%;height:100px;margin-top:0.5rem;background:rgba(0,0,0,0.5);color:#fff;border:1px solid #444;padding:0.5rem;border-radius:4px;">${JSON.stringify(slides, null, 2)}</textarea><br>
-          <strong>Step 3:</strong> Commit and push to GitHub
-        </div>`;
+          // Add new slide
+          slides.push({ url, caption, type });
 
-        $('slide-file').value = '';
-        $('slide-caption').value = '';
+          // Upload file and update JSON
+          const uploadRes = await fetch(`${API_URL}/upload`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: `media/${fileName}`,
+              content: base64
+            })
+          });
+
+          const uploadResult = await uploadRes.json();
+          if (!uploadResult.success) {
+            throw new Error(uploadResult.error);
+          }
+
+          // Save updated slides.json
+          const saveRes = await fetch(`${API_URL}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file: 'data/slides.json',
+              content: JSON.stringify(slides, null, 2)
+            })
+          });
+
+          const saveResult = await saveRes.json();
+          if (saveResult.success) {
+            status.textContent = '✅ Slide uploaded successfully!';
+            status.style.color = '#00ff00';
+            $('slide-file').value = '';
+            $('slide-caption').value = '';
+            await loadSlides();
+          } else {
+            throw new Error(saveResult.error);
+          }
+        };
+
+        reader.readAsDataURL(file);
       } catch (err) {
-        status.textContent = 'Error: ' + err.message;
+        status.textContent = '❌ Error: ' + err.message;
         status.style.color = '#e60000';
       }
     }
@@ -358,8 +409,27 @@
           if (deleteBtn) {
             deleteBtn.addEventListener('click', async () => {
               if (!confirm('Delete background audio?')) return;
-              alert('Copy this JSON to data/audio.json:\n\n{"url": ""}');
-              await loadAudio();
+
+              try {
+                const saveRes = await fetch(`${API_URL}/save`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    file: 'data/audio.json',
+                    content: JSON.stringify({ url: '' }, null, 2)
+                  })
+                });
+
+                const result = await saveRes.json();
+                if (result.success) {
+                  alert('✅ Audio deleted successfully!');
+                  await loadAudio();
+                } else {
+                  alert('❌ Error: ' + result.error);
+                }
+              } catch (e) {
+                alert('Error: ' + e.message);
+              }
             });
           }
         } else {
@@ -375,22 +445,58 @@
       if (!file) return alert('Please select an audio file');
 
       const status = $('audio-upload-status');
-      status.textContent = 'Preparing upload...';
+      status.textContent = 'Uploading...';
+      status.style.color = '#4db8ff';
 
       try {
         const fileName = `audio-${Date.now()}.mp3`;
         const url = `media/${fileName}`;
 
-        status.innerHTML = `<div style="color:#00ff00;">
-          <strong>Step 1:</strong> Copy the file "${file.name}" to the "media" folder and rename it to "${fileName}"<br>
-          <strong>Step 2:</strong> Copy this JSON and save it to data/audio.json:<br>
-          <textarea readonly style="width:100%;height:60px;margin-top:0.5rem;background:rgba(0,0,0,0.5);color:#fff;border:1px solid #444;padding:0.5rem;border-radius:4px;">{"url": "${url}"}</textarea><br>
-          <strong>Step 3:</strong> Commit and push to GitHub
-        </div>`;
+        // Read file as base64
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target.result.split(',')[1];
 
-        $('audio-file').value = '';
+          // Upload file
+          const uploadRes = await fetch(`${API_URL}/upload`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: `media/${fileName}`,
+              content: base64
+            })
+          });
+
+          const uploadResult = await uploadRes.json();
+          if (!uploadResult.success) {
+            throw new Error(uploadResult.error);
+          }
+
+          // Save audio.json
+          const saveRes = await fetch(`${API_URL}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              file: 'data/audio.json',
+              content: JSON.stringify({ url }, null, 2)
+            })
+          });
+
+          const saveResult = await saveRes.json();
+          if (saveResult.success) {
+            status.textContent = '✅ Audio uploaded successfully!';
+            status.style.color = '#00ff00';
+            $('audio-file').value = '';
+            await loadAudio();
+          } else {
+            throw new Error(saveResult.error);
+          }
+        };
+
+        reader.readAsDataURL(file);
       } catch (err) {
-        status.textContent = 'Error: ' + err.message;
+        status.textContent = '❌ Error: ' + err.message;
+        status.style.color = '#e60000';
       }
     }
 
@@ -421,8 +527,23 @@
         const schedule = await res.json();
         schedule.splice(index, 1);
 
-        alert(`Copy this JSON to data/schedule.json:\n\n${JSON.stringify(schedule, null, 2)}`);
-        await loadSchedule();
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/schedule.json',
+            content: JSON.stringify(schedule, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Schedule deleted successfully!');
+          await loadSchedule();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
@@ -450,13 +571,27 @@
         const schedule = await res.json();
         schedule.push({ day, time, group: grp });
 
-        alert(`Copy this JSON to data/schedule.json:\n\n${JSON.stringify(schedule, null, 2)}`);
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/schedule.json',
+            content: JSON.stringify(schedule, null, 2)
+          })
+        });
 
-        $('sch-day').value = '';
-        $('sch-start-time').value = '';
-        $('sch-end-time').value = '';
-        $('sch-group').value = '';
-        loadSchedule();
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Schedule added successfully!');
+          $('sch-day').value = '';
+          $('sch-start-time').value = '';
+          $('sch-end-time').value = '';
+          $('sch-group').value = '';
+          await loadSchedule();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
@@ -491,8 +626,23 @@
         const tournaments = await res.json();
         tournaments.splice(index, 1);
 
-        alert(`Copy this JSON to data/tournaments.json:\n\n${JSON.stringify(tournaments, null, 2)}`);
-        await loadTournaments();
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/tournaments.json',
+            content: JSON.stringify(tournaments, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Tournament deleted successfully!');
+          await loadTournaments();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
@@ -502,21 +652,37 @@
       const date = $('t-date').value;
       const event = $('t-event').value.trim();
       const location = $('t-location').value.trim();
+      const weighin = $('t-weighin').value.trim();
       const link = $('t-link') ? $('t-link').value.trim() : '';
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
       try {
         const res = await fetch('data/tournaments.json');
         const tournaments = await res.json();
-        tournaments.push({ date, event, location, url: link });
+        tournaments.push({ date, event, location, weighin, url: link });
 
-        alert(`Copy this JSON to data/tournaments.json:\n\n${JSON.stringify(tournaments, null, 2)}`);
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/tournaments.json',
+            content: JSON.stringify(tournaments, null, 2)
+          })
+        });
 
-        $('t-date').value = '';
-        $('t-event').value = '';
-        $('t-location').value = '';
-        if ($('t-link')) $('t-link').value = '';
-        loadTournaments();
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Tournament added successfully!');
+          $('t-date').value = '';
+          $('t-event').value = '';
+          $('t-location').value = '';
+          $('t-weighin').value = '';
+          if ($('t-link')) $('t-link').value = '';
+          await loadTournaments();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
@@ -568,8 +734,23 @@
         const signups = await res.json();
         signups.splice(index, 1);
 
-        alert(`Copy this JSON to data/winter-signups.json:\n\n${JSON.stringify(signups, null, 2)}`);
-        await loadWinterSignups();
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/winter-signups.json',
+            content: JSON.stringify(signups, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Signup deleted successfully!');
+          await loadWinterSignups();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
       } catch (e) {
         alert('Error: ' + e.message);
       }
