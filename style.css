@@ -556,7 +556,7 @@ section p {
 
 .hero-slider .slide {
   position: absolute;
-  inset: 1in; /* 1 inch padding from all sides */
+  inset: 20px; /* Small padding from all sides */
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -571,7 +571,7 @@ section p {
 .hero-slider .slide::after {
   content: '';
   position: absolute;
-  inset: -1in; /* Extend overlay to full slideshow area */
+  inset: -20px; /* Extend overlay to full slideshow area */
   background: radial-gradient(circle at 50% 80%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 70%);
   pointer-events: none;
   z-index: 1;
