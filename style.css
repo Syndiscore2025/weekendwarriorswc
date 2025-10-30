@@ -801,6 +801,8 @@ tbody tr:hover td {
   border-radius: 12px !important;
   padding: 2rem !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  max-width: 98% !important;
+  overflow-x: auto;
 }
 
 .tournament-card h2 {
@@ -828,7 +830,6 @@ tbody tr:hover td {
 table.admin-list {
   border-collapse: collapse;
   width: 100%;
-  min-width: 1000px;
   background: transparent;
 }
 
