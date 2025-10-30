@@ -113,7 +113,7 @@ app.post('/api/audio', async (req, res) => {
 app.post('/api/upload-media', async (req, res) => {
   try {
     const { fileName, fileContent, fileType } = req.body;
-    
+
     // fileContent should be base64 encoded
     await updateGitHubFile(
       `media/${fileName}`,
@@ -123,6 +123,51 @@ app.post('/api/upload-media', async (req, res) => {
 
     res.json({ success: true, message: 'File uploaded successfully' });
   } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Generic save endpoint (used by admin panel)
+app.post('/save', async (req, res) => {
+  try {
+    const { file, content } = req.body;
+
+    if (!file || !content) {
+      return res.status(400).json({ success: false, error: 'Missing file or content' });
+    }
+
+    await updateGitHubFile(
+      file,
+      content,
+      `Update ${file} via admin panel`
+    );
+
+    res.json({ success: true, message: 'File saved successfully' });
+  } catch (error) {
+    console.error('Save error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Generic upload endpoint (used by admin panel)
+app.post('/upload', async (req, res) => {
+  try {
+    const { path, content } = req.body;
+
+    if (!path || !content) {
+      return res.status(400).json({ success: false, error: 'Missing path or content' });
+    }
+
+    // content is base64 encoded
+    await updateGitHubFile(
+      path,
+      Buffer.from(content, 'base64').toString('binary'),
+      `Upload file: ${path}`
+    );
+
+    res.json({ success: true, message: 'File uploaded successfully' });
+  } catch (error) {
+    console.error('Upload error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

@@ -1,0 +1,26 @@
+services:
+  # Static website
+  - type: web
+    name: weekendwarriorswc
+    env: static
+    buildCommand: echo "No build needed"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /admin.html
+        destination: /admin.html
+
+  # API server
+  - type: web
+    name: weekendwarriorswc-api
+    env: node
+    buildCommand: cd api && npm install
+    startCommand: cd api && npm start
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: REPO_OWNER
+        value: rakinplaban
+      - key: REPO_NAME
+        value: weekendwarriorswc
+
