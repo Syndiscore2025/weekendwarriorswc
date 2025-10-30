@@ -59,6 +59,25 @@
     let slides = [];
     let index = 0;
     let timer;
+    let isMuted = false;
+
+    // Fade in audio over specified duration
+    function fadeIn(audio, duration) {
+      const steps = 60; // 60 steps for smooth fade
+      const stepDuration = duration / steps;
+      const volumeIncrement = 1 / steps;
+      let currentStep = 0;
+
+      const fadeInterval = setInterval(() => {
+        currentStep++;
+        audio.volume = Math.min(currentStep * volumeIncrement, 1);
+
+        if (currentStep >= steps) {
+          clearInterval(fadeInterval);
+          audio.volume = 1;
+        }
+      }, stepDuration);
+    }
 
     async function loadSlides() {
       try {
@@ -101,8 +120,22 @@
         if (audioData?.url) {
           bgAudio.src = audioData.url;
           audioToggle.style.display = 'flex';
-          bgAudio.muted = true;
-          bgAudio.play().catch(() => {});
+          bgAudio.volume = 0; // Start at 0 volume for fade-in
+
+          // Try to play (browsers may block autoplay)
+          bgAudio.play().then(() => {
+            // Fade in over 3 seconds
+            fadeIn(bgAudio, 3000);
+            // Update icon to show playing state
+            audioIconMuted.style.display = 'none';
+            audioIconPlaying.style.display = 'block';
+          }).catch((error) => {
+            console.log('Autoplay blocked, waiting for user interaction:', error);
+            // If autoplay is blocked, show muted icon
+            bgAudio.volume = 1; // Set to full volume for when user clicks
+            audioIconMuted.style.display = 'block';
+            audioIconPlaying.style.display = 'none';
+          });
         }
       } catch (e) {
         console.error('Error loading data:', e);
@@ -156,13 +189,17 @@
 
     // Audio toggle
     audioToggle.addEventListener('click', () => {
-      if (bgAudio.muted) {
-        bgAudio.muted = false;
-        bgAudio.play();
+      if (isMuted) {
+        // Unmute: restore volume
+        bgAudio.volume = 1;
+        bgAudio.play().catch(() => {});
+        isMuted = false;
         audioIconMuted.style.display = 'none';
         audioIconPlaying.style.display = 'block';
       } else {
-        bgAudio.muted = true;
+        // Mute: set volume to 0
+        bgAudio.volume = 0;
+        isMuted = true;
         audioIconMuted.style.display = 'block';
         audioIconPlaying.style.display = 'none';
       }
