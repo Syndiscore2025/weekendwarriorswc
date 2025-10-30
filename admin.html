@@ -430,6 +430,28 @@
         </div>
       </div>
 
+      <div class="content-card">
+        <h2 style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.3rem;">📧</span>
+          <span>Contact Messages</span>
+        </h2>
+        <p class="note">Messages submitted through the contact form - Reply via email</p>
+        <div class="table-container">
+          <table class="admin-list">
+            <thead>
+              <tr>
+                <th style="width: 15%;">Name</th>
+                <th style="width: 20%;">Email</th>
+                <th style="width: 45%;">Message</th>
+                <th style="width: 12%;">Submitted</th>
+                <th class="right" style="width: 8%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="contact-messages-list"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -505,11 +527,12 @@
         loadSchedule(),
         loadTournaments(),
         loadWinterSignups(),
+        loadContactMessages(),
         loadSliderSettings()
       ]);
 
       results.forEach((result, index) => {
-        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups'];
+        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups', 'Contact Messages', 'Slider Settings'];
         if (result.status === 'rejected') {
           console.error(`Failed to load ${names[index]}:`, result.reason);
         } else {
@@ -1334,6 +1357,88 @@
         if (result.success) {
           alert('✅ Signup deleted successfully!');
           await loadWinterSignups();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // Contact Messages management
+    async function loadContactMessages() {
+      try {
+        const res = await fetch('data/contact-messages.json');
+        const data = await res.json();
+        const tbody = $('contact-messages-list');
+        tbody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: #aaa;">No messages yet</td></tr>';
+          return;
+        }
+
+        // Sort by most recent first
+        const sortedMessages = [...data].sort((a, b) => {
+          return new Date(b.submitted_at) - new Date(a.submitted_at);
+        });
+
+        sortedMessages.forEach((msg, index) => {
+          const originalIndex = data.findIndex(m => m.id === msg.id);
+          const submittedDate = new Date(msg.submitted_at);
+          const formattedDate = submittedDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><strong>${msg.name}</strong></td>
+            <td><a href="mailto:${msg.email}" style="color: #4db8ff; text-decoration: none;">${msg.email}</a></td>
+            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: normal; line-height: 1.4;">${msg.message}</td>
+            <td style="white-space: nowrap;">${formattedDate}</td>
+            <td class="right">
+              <button class="btn-delete" onclick="deleteContactMessage(${originalIndex})" title="Delete message">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                </svg>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (e) {
+        console.error('Error loading contact messages:', e);
+        const tbody = $('contact-messages-list');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem; color: #ff6b6b;">Error loading messages</td></tr>';
+      }
+    }
+
+    async function deleteContactMessage(index) {
+      if (!confirm('Delete this message?')) return;
+
+      try {
+        const res = await fetch('data/contact-messages.json');
+        const messages = await res.json();
+        messages.splice(index, 1);
+
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/contact-messages.json',
+            content: JSON.stringify(messages, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Message deleted successfully!');
+          await loadContactMessages();
         } else {
           alert('❌ Error: ' + result.error);
         }
