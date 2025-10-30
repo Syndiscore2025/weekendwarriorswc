@@ -494,9 +494,15 @@
     // Handle form submission
     const form = document.getElementById('winter-signup-form');
     const successMessage = document.getElementById('success-message');
+    const API_URL = 'https://api.weekendwarriorswc.com';
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const submitBtn = form.querySelector('.submit-btn');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting...';
+      submitBtn.disabled = true;
 
       const formData = {
         parent_name: document.getElementById('parent-name').value.trim(),
@@ -510,18 +516,46 @@
 
       console.log('📝 Submitting registration:', formData);
 
-      // Show instructions to manually add to JSON
-      const jsonStr = JSON.stringify(formData, null, 2);
-      alert(`Registration received!\n\nTo complete the signup, copy this data and add it to data/winter-signups.json:\n\n${jsonStr}\n\nOr email this information to the admin.`);
+      try {
+        // Load current signups
+        const res = await fetch('data/winter-signups.json');
+        const signups = await res.json();
 
-      // Show success message
-      successMessage.classList.add('show');
-      form.reset();
+        // Add new signup
+        signups.push(formData);
 
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        successMessage.classList.remove('show');
-      }, 5000);
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/winter-signups.json',
+            content: JSON.stringify(signups, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+
+        if (result.success) {
+          // Show success message
+          successMessage.classList.add('show');
+          form.reset();
+
+          // Redirect to main site after 2 seconds
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } else {
+          alert('❌ Error submitting registration: ' + result.error);
+          submitBtn.textContent = originalBtnText;
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert('❌ Error submitting registration. Please try again or contact us directly.');
+        submitBtn.textContent = originalBtnText;
+        submitBtn.disabled = false;
+      }
     });
   </script>
 
