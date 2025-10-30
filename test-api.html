@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+    button { padding: 10px; margin: 5px; background: #333; color: #0f0; border: 1px solid #0f0; cursor: pointer; }
+    button:hover { background: #0f0; color: #000; }
+    pre { background: #000; padding: 10px; border: 1px solid #0f0; overflow: auto; }
+    .error { color: #f00; }
+    .success { color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>Weekend Warriors API Test</h1>
+  
+  <h2>Test 1: Health Check</h2>
+  <button onclick="testHealth()">Test /health</button>
+  <pre id="health-result"></pre>
+
+  <h2>Test 2: Load Data</h2>
+  <button onclick="testLoadSlides()">Load slides.json</button>
+  <pre id="load-result"></pre>
+
+  <h2>Test 3: Save Data</h2>
+  <button onclick="testSave()">Test /save endpoint</button>
+  <pre id="save-result"></pre>
+
+  <script>
+    const API_URL = 'https://api.weekendwarriorswc.com';
+
+    async function testHealth() {
+      const result = document.getElementById('health-result');
+      result.textContent = 'Testing...';
+      try {
+        const res = await fetch(`${API_URL}/health`);
+        const data = await res.json();
+        result.className = 'success';
+        result.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = 'Error: ' + error.message;
+      }
+    }
+
+    async function testLoadSlides() {
+      const result = document.getElementById('load-result');
+      result.textContent = 'Testing...';
+      try {
+        const res = await fetch('data/slides.json');
+        const data = await res.json();
+        result.className = 'success';
+        result.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = 'Error: ' + error.message;
+      }
+    }
+
+    async function testSave() {
+      const result = document.getElementById('save-result');
+      result.textContent = 'Testing...';
+      try {
+        const testData = {
+          file: 'data/test.json',
+          content: JSON.stringify({ test: true, timestamp: new Date().toISOString() }, null, 2)
+        };
+        
+        const res = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(testData)
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          result.className = 'success';
+          result.textContent = 'Success!\n' + JSON.stringify(data, null, 2);
+        } else {
+          result.className = 'error';
+          result.textContent = 'Error ' + res.status + ':\n' + JSON.stringify(data, null, 2);
+        }
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
+
