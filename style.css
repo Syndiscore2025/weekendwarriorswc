@@ -502,7 +502,7 @@ section p {
   border-radius: 12px;
   padding: 2.5rem;
   margin: 2rem auto;
-  max-width: 900px;
+  max-width: 1500px;
   box-shadow:
     0 8px 30px rgba(230, 0, 0, 0.3),
     0 0 60px rgba(230, 0, 0, 0.1),
@@ -724,8 +724,8 @@ section p {
 }
 
 table {
-  width: 95%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0;
@@ -736,9 +736,10 @@ table {
 }
 
 th, td {
-  padding: 1.2rem;
+  padding: 1.2rem 1.5rem;
   text-align: center;
   border: none;
+  white-space: nowrap;
 }
 
 th {
