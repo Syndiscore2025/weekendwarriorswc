@@ -26,8 +26,10 @@ body {
 
 /* HEADER - Enhanced with depth and animation */
 header {
-  text-align: center;
-  padding: 3rem 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
   background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(20,0,0,0.95) 100%);
   border-bottom: 4px solid #e60000;
   box-shadow:
@@ -37,6 +39,7 @@ header {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  gap: 2rem;
 }
 
 header::before {
@@ -63,16 +66,16 @@ header::before {
 }
 
 header img.logo {
-  width: 220px;
-  max-width: 90%;
-  display: block;
-  margin: 0 auto 1.5rem auto;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(230, 0, 0, 0.5));
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   mix-blend-mode: screen;
   background: transparent;
   z-index: 1;
+  flex-shrink: 0;
 }
 
 header img.logo:hover {
@@ -80,17 +83,23 @@ header img.logo:hover {
   filter: drop-shadow(0 8px 20px rgba(230, 0, 0, 0.8));
 }
 
-header h1 {
+.header-text {
+  text-align: center;
+  flex: 1;
+  z-index: 1;
+}
+
+.header-text h1 {
   color: #e60000;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-shadow:
     0 0 20px rgba(230, 0, 0, 0.8),
     0 0 40px rgba(230, 0, 0, 0.5),
     0 4px 8px rgba(0, 0, 0, 0.8);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   position: relative;
   z-index: 1;
   animation: titleGlow 3s ease-in-out infinite alternate;
@@ -111,8 +120,8 @@ header h1 {
   }
 }
 
-header p {
-  font-size: 1.3rem;
+.header-text p {
+  font-size: 1rem;
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
@@ -555,7 +564,7 @@ section p {
 
 .hero-slider .slide {
   position: absolute;
-  inset: 1in; /* 1 inch padding from all sides */
+  inset: 0; /* No padding - full slideshow area */
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -570,7 +579,7 @@ section p {
 .hero-slider .slide::after {
   content: '';
   position: absolute;
-  inset: -1in; /* Extend overlay to full slideshow area */
+  inset: 0; /* Overlay covers full slideshow area */
   background: radial-gradient(circle at 50% 80%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 70%);
   pointer-events: none;
   z-index: 1;
@@ -989,6 +998,25 @@ footer a:hover {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  header img.logo {
+    width: 80px;
+    height: 80px;
+  }
+  .logo-right {
+    display: none;
+  }
+  .header-text h1 {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+  .header-text p {
+    font-size: 0.9rem;
+  }
   nav {
     flex-wrap: wrap;
   }
@@ -999,13 +1027,6 @@ footer a:hover {
   }
   section {
     padding: 3rem 1rem;
-  }
-  header h1 {
-    font-size: 1.8rem;
-    letter-spacing: 2px;
-  }
-  header p {
-    font-size: 1.1rem;
   }
   section h2 {
     font-size: 2rem;
