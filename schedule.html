@@ -9,6 +9,51 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="global-music.js" defer></script>
+  <style>
+    /* Force no horizontal scroll on schedule page and show all fields */
+    .table-container { overflow-x: hidden !important; }
+    table.admin-list { width: 100% !important; table-layout: fixed !important; }
+    table.admin-list th, table.admin-list td { white-space: normal !important; word-break: break-word !important; }
+
+    @media (max-width: 768px) {
+      /* Stack into cards on phones so every field is visible without scrolling */
+      table.admin-list thead { display: none !important; }
+      table.admin-list,
+      table.admin-list tbody,
+      table.admin-list tr,
+      table.admin-list td { display: block !important; width: 100% !important; }
+
+      table.admin-list tr {
+        border: 1px solid rgba(230, 0, 0, 0.3);
+        border-radius: 8px;
+        margin: 0 0 0.75rem 0;
+        padding: 0.5rem 0.75rem;
+        background: rgba(26, 26, 26, 0.85);
+      }
+
+      table.admin-list td {
+        border: none !important;
+        padding: 0.4rem 0 !important;
+        display: flex !important;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.75rem;
+      }
+
+      table.admin-list td::before {
+        content: attr(data-label);
+        flex: 0 0 46%;
+        max-width: 46%;
+        color: #e60000;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+      }
+
+      .tournament-table colgroup { display: none !important; }
+    }
+  </style>
+
 </head>
 <body>
   <!-- Audio elements for global music player -->
