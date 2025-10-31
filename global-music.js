@@ -30,6 +30,7 @@
   let bgAudio1 = null;
   let bgAudio2 = null;
   let audioToggle = null;
+  let audioIconPlay = null;
   let audioIconMuted = null;
   let audioIconPlaying = null;
 
@@ -46,6 +47,7 @@
     bgAudio1 = document.getElementById('bg-audio-1');
     bgAudio2 = document.getElementById('bg-audio-2');
     audioToggle = document.getElementById('audio-toggle');
+    audioIconPlay = document.getElementById('audio-icon-play');
     audioIconMuted = document.getElementById('audio-icon-muted');
     audioIconPlaying = document.getElementById('audio-icon-playing');
 
@@ -329,12 +331,24 @@
 
   // Update mute button UI
   function updateMuteUI() {
-    if (isMuted) {
+    if (!isPlaying) {
+      // Not playing - show PLAY button
+      audioIconPlay.style.display = 'block';
+      audioIconMuted.style.display = 'none';
+      audioIconPlaying.style.display = 'none';
+      audioToggle.title = 'Click to play music';
+    } else if (isMuted) {
+      // Playing but muted - show muted speaker
+      audioIconPlay.style.display = 'none';
       audioIconMuted.style.display = 'block';
       audioIconPlaying.style.display = 'none';
+      audioToggle.title = 'Click to unmute music';
     } else {
+      // Playing and unmuted - show playing speaker
+      audioIconPlay.style.display = 'none';
       audioIconMuted.style.display = 'none';
       audioIconPlaying.style.display = 'block';
+      audioToggle.title = 'Click to mute music';
     }
   }
 
