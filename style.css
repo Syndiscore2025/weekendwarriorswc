@@ -801,7 +801,8 @@ tbody tr:hover td {
   border-radius: 12px !important;
   padding: 2rem !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-  max-width: 98% !important;
+  max-width: 100% !important;
+  width: 100% !important;
   overflow-x: auto;
 }
 
@@ -831,6 +832,7 @@ table.admin-list {
   border-collapse: collapse;
   width: 100%;
   background: transparent;
+  min-width: 100%;
 }
 
 table.admin-list th {
@@ -840,7 +842,7 @@ table.admin-list th {
   font-weight: 700;
   white-space: nowrap;
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   border-bottom: 2px solid #e60000;
@@ -854,6 +856,7 @@ table.admin-list td {
   font-size: 0.95rem;
   vertical-align: middle;
   background: transparent;
+  white-space: nowrap;
 }
 
 table.admin-list tr:hover {
@@ -1136,22 +1139,23 @@ footer a:hover {
   }
 
   table.admin-list {
-    min-width: 800px;
+    min-width: 100%;
+    font-size: 0.75rem;
   }
 
   th, td {
-    padding: 0.6rem 0.4rem;
-    font-size: 0.8rem;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.75rem;
   }
 
   table.admin-list th {
-    padding: 0.7rem 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.65rem;
   }
 
   table.admin-list td {
-    padding: 0.7rem 0.5rem;
-    font-size: 0.85rem;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.75rem;
   }
 
   .tournament-card h2 {

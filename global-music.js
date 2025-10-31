@@ -96,23 +96,34 @@
       // Show audio toggle
       audioToggle.style.display = 'flex';
 
+      // Load mute state - DEFAULT TO MUTED if not set
+      const savedMuteState = localStorage.getItem(STORAGE_KEYS.MUTED);
+      if (savedMuteState === null) {
+        // First time - default to muted
+        isMuted = true;
+        localStorage.setItem(STORAGE_KEYS.MUTED, 'true');
+      } else {
+        isMuted = savedMuteState === 'true';
+      }
+
       // Check if this is a navigation (within last 2 seconds) or a fresh page load
       const lastUpdate = parseInt(localStorage.getItem(STORAGE_KEYS.LAST_UPDATE) || '0');
       const timeSinceUpdate = Date.now() - lastUpdate;
       const isNavigation = timeSinceUpdate < 2000; // 2 second window for navigation
 
-      if (isNavigation) {
-        // Continue playback from where we left off (navigation between pages)
+      if (isNavigation && !isMuted) {
+        // Continue playback from where we left off (navigation between pages) - only if not muted
         console.log('Continuing playback from navigation...');
         syncToExistingPlayback();
-      } else {
-        // Fresh page load - ALWAYS start from track 1
+      } else if (!isMuted) {
+        // Fresh page load - ALWAYS start from track 1 - only if not muted
         console.log('Fresh page load - starting from track 1...');
         startPlayback();
+      } else {
+        // Muted - don't start playback
+        console.log('Music is muted - not starting playback');
       }
 
-      // Load mute state
-      isMuted = localStorage.getItem(STORAGE_KEYS.MUTED) === 'true';
       updateMuteUI();
 
     } catch (e) {
@@ -289,14 +300,27 @@
     localStorage.setItem(STORAGE_KEYS.MUTED, isMuted.toString());
 
     if (isMuted) {
+      // Mute - pause all audio
+      if (currentAudioElement) {
+        currentAudioElement.pause();
+        currentAudioElement.volume = 0;
+      }
+      if (nextAudioElement) {
+        nextAudioElement.pause();
+        nextAudioElement.volume = 0;
+      }
       bgAudio1.volume = 0;
       bgAudio2.volume = 0;
+      isPlaying = false;
     } else {
+      // Unmute - start playback from beginning of track 1
       if (!isPlaying) {
+        console.log('Unmuting - starting playback from track 1');
         startPlayback();
       } else {
-        bgAudio1.volume = 1;
-        bgAudio2.volume = 1;
+        // Already playing, just restore volume
+        if (currentAudioElement) currentAudioElement.volume = 1;
+        if (nextAudioElement) nextAudioElement.volume = 1;
       }
     }
 
