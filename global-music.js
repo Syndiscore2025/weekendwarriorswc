@@ -302,28 +302,30 @@
     localStorage.setItem(STORAGE_KEYS.MUTED, isMuted.toString());
 
     if (isMuted) {
-      // Mute - pause all audio
+      // Mute - COMPLETELY STOP all audio playback
       if (currentAudioElement) {
         currentAudioElement.pause();
         currentAudioElement.volume = 0;
+        currentAudioElement.currentTime = 0;
       }
       if (nextAudioElement) {
         nextAudioElement.pause();
         nextAudioElement.volume = 0;
+        nextAudioElement.currentTime = 0;
       }
+      // Ensure both audio elements are stopped
+      bgAudio1.pause();
       bgAudio1.volume = 0;
+      bgAudio1.currentTime = 0;
+      bgAudio2.pause();
       bgAudio2.volume = 0;
+      bgAudio2.currentTime = 0;
       isPlaying = false;
+      console.log('Music muted and stopped');
     } else {
       // Unmute - start playback from beginning of track 1
-      if (!isPlaying) {
-        console.log('Unmuting - starting playback from track 1');
-        startPlayback();
-      } else {
-        // Already playing, just restore volume
-        if (currentAudioElement) currentAudioElement.volume = 1;
-        if (nextAudioElement) nextAudioElement.volume = 1;
-      }
+      console.log('Unmuting - starting playback from track 1');
+      startPlayback();
     }
 
     updateMuteUI();
