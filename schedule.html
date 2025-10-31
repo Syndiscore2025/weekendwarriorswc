@@ -55,49 +55,53 @@
         Join us for regular practices and tournaments throughout the season.
         All practices are held at our training facility.
       </p>
-      <table class="admin-list">
-        <thead>
-          <tr>
-            <th>DAY</th>
-            <th>TIME</th>
-            <th>GROUP</th>
-          </tr>
-        </thead>
-        <tbody id="schedule-rows">
-          <!-- Practice schedule loaded from JSON -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="admin-list">
+          <thead>
+            <tr>
+              <th>DAY</th>
+              <th>TIME</th>
+              <th>GROUP</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-rows">
+            <!-- Practice schedule loaded from JSON -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="content-card tournament-card">
       <h2>UPCOMING TOURNAMENTS</h2>
-      <table class="admin-list tournament-table">
-        <colgroup>
-          <col style="width: 10%;">
-          <col style="width: 22%;">
-          <col style="width: 18%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-          <col style="width: 10%;">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>DATE</th>
-            <th>EVENT</th>
-            <th>LOCATION</th>
-            <th>ES WEIGH</th>
-            <th>ES START</th>
-            <th>MS WEIGH</th>
-            <th>MS START</th>
-            <th>REGISTER</th>
-          </tr>
-        </thead>
-        <tbody id="tournament-rows">
-          <!-- Tournaments loaded from JSON -->
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="admin-list tournament-table">
+          <colgroup>
+            <col style="width: 10%;">
+            <col style="width: 22%;">
+            <col style="width: 18%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>EVENT</th>
+              <th>LOCATION</th>
+              <th>ES WEIGH</th>
+              <th>ES START</th>
+              <th>MS WEIGH</th>
+              <th>MS START</th>
+              <th>REGISTER</th>
+            </tr>
+          </thead>
+          <tbody id="tournament-rows">
+            <!-- Tournaments loaded from JSON -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
   <script>
@@ -110,7 +114,13 @@
         const scheduleRes = await fetch('data/schedule.json');
         const schedule = await scheduleRes.json();
         if (Array.isArray(schedule) && schedule.length) {
-          schTbody.innerHTML = schedule.map(r => `<tr><td>${r.day}</td><td>${r.time}</td><td>${r.group}</td></tr>`).join('');
+          schTbody.innerHTML = schedule.map(r => `
+            <tr>
+              <td data-label="DAY">${r.day}</td>
+              <td data-label="TIME">${r.time}</td>
+              <td data-label="GROUP">${r.group}</td>
+            </tr>
+          `).join('');
         }
 
         // Load tournaments from JSON
@@ -126,14 +136,14 @@
             const regLink = r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer" class="register-link">Register</a>` : '-';
 
             return `<tr>
-              <td>${d}</td>
-              <td>${r.event}</td>
-              <td>${r.location}</td>
-              <td>${weighinES}</td>
-              <td>${startES}</td>
-              <td>${weighinMS}</td>
-              <td>${startMS}</td>
-              <td>${regLink}</td>
+              <td data-label="DATE">${d}</td>
+              <td data-label="EVENT">${r.event}</td>
+              <td data-label="LOCATION">${r.location}</td>
+              <td data-label="ES WEIGH">${weighinES}</td>
+              <td data-label="ES START">${startES}</td>
+              <td data-label="MS WEIGH">${weighinMS}</td>
+              <td data-label="MS START">${startMS}</td>
+              <td data-label="REGISTER">${regLink}</td>
             </tr>`;
           }).join('');
         }
