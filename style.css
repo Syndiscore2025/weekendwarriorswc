@@ -1201,7 +1201,7 @@ footer a:hover {
 
 
 /* Stack tables into readable cards on small phones (no horizontal scroll) */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .table-container { overflow-x: visible; }
 
   /* Hide header and display rows as blocks */
