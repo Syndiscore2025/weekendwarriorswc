@@ -1034,6 +1034,18 @@ form button:active {
   box-shadow: 0 8px 30px rgba(230, 0, 0, 0.2);
 }
 
+/* Ensure long email wraps nicely on small phones */
+.contact-info p {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: 480px) {
+  .contact-info p { font-size: 0.95rem; }
+}
+
+
 /* FOOTER - Enhanced with depth */
 footer {
   text-align: center;
