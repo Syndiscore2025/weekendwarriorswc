@@ -108,22 +108,23 @@
         isMuted = savedMuteState === 'true';
       }
 
-      // Check if this is a navigation (within last 2 seconds) or a fresh page load
+      // Check if music was actually playing (not just muted state)
       const lastUpdate = parseInt(localStorage.getItem(STORAGE_KEYS.LAST_UPDATE) || '0');
       const timeSinceUpdate = Date.now() - lastUpdate;
       const isNavigation = timeSinceUpdate < 2000; // 2 second window for navigation
 
-      if (isNavigation && !isMuted) {
-        // Continue playback from where we left off (navigation between pages) - only if not muted
+      // ONLY continue playback if:
+      // 1. This is a navigation (within 2 seconds)
+      // 2. Music is NOT muted
+      // 3. Music was actually playing (isPlaying would have been true)
+      if (isNavigation && !isMuted && lastUpdate > 0) {
+        // Continue playback from where we left off (navigation between pages)
         console.log('Continuing playback from navigation...');
         syncToExistingPlayback();
-      } else if (!isMuted) {
-        // Fresh page load - ALWAYS start from track 1 - only if not muted
-        console.log('Fresh page load - starting from track 1...');
-        startPlayback();
       } else {
-        // Muted - don't start playback
-        console.log('Music is muted - not starting playback');
+        // Don't auto-start music - user must click play button
+        console.log('Music ready - click play button to start');
+        isPlaying = false;
       }
 
       updateMuteUI();
@@ -321,6 +322,8 @@
       bgAudio2.volume = 0;
       bgAudio2.currentTime = 0;
       isPlaying = false;
+      // Clear last update to prevent auto-start on navigation
+      localStorage.removeItem(STORAGE_KEYS.LAST_UPDATE);
       console.log('Music muted and stopped');
     } else {
       // Unmute - start playback from beginning of track 1
@@ -365,9 +368,14 @@
 
   // Save playback state before page unload
   function savePlaybackState() {
-    if (isPlaying && currentAudioElement) {
+    if (isPlaying && currentAudioElement && !isMuted) {
+      // Only save state if music is actually playing and not muted
       localStorage.setItem(STORAGE_KEYS.CURRENT_TRACK, currentTrackIndex.toString());
       localStorage.setItem(STORAGE_KEYS.CURRENT_TIME, currentAudioElement.currentTime.toString());
+      localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, Date.now().toString());
+    } else {
+      // Clear last update if not playing - prevents auto-start on navigation
+      localStorage.removeItem(STORAGE_KEYS.LAST_UPDATE);
     }
   }
 
