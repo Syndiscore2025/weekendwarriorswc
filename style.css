@@ -509,7 +509,7 @@ section p {
   border-radius: 12px;
   padding: 2.5rem;
   margin: 2rem auto;
-  max-width: 95%;
+  max-width: 100%;
   width: 100%;
   box-shadow:
     0 8px 30px rgba(230, 0, 0, 0.3),
@@ -825,7 +825,7 @@ tbody tr:hover td {
 
 /* Professional Table Container */
 .table-container {
-  overflow-x: visible; /* No horizontal scroll */
+  overflow-x: hidden; /* No horizontal scroll */
   margin-top: 1rem;
   border: 1px solid rgba(230, 0, 0, 0.3);
   border-radius: 8px;
@@ -840,7 +840,7 @@ table.admin-list {
   border-collapse: collapse;
   width: 100%;
   background: transparent;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 table.admin-list th {
@@ -897,6 +897,9 @@ table.admin-list tr:last-child td {
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(230, 0, 0, 0.3);
+  white-space: nowrap;
+  min-width: 96px;
+  text-align: center;
 }
 
 .register-link:hover {
@@ -904,6 +907,18 @@ table.admin-list tr:last-child td {
   box-shadow: 0 4px 16px rgba(230, 0, 0, 0.6);
   transform: translateY(-2px);
 }
+
+/* Ensure Register column has enough space on desktop */
+.tournament-table th:last-child,
+.tournament-table td:last-child {
+  width: 12%;
+  min-width: 110px;
+  text-align: center;
+}
+
+/* Hide any accidental inner scrollbars in schedule tables */
+.table-container { scrollbar-width: none; }
+.table-container::-webkit-scrollbar { display: none; height: 0; }
 
 /* CONTACT FORM - Enhanced with modern styling */
 form {
@@ -1175,7 +1190,7 @@ footer a:hover {
 
   /* Remove horizontal scroll on mobile */
   .table-container {
-    overflow-x: visible;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -1202,7 +1217,7 @@ footer a:hover {
 
 /* Stack tables into readable cards on small phones (no horizontal scroll) */
 @media (max-width: 768px) {
-  .table-container { overflow-x: visible; }
+  .table-container { overflow-x: hidden; }
 
   /* Hide header and display rows as blocks */
   table.admin-list thead { display: none; }
