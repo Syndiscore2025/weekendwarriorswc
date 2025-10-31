@@ -66,18 +66,24 @@
 
     let slides = [];
     let index = 0;
-    let timer;
-    let sliderInterval = 5000; // Default 5 seconds
+
+    // Robust timer/state management
+    let autoTimerId = null;          // advances slides
+    let settingsPollId = null;       // polls for updated interval
+    let sliderInterval = 5000;       // ms (default 5s)
+    let initialized = false;
 
     async function loadSlides() {
       try {
-        // Load settings for slider interval
-        const settingsRes = await fetch('data/settings.json');
+        // Load settings for slider interval (no-store to avoid stale cache)
+        const settingsRes = await fetch('data/settings.json', { cache: 'no-store' });
         const settingsData = await settingsRes.json();
-        sliderInterval = (settingsData.sliderInterval || 5) * 1000; // Convert to milliseconds
+        const sec = parseFloat(settingsData?.sliderInterval);
+        const nextInterval = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        sliderInterval = nextInterval;
 
         // Load slides from JSON
-        const slidesRes = await fetch('data/slides.json');
+        const slidesRes = await fetch('data/slides.json', { cache: 'no-store' });
         const slidesData = await slidesRes.json();
 
         if (Array.isArray(slidesData) && slidesData.length) {
@@ -113,49 +119,83 @@
       }
 
       initSlider();
+      startSettingsWatcher();
     }
 
     function startTimer() {
-      if (timer) clearInterval(timer);
-      timer = setInterval(() => goTo(index + 1), sliderInterval);
+      stopTimer();
+      autoTimerId = setInterval(() => goTo(index + 1), sliderInterval);
     }
 
     function stopTimer() {
-      if (timer) clearInterval(timer);
-      timer = null;
+      if (autoTimerId) clearInterval(autoTimerId);
+      autoTimerId = null;
+    }
+
+    function restartTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    async function refreshSettingsIfChanged() {
+      try {
+        const res = await fetch('data/settings.json', { cache: 'no-store' });
+        const data = await res.json();
+        const sec = parseFloat(data?.sliderInterval);
+        const newMs = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        if (newMs !== sliderInterval) {
+          sliderInterval = newMs;
+          restartTimer();
+        }
+      } catch (_) {}
+    }
+
+    function startSettingsWatcher() {
+      if (settingsPollId) clearInterval(settingsPollId);
+      // Poll for admin changes periodically so the timer adapts dynamically
+      settingsPollId = setInterval(refreshSettingsIfChanged, 15000);
     }
 
     function initSlider() {
-      if (!slider) return;
+      if (!slider || initialized) return;
       slides = Array.from(slider.querySelectorAll('.slide'));
       if (slides.length === 0) return;
+
+      initialized = true;
 
       dotsWrap.innerHTML = '';
       slides.forEach((slide, i) => {
         const b = document.createElement('button');
         b.setAttribute('aria-label', 'Go to slide ' + (i+1));
-        b.addEventListener('click', () => goTo(i));
+        b.addEventListener('click', () => { goTo(i); restartTimer(); });
         dotsWrap.appendChild(b);
 
         const video = slide.querySelector('video');
         if (video && i === 0) video.play().catch(() => {});
       });
 
-      prevBtn.addEventListener('click', () => goTo(index - 1));
-      nextBtn.addEventListener('click', () => goTo(index + 1));
+      prevBtn.addEventListener('click', () => { goTo(index - 1); restartTimer(); });
+      nextBtn.addEventListener('click', () => { goTo(index + 1); restartTimer(); });
 
       update();
       startTimer();
 
-      // Pause on hover, resume on leave
-      slider.addEventListener('mouseenter', stopTimer);
-      slider.addEventListener('mouseleave', startTimer);
+      // Pause when tab is hidden; resume (and re-read settings) when visible
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          refreshSettingsIfChanged().finally(restartTimer);
+        } else {
+          stopTimer();
+        }
+      });
 
-      // Keep timer running even when page is scrolled
-      // Restart timer periodically to ensure it's always running
-      setInterval(() => {
-        if (!timer) startTimer();
-      }, sliderInterval + 1000);
+      // Handle back/forward cache restores (iOS Safari/Chrome)
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted || document.visibilityState === 'visible') {
+          refreshSettingsIfChanged().finally(restartTimer);
+        }
+      });
+      window.addEventListener('pagehide', stopTimer);
     }
 
     function update() {
