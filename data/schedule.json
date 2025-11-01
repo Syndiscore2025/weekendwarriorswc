@@ -13,5 +13,10 @@
     "day": "Tuesday",
     "time": "5:00 PM - 6:30 PM",
     "group": "All Groups"
+  },
+  {
+    "day": "Thursday",
+    "time": "5:00 PM - 6:30 PM",
+    "group": "All Groups"
   }
 ]
