@@ -102,6 +102,31 @@
       border-bottom: 3px solid #4db8ff;
     }
 
+    /* USA Membership Button */
+    .usa-membership-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #8B1538 0%, #003B7A 100%);
+      padding: 0.6rem 1.2rem !important;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .usa-membership-btn:hover {
+      background: linear-gradient(135deg, #a01a42 0%, #004a99 100%);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(77, 184, 255, 0.4);
+    }
+
+    .usa-membership-btn img {
+      height: 20px;
+      width: auto;
+      filter: brightness(1.2);
+    }
+
     /* Logo Animation Container */
     .logo-animation-container {
       position: relative;
@@ -1010,6 +1035,15 @@
         flex: 0 0 auto;
       }
 
+      .usa-membership-btn {
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.8rem;
+      }
+
+      .usa-membership-btn img {
+        height: 16px;
+      }
+
       section {
         padding: 2rem 1rem;
         width: 100%;
@@ -1141,6 +1175,10 @@
     <a href="about.html">About</a>
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
+      <img src="usa-wrestling-logo.svg" alt="USA Wrestling">
+      <span>USA Membership</span>
+    </a>
     <a href="winter-signups.html" class="active winter-nav" aria-current="page">
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">25-26 WINTER SEASON</span>
       <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">SIGN-UPS</span>
@@ -1285,6 +1323,11 @@
             <div class="form-group">
               <label for="town">Town/City *</label>
               <input type="text" id="town" name="town" placeholder="e.g., Wethersfield" required>
+            </div>
+
+            <div class="form-group">
+              <label for="zipcode">Zip Code *</label>
+              <input type="text" id="zipcode" name="zipcode" placeholder="e.g., 06109" pattern="[0-9]{5}" maxlength="5" required>
             </div>
           </div>
         </div>

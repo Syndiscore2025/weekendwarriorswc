@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <!-- USA Map in Red -->
+  <path d="M60,80 L60,50 L90,50 L90,80 L120,80 L120,50 L150,50 L150,80 L180,80 L180,110 L150,110 L150,140 L120,140 L120,110 L90,110 L90,140 L60,140 L60,110 L30,110 L30,80 Z" fill="#8B1538"/>
+  
+  <!-- Wrestlers silhouette in white -->
+  <g fill="white">
+    <ellipse cx="100" cy="95" rx="35" ry="30" transform="rotate(-20 100 95)"/>
+    <ellipse cx="140" cy="95" rx="35" ry="30" transform="rotate(20 140 95)"/>
+  </g>
+  
+  <!-- USA Map in Blue -->
+  <path d="M180,80 L210,80 L210,50 L240,50 L240,80 L270,80 L270,110 L240,110 L240,140 L210,140 L210,110 L180,110 Z" fill="#003B7A"/>
+</svg>
+
