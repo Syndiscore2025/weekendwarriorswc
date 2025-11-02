@@ -98,31 +98,9 @@
 
   <section>
     <div class="content-card tournament-card">
-      <h2>PRACTICE SCHEDULE</h2>
-      <p style="margin-bottom: 2rem; text-align: center; color: #ccc;">
-        Join us for regular practices and tournaments throughout the season.
-        All practices are held at our training facility.
-      </p>
-      <div class="table-container">
-        <table class="admin-list">
-          <thead>
-            <tr>
-              <th>DAY</th>
-              <th>TIME</th>
-              <th>GROUP</th>
-            </tr>
-          </thead>
-          <tbody id="schedule-rows">
-            <!-- Practice schedule loaded from JSON -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="content-card tournament-card">
       <h2>UPCOMING PRACTICE DATES</h2>
       <p style="margin-bottom: 2rem; text-align: center; color: #ccc;">
-        Next 8 weeks of scheduled practices with specific dates.
+        Next week of scheduled practices with specific dates.
       </p>
       <div class="table-container">
         <table class="admin-list">
@@ -167,55 +145,80 @@
   <script>
     async function run() {
       try {
-        const schTbody = document.getElementById('schedule-rows');
         const upcomingTbody = document.getElementById('upcoming-practices');
         const tTbody = document.getElementById('tournament-rows');
-
-        // Load schedule from JSON
-        const scheduleRes = await fetch('data/schedule.json');
-        const schedule = await scheduleRes.json();
-        if (Array.isArray(schedule) && schedule.length) {
-          // Sort by day of week
-          const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-          const sortedSchedule = schedule.sort((a, b) => {
-            return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
-          });
-
-          schTbody.innerHTML = sortedSchedule.map(r => `
-            <tr>
-              <td data-label="DAY">${r.day}</td>
-              <td data-label="TIME">${r.time}</td>
-              <td data-label="GROUP">${r.group}</td>
-            </tr>
-          `).join('');
-        }
 
         // Load calendar events and generate upcoming practice dates
         const calendarRes = await fetch('data/calendar-events.json');
         const calendarEvents = await calendarRes.json();
+
+        // Load one-off practices
+        let oneOffPractices = [];
+        try {
+          const oneOffRes = await fetch('data/one-off-practices.json');
+          oneOffPractices = await oneOffRes.json();
+        } catch (e) {
+          console.log('No one-off practices found');
+        }
+
         if (Array.isArray(calendarEvents) && calendarEvents.length) {
           const upcomingPractices = [];
           const today = new Date();
           today.setHours(0, 0, 0, 0);
 
+          // Calculate end of next week (7 days from today)
+          const endOfWeek = new Date(today);
+          endOfWeek.setDate(endOfWeek.getDate() + 7);
+
+          // Add recurring practices
           calendarEvents.forEach(event => {
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const targetDay = days.indexOf(event.day);
-            const weeksToShow = event.weeks || 8;
 
-            for (let week = 0; week < weeksToShow; week++) {
-              const date = new Date(today);
+            // Determine start date for this event
+            let startDate = new Date(today);
+            if (event.start_date) {
+              startDate = new Date(event.start_date);
+              startDate.setHours(0, 0, 0, 0);
+            }
+
+            // Generate practices for the next 4 weeks to ensure we catch all in the next 7 days
+            for (let week = 0; week < 4; week++) {
+              const date = new Date(startDate);
               const currentDay = date.getDay();
               let daysUntilTarget = targetDay - currentDay;
               if (daysUntilTarget < 0) daysUntilTarget += 7;
               date.setDate(date.getDate() + daysUntilTarget + (week * 7));
 
+              // Only include if within the next 7 days and after/on start date
+              if (date >= today && date < endOfWeek && date >= startDate) {
+                upcomingPractices.push({
+                  date: date,
+                  dateStr: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                  day: event.day,
+                  time: event.time,
+                  group: event.group,
+                  type: 'recurring'
+                });
+              }
+            }
+          });
+
+          // Add one-off practices
+          oneOffPractices.forEach(practice => {
+            const practiceDate = new Date(practice.date);
+            practiceDate.setHours(0, 0, 0, 0);
+
+            // Only include if within the next 7 days
+            if (practiceDate >= today && practiceDate < endOfWeek) {
+              const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
               upcomingPractices.push({
-                date: date,
-                dateStr: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                day: event.day,
-                time: event.time,
-                group: event.group
+                date: practiceDate,
+                dateStr: practiceDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                day: days[practiceDate.getDay()],
+                time: practice.time,
+                group: practice.group,
+                type: 'one-off'
               });
             }
           });

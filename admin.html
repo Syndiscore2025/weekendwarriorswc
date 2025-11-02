@@ -571,47 +571,12 @@
       </div>
 
       <div class="content-card">
-        <h2>Practice Schedule</h2>
-        <div class="stack">
-          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 2fr auto;">
-            <select id="sch-day">
-              <option value="">Select Day</option>
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
-            </select>
-            <input id="sch-start-time" type="time" placeholder="Start Time" />
-            <input id="sch-end-time" type="time" placeholder="End Time" />
-            <input id="sch-group" placeholder="Group (e.g., Beginners 6-10)" />
-            <button id="add-schedule" type="button" class="success">Add</button>
-          </div>
-          <div class="table-container">
-            <table class="admin-list">
-              <thead>
-                <tr>
-                  <th style="width: 20%;">Day</th>
-                  <th style="width: 25%;">Time</th>
-                  <th style="width: 45%;">Group</th>
-                  <th class="right" style="width: 10%;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="schedule-list"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <h2>Calendar Events (Recurring Practices)</h2>
+        <h2>Recurring Practices</h2>
         <p style="margin-bottom: 1rem; color: #ccc; font-size: 0.9rem;">
-          Create recurring practice events that will display with actual dates on the schedule page.
+          Create recurring practice events that will display on the schedule page. Set a start date to begin practices on a specific date.
         </p>
         <div class="stack">
-          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1.5fr 1fr auto;">
+          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr auto;">
             <select id="cal-day">
               <option value="">Select Day</option>
               <option value="Monday">Monday</option>
@@ -624,23 +589,53 @@
             </select>
             <input id="cal-start-time" type="time" placeholder="Start Time" />
             <input id="cal-end-time" type="time" placeholder="End Time" />
+            <input id="cal-start-date" type="date" placeholder="Start Date (optional)" title="Leave blank to start immediately" />
             <input id="cal-group" placeholder="Group (e.g., All Groups)" />
-            <input id="cal-weeks" type="number" min="1" max="52" value="8" placeholder="Weeks" style="max-width: 100px;" />
             <button id="add-calendar-event" type="button" class="success">Add</button>
           </div>
           <div class="table-container">
             <table class="admin-list">
               <thead>
                 <tr>
-                  <th style="width: 15%;">Day</th>
-                  <th style="width: 20%;">Time</th>
-                  <th style="width: 30%;">Group</th>
+                  <th style="width: 12%;">Day</th>
+                  <th style="width: 18%;">Time</th>
+                  <th style="width: 25%;">Group</th>
+                  <th style="width: 15%;">Start Date</th>
                   <th style="width: 15%;">Next Date</th>
-                  <th style="width: 10%;">Weeks</th>
-                  <th class="right" style="width: 10%;">Actions</th>
+                  <th class="right" style="width: 15%;">Actions</th>
                 </tr>
               </thead>
               <tbody id="calendar-events-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>One-Off Practices</h2>
+        <p style="margin-bottom: 1rem; color: #ccc; font-size: 0.9rem;">
+          Add special practices on specific dates that don't repeat.
+        </p>
+        <div class="stack">
+          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1.5fr auto;">
+            <input id="oneoff-date" type="date" placeholder="Practice Date" />
+            <input id="oneoff-start-time" type="time" placeholder="Start Time" />
+            <input id="oneoff-end-time" type="time" placeholder="End Time" />
+            <input id="oneoff-group" placeholder="Group (e.g., All Groups)" />
+            <button id="add-oneoff-practice" type="button" class="success">Add</button>
+          </div>
+          <div class="table-container">
+            <table class="admin-list">
+              <thead>
+                <tr>
+                  <th style="width: 20%;">Date</th>
+                  <th style="width: 15%;">Day</th>
+                  <th style="width: 25%;">Time</th>
+                  <th style="width: 30%;">Group</th>
+                  <th class="right" style="width: 10%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="oneoff-practices-list"></tbody>
             </table>
           </div>
         </div>
@@ -737,7 +732,8 @@
           <span style="font-size: 1.3rem;">🤼</span>
           <span>Team Roster</span>
         </h2>
-        <p class="note">Manage team members and send mass emails to selected wrestlers</p>
+        <p class="note">Manage team members and send mass emails to selected wrestlers<br>
+        <strong style="color: #e60000;">⚠️ Important:</strong> When sending emails, please use <strong>WeekendWarriorsWC@yahoo.com</strong> as your sending address</p>
 
         <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
           <div style="flex: 1; min-width: 250px;">
@@ -871,8 +867,8 @@
       const results = await Promise.allSettled([
         loadSlides(),
         loadAudio(),
-        loadSchedule(),
         loadCalendarEvents(),
+        loadOneOffPractices(),
         loadTournaments(),
         loadWinterSignups(),
         loadTeamRoster(),
@@ -881,7 +877,7 @@
       ]);
 
       results.forEach((result, index) => {
-        const names = ['Slides', 'Audio', 'Schedule', 'Calendar Events', 'Tournaments', 'Winter Signups', 'Team Roster', 'Contact Messages', 'Slider Settings'];
+        const names = ['Slides', 'Audio', 'Calendar Events', 'One-Off Practices', 'Tournaments', 'Winter Signups', 'Team Roster', 'Contact Messages', 'Slider Settings'];
         if (result.status === 'rejected') {
           console.error(`Failed to load ${names[index]}:`, result.reason);
         } else {
@@ -1443,125 +1439,33 @@
       }
     }
 
-    async function loadSchedule() {
-      try {
-        const res = await fetch('data/schedule.json');
-        const data = await res.json();
-
-        // Sort by day of week
-        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const sortedData = data.sort((a, b) => {
-          return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
-        });
-
-        const tbody = $('schedule-list');
-        tbody.innerHTML = '';
-        for (let i = 0; i < sortedData.length; i++) {
-          const row = sortedData[i];
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td>` +
-            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
-          tr.querySelector('button').addEventListener('click', () => deleteSchedule(i));
-          tbody.appendChild(tr);
-        }
-      } catch (e) {
-        console.error('Load schedule error:', e);
-      }
-    }
-
-    async function deleteSchedule(index) {
-      if (!confirm('Delete this schedule entry?')) return;
-
-      try {
-        const res = await fetch('data/schedule.json');
-        const schedule = await res.json();
-        schedule.splice(index, 1);
-
-        // Save to API
-        const saveRes = await fetch(`${API_URL}/save`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            file: 'data/schedule.json',
-            content: JSON.stringify(schedule, null, 2)
-          })
-        });
-
-        const result = await saveRes.json();
-        if (result.success) {
-          alert('✅ Schedule deleted successfully!');
-          await loadSchedule();
-        } else {
-          alert('❌ Error: ' + result.error);
-        }
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-
-    async function handleAddSchedule() {
-      const day = $('sch-day').value.trim();
-      const startTime = $('sch-start-time').value.trim();
-      const endTime = $('sch-end-time').value.trim();
-      const grp = $('sch-group').value.trim();
-      if (!day || !startTime || !endTime || !grp) return alert('All fields required');
-
-      // Format time as "5:00 PM - 6:30 PM"
-      const formatTime = (time24) => {
-        const [hours, minutes] = time24.split(':');
-        const hour = parseInt(hours);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const hour12 = hour % 12 || 12;
-        return `${hour12}:${minutes} ${ampm}`;
-      };
-      const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
-
-      try {
-        const res = await fetch('data/schedule.json');
-        const schedule = await res.json();
-        schedule.push({ day, time, group: grp });
-
-        // Sort by day of week before saving
-        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        schedule.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
-
-        // Save to API
-        const saveRes = await fetch(`${API_URL}/save`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            file: 'data/schedule.json',
-            content: JSON.stringify(schedule, null, 2)
-          })
-        });
-
-        const result = await saveRes.json();
-        if (result.success) {
-          alert('✅ Schedule added successfully!');
-          $('sch-day').value = '';
-          $('sch-start-time').value = '';
-          $('sch-end-time').value = '';
-          $('sch-group').value = '';
-          await loadSchedule();
-        } else {
-          alert('❌ Error: ' + result.error);
-        }
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-
     // Calendar Events Functions
-    function getNextDate(dayOfWeek) {
+    function getNextDate(dayOfWeek, startDate = null) {
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       const targetDay = days.indexOf(dayOfWeek);
-      const currentDay = today.getDay();
+
+      // If there's a start date, use it as the reference
+      let referenceDate = today;
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        if (start > today) {
+          referenceDate = start;
+        }
+      }
+
+      const currentDay = referenceDate.getDay();
       let daysUntilTarget = targetDay - currentDay;
-      if (daysUntilTarget <= 0) daysUntilTarget += 7;
-      const nextDate = new Date(today);
-      nextDate.setDate(today.getDate() + daysUntilTarget);
-      return nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      if (daysUntilTarget < 0) daysUntilTarget += 7;
+      if (daysUntilTarget === 0 && referenceDate > today) daysUntilTarget = 0;
+      else if (daysUntilTarget === 0) daysUntilTarget = 7;
+
+      const nextDate = new Date(referenceDate);
+      nextDate.setDate(referenceDate.getDate() + daysUntilTarget);
+      return nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
     async function loadCalendarEvents() {
@@ -1573,8 +1477,9 @@
         for (let i = 0; i < data.length; i++) {
           const row = data[i];
           const tr = document.createElement('tr');
-          const nextDate = getNextDate(row.day);
-          tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td><td>${nextDate}</td><td>${row.weeks} weeks</td>` +
+          const nextDate = getNextDate(row.day, row.start_date);
+          const startDateDisplay = row.start_date ? new Date(row.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Immediate';
+          tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td><td>${startDateDisplay}</td><td>${nextDate}</td>` +
             `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
           tr.querySelector('button').addEventListener('click', () => deleteCalendarEvent(i));
           tbody.appendChild(tr);
@@ -1618,9 +1523,9 @@
       const startTime = $('cal-start-time').value.trim();
       const endTime = $('cal-end-time').value.trim();
       const grp = $('cal-group').value.trim();
-      const weeks = parseInt($('cal-weeks').value) || 8;
+      const startDate = $('cal-start-date').value.trim();
 
-      if (!day || !startTime || !endTime || !grp) return alert('All fields required');
+      if (!day || !startTime || !endTime || !grp) return alert('Day, times, and group are required');
 
       const formatTime = (time24) => {
         const [hours, minutes] = time24.split(':');
@@ -1634,7 +1539,13 @@
       try {
         const res = await fetch('data/calendar-events.json');
         const events = await res.json();
-        events.push({ day, time, group: grp, weeks });
+
+        const newEvent = { day, time, group: grp };
+        if (startDate) {
+          newEvent.start_date = startDate;
+        }
+
+        events.push(newEvent);
 
         const saveRes = await fetch(`${API_URL}/save`, {
           method: 'POST',
@@ -1647,13 +1558,139 @@
 
         const result = await saveRes.json();
         if (result.success) {
-          alert('✅ Calendar event added successfully!');
+          alert('✅ Recurring practice added successfully!');
           $('cal-day').value = '';
           $('cal-start-time').value = '';
           $('cal-end-time').value = '';
           $('cal-group').value = '';
-          $('cal-weeks').value = '8';
+          $('cal-start-date').value = '';
           await loadCalendarEvents();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // One-Off Practices Functions
+    async function loadOneOffPractices() {
+      try {
+        const res = await fetch('data/one-off-practices.json');
+        const data = await res.json();
+        const tbody = $('oneoff-practices-list');
+        tbody.innerHTML = '';
+
+        // Sort by date
+        data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          const practiceDate = new Date(row.date);
+          const dateStr = practiceDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const dayStr = days[practiceDate.getDay()];
+
+          tr.innerHTML = `<td>${dateStr}</td><td>${dayStr}</td><td>${row.time}</td><td>${row.group}</td>` +
+            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
+          tr.querySelector('button').addEventListener('click', () => deleteOneOffPractice(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load one-off practices error:', e);
+        // Create empty file if it doesn't exist
+        if (e.message.includes('404') || e.message.includes('Not Found')) {
+          try {
+            await fetch(`${API_URL}/save`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                file: 'data/one-off-practices.json',
+                content: '[]'
+              })
+            });
+          } catch (createError) {
+            console.error('Error creating one-off-practices.json:', createError);
+          }
+        }
+      }
+    }
+
+    async function deleteOneOffPractice(index) {
+      if (!confirm('Delete this one-off practice?')) return;
+
+      try {
+        const res = await fetch('data/one-off-practices.json');
+        const practices = await res.json();
+        practices.splice(index, 1);
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/one-off-practices.json',
+            content: JSON.stringify(practices, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ One-off practice deleted successfully!');
+          await loadOneOffPractices();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function handleAddOneOffPractice() {
+      const date = $('oneoff-date').value.trim();
+      const startTime = $('oneoff-start-time').value.trim();
+      const endTime = $('oneoff-end-time').value.trim();
+      const grp = $('oneoff-group').value.trim();
+
+      if (!date || !startTime || !endTime || !grp) return alert('All fields required');
+
+      const formatTime = (time24) => {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      };
+      const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
+      try {
+        let practices = [];
+        try {
+          const res = await fetch('data/one-off-practices.json');
+          practices = await res.json();
+        } catch (e) {
+          // File doesn't exist yet, start with empty array
+        }
+
+        practices.push({ date, time, group: grp });
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/one-off-practices.json',
+            content: JSON.stringify(practices, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ One-off practice added successfully!');
+          $('oneoff-date').value = '';
+          $('oneoff-start-time').value = '';
+          $('oneoff-end-time').value = '';
+          $('oneoff-group').value = '';
+          await loadOneOffPractices();
         } else {
           alert('❌ Error: ' + result.error);
         }
@@ -2003,9 +2040,10 @@
 
       const emails = Array.from(selectedMembers).join(',');
       const subject = encodeURIComponent('Weekend Warriors Wrestling Club - Team Update');
-      const body = encodeURIComponent('Hello Team,\n\n\n\nBest regards,\nWeekend Warriors Wrestling Club');
+      const body = encodeURIComponent('Hello Team,\n\n\n\nBest regards,\nWeekend Warriors Wrestling Club\nWeekendWarriorsWC@yahoo.com\n860-336-8969');
 
       // Open default email client with pre-populated recipients
+      // Note: Please send from WeekendWarriorsWC@yahoo.com
       window.location.href = `mailto:${emails}?subject=${subject}&body=${body}`;
     });
 
@@ -2161,18 +2199,18 @@
         $('upload-audio').addEventListener('click', handleUploadAudio);
       }
 
-      const addScheduleBtn = $('add-schedule');
-      if (addScheduleBtn) {
-        const newAddScheduleBtn = addScheduleBtn.cloneNode(true);
-        addScheduleBtn.parentNode.replaceChild(newAddScheduleBtn, addScheduleBtn);
-        $('add-schedule').addEventListener('click', handleAddSchedule);
-      }
-
       const addCalendarEventBtn = $('add-calendar-event');
       if (addCalendarEventBtn) {
         const newAddCalendarEventBtn = addCalendarEventBtn.cloneNode(true);
         addCalendarEventBtn.parentNode.replaceChild(newAddCalendarEventBtn, addCalendarEventBtn);
         $('add-calendar-event').addEventListener('click', handleAddCalendarEvent);
+      }
+
+      const addOneOffPracticeBtn = $('add-oneoff-practice');
+      if (addOneOffPracticeBtn) {
+        const newAddOneOffPracticeBtn = addOneOffPracticeBtn.cloneNode(true);
+        addOneOffPracticeBtn.parentNode.replaceChild(newAddOneOffPracticeBtn, addOneOffPracticeBtn);
+        $('add-oneoff-practice').addEventListener('click', handleAddOneOffPractice);
       }
 
       const addTournamentBtn = $('add-tournament');
