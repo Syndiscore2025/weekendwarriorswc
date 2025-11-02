@@ -87,8 +87,8 @@
     <a href="schedule.html" class="active" aria-current="page">Schedule</a>
     <a href="contact.html">Contact</a>
     <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <img src="usa-wrestling-logo.svg" alt="USA Wrestling">
-      <span>USA Membership</span>
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
+      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
     </a>
     <a href="winter-signups.html" class="winter-nav">
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">25-26 WINTER SEASON</span>
@@ -152,7 +152,13 @@
         const scheduleRes = await fetch('data/schedule.json');
         const schedule = await scheduleRes.json();
         if (Array.isArray(schedule) && schedule.length) {
-          schTbody.innerHTML = schedule.map(r => `
+          // Sort by day of week
+          const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+          const sortedSchedule = schedule.sort((a, b) => {
+            return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+          });
+
+          schTbody.innerHTML = sortedSchedule.map(r => `
             <tr>
               <td data-label="DAY">${r.day}</td>
               <td data-label="TIME">${r.time}</td>

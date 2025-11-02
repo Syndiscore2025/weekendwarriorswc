@@ -105,18 +105,17 @@
     /* USA Membership Button */
     .usa-membership-btn {
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
+      gap: 0.1rem;
       background: linear-gradient(135deg, #8B1538 0%, #003B7A 100%);
       padding: 0.6rem 1rem !important;
       border-radius: 6px;
       transition: all 0.3s ease;
       border: 1.5px solid rgba(255, 255, 255, 0.3);
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      font-size: 0.85rem;
-      white-space: nowrap;
+      white-space: normal;
+      text-align: center;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
@@ -131,12 +130,6 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(77, 184, 255, 0.4);
       border-bottom: 3px solid #4db8ff;
-    }
-
-    .usa-membership-btn img {
-      height: 18px;
-      width: auto;
-      filter: brightness(1.1) drop-shadow(0 1px 2px rgba(0,0,0,0.2));
     }
 
     /* Logo Animation Container */
@@ -1049,12 +1042,7 @@
 
       .usa-membership-btn {
         padding: 0.5rem 0.75rem !important;
-        font-size: 0.7rem;
-        gap: 0.3rem;
-      }
-
-      .usa-membership-btn img {
-        height: 14px;
+        gap: 0.1rem;
       }
 
       section {
@@ -1189,8 +1177,8 @@
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
     <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <img src="usa-wrestling-logo.svg" alt="USA Wrestling">
-      <span>USA Membership</span>
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
+      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
     </a>
     <a href="winter-signups.html" class="active winter-nav" aria-current="page">
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">25-26 WINTER SEASON</span>

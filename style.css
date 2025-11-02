@@ -218,18 +218,17 @@ nav a.active::before, nav a[aria-current="page"]::before {
 /* USA Membership Button */
 .usa-membership-btn {
   display: inline-flex !important;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.1rem;
   background: linear-gradient(135deg, #8B1538 0%, #003B7A 100%) !important;
   padding: 0.6rem 1rem !important;
   border-radius: 6px;
   transition: all 0.3s ease;
   border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  font-size: 0.85rem;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -243,12 +242,6 @@ nav a.active::before, nav a[aria-current="page"]::before {
   border-color: rgba(255, 255, 255, 0.6) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(77, 184, 255, 0.4) !important;
-}
-
-.usa-membership-btn img {
-  height: 18px;
-  width: auto;
-  filter: brightness(1.1) drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 }
 
 /* Winter Season Navigation Link - Enhanced Icy Blue Glass Effect */
@@ -1241,12 +1234,8 @@ footer a:hover {
   /* USA Membership button on tablet */
   .usa-membership-btn {
     padding: 0.55rem 0.8rem !important;
-    font-size: 0.75rem;
-    gap: 0.3rem;
+    gap: 0.1rem;
     flex: 1 1 calc(50% - 0.25rem);
-  }
-  .usa-membership-btn img {
-    height: 16px;
   }
   section {
     padding: 3rem 1rem;
@@ -1373,11 +1362,7 @@ footer a:hover {
   /* USA Membership button on mobile */
   .usa-membership-btn {
     padding: 0.5rem 0.75rem !important;
-    font-size: 0.7rem;
-    gap: 0.3rem;
-  }
-  .usa-membership-btn img {
-    height: 14px;
+    gap: 0.1rem;
   }
 
   section {

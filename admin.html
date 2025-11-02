@@ -1405,10 +1405,17 @@
       try {
         const res = await fetch('data/schedule.json');
         const data = await res.json();
+
+        // Sort by day of week
+        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const sortedData = data.sort((a, b) => {
+          return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+        });
+
         const tbody = $('schedule-list');
         tbody.innerHTML = '';
-        for (let i = 0; i < data.length; i++) {
-          const row = data[i];
+        for (let i = 0; i < sortedData.length; i++) {
+          const row = sortedData[i];
           const tr = document.createElement('tr');
           tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td>` +
             `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
@@ -1471,6 +1478,10 @@
         const res = await fetch('data/schedule.json');
         const schedule = await res.json();
         schedule.push({ day, time, group: grp });
+
+        // Sort by day of week before saving
+        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        schedule.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
 
         // Save to API
         const saveRes = await fetch(`${API_URL}/save`, {
