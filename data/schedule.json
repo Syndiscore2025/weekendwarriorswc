@@ -8,5 +8,10 @@
     "day": "Thursday",
     "time": "5:30 PM - 7:00 PM",
     "group": "All Groups"
+  },
+  {
+    "day": "Wednesday",
+    "time": "5:00 PM - 7:00 PM",
+    "group": "Advanced Group Only"
   }
 ]
