@@ -941,6 +941,36 @@
         padding: 0.9rem;
         font-size: 1rem;
       }
+
+      .waiver-section {
+        margin-top: 1.5rem !important;
+        padding: 1.5rem !important;
+      }
+
+      .waiver-content {
+        max-height: 200px !important;
+        padding: 1rem !important;
+        font-size: 0.85rem !important;
+      }
+    }
+
+    /* Custom scrollbar for waiver content */
+    .waiver-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .waiver-content::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+    }
+
+    .waiver-content::-webkit-scrollbar-thumb {
+      background: #e60000;
+      border-radius: 4px;
+    }
+
+    .waiver-content::-webkit-scrollbar-thumb:hover {
+      background: #ff0000;
     }
   </style>
 </head>
@@ -1096,7 +1126,79 @@
           <input type="email" id="email" name="email" placeholder="parent@example.com" required>
         </div>
 
-        <button type="submit" class="submit-btn">Submit Registration</button>
+        <!-- Liability Waiver Section -->
+        <div class="waiver-section" style="margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, rgba(230, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.3) 100%); border: 2px solid #e60000; border-radius: 8px; box-shadow: 0 4px 15px rgba(230, 0, 0, 0.2);">
+          <h3 style="color: #e60000; margin-bottom: 1rem; font-size: 1.3rem; text-align: center; text-transform: uppercase; letter-spacing: 1px;">
+            ⚠️ Liability Waiver & Release of Claims
+          </h3>
+
+          <div class="waiver-content" style="max-height: 300px; overflow-y: auto; padding: 1.5rem; background: rgba(0, 0, 0, 0.5); border-radius: 6px; margin-bottom: 1.5rem; border: 1px solid #444; font-size: 0.95rem; line-height: 1.8;">
+            <p style="margin-bottom: 1rem; font-weight: 600; color: #fff;">
+              PLEASE READ CAREFULLY BEFORE SIGNING
+            </p>
+
+            <p style="margin-bottom: 1rem;">
+              In consideration of being allowed to participate in any way in the <strong>Weekend Warriors Wrestling Club (WWWC)</strong> and <strong>Wethersfield Youth Wrestling Club (WYWC)</strong> athletic/sports programs and related events and activities, the undersigned:
+            </p>
+
+            <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Acknowledge and Understand</strong> that wrestling is a contact sport involving physical exertion and carries inherent risks including, but not limited to, sprains, strains, fractures, head injuries, concussions, and other bodily injuries that may result in temporary or permanent disability or death.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Agree and Warrant</strong> that the participant is physically fit and has no medical condition that would prevent safe participation in wrestling activities. I agree to immediately notify coaching staff of any changes in the participant's health status.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Release and Hold Harmless</strong> Weekend Warriors Wrestling Club, Wethersfield Youth Wrestling Club, their officers, directors, coaches, volunteers, employees, agents, and representatives from any and all liability, claims, demands, actions, and causes of action whatsoever arising out of or related to any loss, damage, or injury, including death, that may be sustained by the participant while participating in such activities, whether caused by the negligence of the releasees or otherwise.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Consent to Medical Treatment</strong> and authorize WWWC and WYWC representatives to obtain emergency medical treatment for the participant if necessary. I agree to be financially responsible for any medical bills incurred.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Acknowledge Photographic Release</strong> and grant permission for WWWC and WYWC to use photographs, videos, or other media of the participant for promotional purposes without compensation.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Agree to Follow Rules</strong> and understand that the participant must follow all rules, regulations, and instructions provided by coaches and staff. Failure to comply may result in removal from the program without refund.
+              </li>
+
+              <li style="margin-bottom: 0.75rem;">
+                <strong>Understand Insurance</strong> that WWWC and WYWC do not provide medical insurance coverage for participants. I understand that I am responsible for ensuring adequate insurance coverage for the participant.
+              </li>
+            </ol>
+
+            <p style="margin-bottom: 1rem; font-weight: 600; color: #e60000;">
+              I HAVE READ THIS RELEASE OF LIABILITY AND ASSUMPTION OF RISK AGREEMENT, FULLY UNDERSTAND ITS TERMS, AND UNDERSTAND THAT I HAVE GIVEN UP SUBSTANTIAL RIGHTS BY SIGNING IT. I SIGN IT FREELY AND VOLUNTARILY WITHOUT ANY INDUCEMENT.
+            </p>
+
+            <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #aaa;">
+              <strong>Effective Date:</strong> This waiver is valid for the current wrestling season and all related activities.
+            </p>
+
+            <p style="font-size: 0.9rem; color: #aaa;">
+              <strong>Governing Law:</strong> This agreement shall be governed by the laws of the State of Connecticut.
+            </p>
+          </div>
+
+          <div class="waiver-acknowledgment" style="background: rgba(0, 0, 0, 0.4); padding: 1.5rem; border-radius: 6px; border: 1px solid #e60000;">
+            <label style="display: flex; align-items: flex-start; gap: 1rem; cursor: pointer; font-size: 1.05rem;">
+              <input type="checkbox" id="waiver-checkbox" required style="margin-top: 0.25rem; width: 20px; height: 20px; cursor: pointer; accent-color: #e60000;">
+              <span style="flex: 1; line-height: 1.6;">
+                <strong style="color: #e60000;">I acknowledge that I have read, understood, and agree to the terms</strong> of this Liability Waiver and Release of Claims on behalf of the participant. I understand that by checking this box and submitting this registration, I am legally bound by this agreement.
+              </span>
+            </label>
+
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #aaa; font-style: italic; text-align: center;">
+              By submitting this form, you are providing your electronic signature and consent to this waiver.
+            </p>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Submit Registration</button>
       </form>
 
       <div class="success-message" id="success-message">
@@ -1133,6 +1235,22 @@
 
     createSnowflakes();
 
+    // Waiver checkbox handling
+    const waiverCheckbox = document.getElementById('waiver-checkbox');
+    const submitBtn = document.getElementById('submit-btn');
+
+    waiverCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.style.cursor = 'not-allowed';
+      }
+    });
+
     // Handle form submission
     const form = document.getElementById('winter-signup-form');
     const successMessage = document.getElementById('success-message');
@@ -1153,7 +1271,10 @@
         wrestler_grade: document.getElementById('wrestler-grade').value,
         phone: document.getElementById('phone').value.trim(),
         email: document.getElementById('email').value.trim(),
-        submitted_at: new Date().toISOString()
+        waiver_acknowledged: true,
+        waiver_acknowledged_at: new Date().toISOString(),
+        submitted_at: new Date().toISOString(),
+        on_team: false
       };
 
       console.log('📝 Submitting registration:', formData);

@@ -641,6 +641,49 @@
 
       <div class="content-card">
         <h2 style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.3rem;">🤼</span>
+          <span>Team Roster</span>
+        </h2>
+        <p class="note">Manage team members and send mass emails to selected wrestlers</p>
+
+        <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 1; min-width: 250px;">
+            <input type="text" id="team-search" placeholder="🔍 Search by name, email, or grade..."
+              style="width: 100%; padding: 0.75rem; border: 1px solid #444; background: #1a1a1a; color: #ccc; border-radius: 4px; font-size: 0.95rem;">
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="select-all-team" class="secondary" style="padding: 0.75rem 1rem;">Select All</button>
+            <button id="deselect-all-team" class="secondary" style="padding: 0.75rem 1rem;">Deselect All</button>
+            <button id="email-selected" class="primary" style="padding: 0.75rem 1.5rem; font-weight: 600;">
+              📧 Email Selected (<span id="selected-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="admin-list">
+            <thead>
+              <tr>
+                <th style="width: 5%;"><input type="checkbox" id="select-all-checkbox" style="cursor: pointer;"></th>
+                <th style="width: 18%;">Wrestler Name</th>
+                <th style="width: 10%;">Grade</th>
+                <th style="width: 12%;">DOB</th>
+                <th style="width: 18%;">Parent Name</th>
+                <th style="width: 22%;">Email</th>
+                <th style="width: 15%;">Phone</th>
+              </tr>
+            </thead>
+            <tbody id="team-roster-list"></tbody>
+          </table>
+        </div>
+        <div id="no-team-members" style="display: none; text-align: center; padding: 3rem; color: #aaa;">
+          <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No team members yet</p>
+          <p style="font-size: 0.9rem;">Use the "Add to Team" button in the sign-ups section above to add wrestlers to the team roster</p>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2 style="display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.3rem;">📧</span>
           <span>Contact Messages</span>
         </h2>
@@ -736,12 +779,13 @@
         loadSchedule(),
         loadTournaments(),
         loadWinterSignups(),
+        loadTeamRoster(),
         loadContactMessages(),
         loadSliderSettings()
       ]);
 
       results.forEach((result, index) => {
-        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups', 'Contact Messages', 'Slider Settings'];
+        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups', 'Team Roster', 'Contact Messages', 'Slider Settings'];
         if (result.status === 'rejected') {
           console.error(`Failed to load ${names[index]}:`, result.reason);
         } else {
@@ -1530,6 +1574,8 @@
           const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';
           const dob = row.wrestler_dob ? new Date(row.wrestler_dob).toLocaleDateString() : '';
 
+          const isOnTeam = row.on_team === true;
+
           tr.innerHTML = `
             <td>${row.parent_name || ''}</td>
             <td><strong>${row.wrestler_name || ''}</strong></td>
@@ -1538,9 +1584,20 @@
             <td>${row.phone || ''}</td>
             <td>${row.email || ''}</td>
             <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
-            <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
+            <td class='right'>
+              <button class='${isOnTeam ? 'secondary' : 'primary'}' data-index='${i}' data-action='team' style="margin-right: 0.5rem; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                ${isOnTeam ? '✓ On Team' : '+ Add to Team'}
+              </button>
+              <button class='danger' data-index='${i}' data-action='delete'>Delete</button>
+            </td>
           `;
-          tr.querySelector('button').addEventListener('click', () => deleteSignup(i));
+
+          const teamBtn = tr.querySelector('button[data-action="team"]');
+          const deleteBtn = tr.querySelector('button[data-action="delete"]');
+
+          teamBtn.addEventListener('click', () => toggleTeamMember(i, !isOnTeam));
+          deleteBtn.addEventListener('click', () => deleteSignup(i));
+
           tbody.appendChild(tr);
         }
       } catch (e) {
@@ -1570,6 +1627,7 @@
         if (result.success) {
           alert('✅ Signup deleted successfully!');
           await loadWinterSignups();
+          await loadTeamRoster();
         } else {
           alert('❌ Error: ' + result.error);
         }
@@ -1577,6 +1635,157 @@
         alert('Error: ' + e.message);
       }
     }
+
+    async function toggleTeamMember(index, addToTeam) {
+      try {
+        const res = await fetch('data/winter-signups.json');
+        const signups = await res.json();
+
+        signups[index].on_team = addToTeam;
+
+        // Save to API
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/winter-signups.json',
+            content: JSON.stringify(signups, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          await loadWinterSignups();
+          await loadTeamRoster();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // Team Roster management
+    let teamMembers = [];
+    let selectedMembers = new Set();
+
+    async function loadTeamRoster() {
+      try {
+        const res = await fetch('data/winter-signups.json');
+        const data = await res.json();
+
+        // Filter only team members
+        teamMembers = data.filter(member => member.on_team === true);
+
+        const tbody = $('team-roster-list');
+        const noMembersDiv = $('no-team-members');
+
+        if (teamMembers.length === 0) {
+          tbody.parentElement.parentElement.style.display = 'none';
+          noMembersDiv.style.display = 'block';
+          return;
+        }
+
+        tbody.parentElement.parentElement.style.display = 'table';
+        noMembersDiv.style.display = 'none';
+
+        renderTeamRoster(teamMembers);
+      } catch (e) {
+        console.error('Load team roster error:', e);
+      }
+    }
+
+    function renderTeamRoster(members) {
+      const tbody = $('team-roster-list');
+      tbody.innerHTML = '';
+
+      members.forEach((member, index) => {
+        const tr = document.createElement('tr');
+        const dob = member.wrestler_dob ? new Date(member.wrestler_dob).toLocaleDateString() : '';
+        const isSelected = selectedMembers.has(member.email);
+
+        tr.innerHTML = `
+          <td><input type="checkbox" class="member-checkbox" data-email="${member.email}" ${isSelected ? 'checked' : ''} style="cursor: pointer;"></td>
+          <td><strong>${member.wrestler_name || ''}</strong></td>
+          <td>${member.wrestler_grade || ''}</td>
+          <td>${dob}</td>
+          <td>${member.parent_name || ''}</td>
+          <td>${member.email || ''}</td>
+          <td>${member.phone || ''}</td>
+        `;
+
+        const checkbox = tr.querySelector('.member-checkbox');
+        checkbox.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            selectedMembers.add(member.email);
+          } else {
+            selectedMembers.delete(member.email);
+          }
+          updateSelectedCount();
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      $('selected-count').textContent = selectedMembers.size;
+    }
+
+    // Team roster search
+    $('team-search').addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      const filtered = teamMembers.filter(member => {
+        return (member.wrestler_name || '').toLowerCase().includes(searchTerm) ||
+               (member.parent_name || '').toLowerCase().includes(searchTerm) ||
+               (member.email || '').toLowerCase().includes(searchTerm) ||
+               (member.wrestler_grade || '').toLowerCase().includes(searchTerm);
+      });
+      renderTeamRoster(filtered);
+    });
+
+    // Select/Deselect all
+    $('select-all-checkbox').addEventListener('change', (e) => {
+      const checkboxes = document.querySelectorAll('.member-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = e.target.checked;
+        const email = cb.dataset.email;
+        if (e.target.checked) {
+          selectedMembers.add(email);
+        } else {
+          selectedMembers.delete(email);
+        }
+      });
+      updateSelectedCount();
+    });
+
+    $('select-all-team').addEventListener('click', () => {
+      teamMembers.forEach(member => selectedMembers.add(member.email));
+      renderTeamRoster(teamMembers);
+    });
+
+    $('deselect-all-team').addEventListener('click', () => {
+      selectedMembers.clear();
+      $('select-all-checkbox').checked = false;
+      renderTeamRoster(teamMembers);
+    });
+
+    // Email selected members
+    $('email-selected').addEventListener('click', () => {
+      if (selectedMembers.size === 0) {
+        alert('Please select at least one team member to email');
+        return;
+      }
+
+      const emails = Array.from(selectedMembers).join(',');
+      const subject = encodeURIComponent('Weekend Warriors Wrestling Club - Team Update');
+      const body = encodeURIComponent('Hello Team,\n\n\n\nBest regards,\nWeekend Warriors Wrestling Club');
+
+      // Open default email client with pre-populated recipients
+      window.location.href = `mailto:${emails}?subject=${subject}&body=${body}`;
+    });
 
     // Contact Messages management
     async function loadContactMessages() {
