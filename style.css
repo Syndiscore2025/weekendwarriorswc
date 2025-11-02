@@ -1259,7 +1259,105 @@ footer a:hover {
   }
 }
 
+/* Landscape Mode Fixes - Remove White Bars */
+@media (max-width: 926px) and (orientation: landscape) {
+  html, body {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
 
+  body {
+    background-attachment: scroll; /* Better performance on mobile landscape */
+  }
+
+  header {
+    padding: 1rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  header img.logo {
+    max-width: min(60vw, 200px);
+    max-height: 80px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+  }
+
+  header p {
+    font-size: 0.9rem;
+  }
+
+  nav {
+    width: 100%;
+    padding: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  nav a {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  section {
+    padding: 2rem 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .content-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-sizing: border-box;
+  }
+
+  form {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    box-sizing: border-box;
+  }
+
+  footer {
+    width: 100%;
+    padding: 1.5rem 1rem;
+    box-sizing: border-box;
+  }
+
+  /* Hero slider landscape fixes */
+  .hero-slider {
+    width: 100%;
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+
+  /* Contact info landscape fixes */
+  .contact-info {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+
+  /* Tournament cards landscape fixes */
+  .tournament-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+}
 
 /* Stack tables into readable cards on small phones (no horizontal scroll) */
 @media (max-width: 768px) {

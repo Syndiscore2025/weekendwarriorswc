@@ -657,6 +657,106 @@
         font-size: 1.1rem;
       }
     }
+
+    /* Landscape Mode Fixes - Remove White Bars */
+    @media (max-width: 926px) and (orientation: landscape) {
+      body {
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: hidden;
+        background-attachment: scroll;
+      }
+
+      header {
+        padding: 1rem;
+        width: 100%;
+      }
+
+      header img.logo {
+        max-width: min(60vw, 200px);
+        max-height: 80px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      header p {
+        font-size: 0.9rem;
+      }
+
+      nav {
+        width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+
+      nav a {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        flex: 0 0 auto;
+      }
+
+      section {
+        padding: 2rem 1rem;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .logo-animation-container {
+        height: 150px;
+        width: 100%;
+      }
+
+      .partnership-title {
+        padding: 1rem;
+      }
+
+      .partnership-title h2 {
+        font-size: 1.5rem;
+      }
+
+      .partnership-title p {
+        font-size: 1rem;
+      }
+
+      .program-info-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .program-header h2 {
+        font-size: 1.3rem;
+      }
+
+      .program-card h3 {
+        font-size: 0.95rem;
+      }
+
+      .signup-form-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .signup-form-container h3 {
+        font-size: 1.3rem;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+
+      .submit-btn {
+        padding: 0.9rem;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
