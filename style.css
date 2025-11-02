@@ -719,6 +719,7 @@ section p {
   .hero-slider .slides { height: 100%; }
   .hero-slider .slide {
     inset: 0;
+    background-size: cover;
     background-position: center center;
     display: flex;
     align-items: center;
@@ -732,7 +733,7 @@ section p {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
   .hero-slider .slider-arrow { width: 36px; height: 36px; }
   .hero-slider .slider-arrow.prev { left: 8px; }
