@@ -106,25 +106,32 @@
     .usa-membership-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 0.6rem;
       background: linear-gradient(135deg, #8B1538 0%, #003B7A 100%);
-      padding: 0.6rem 1.2rem !important;
-      border-radius: 6px;
+      padding: 0.75rem 1.5rem !important;
+      border-radius: 8px;
       transition: all 0.3s ease;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      white-space: nowrap;
     }
 
     .usa-membership-btn:hover {
       background: linear-gradient(135deg, #a01a42 0%, #004a99 100%);
-      border-color: rgba(255, 255, 255, 0.6);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(77, 184, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(77, 184, 255, 0.5);
+      border-bottom: 3px solid #4db8ff;
     }
 
     .usa-membership-btn img {
-      height: 20px;
+      height: 24px;
       width: auto;
-      filter: brightness(1.2);
+      filter: brightness(1.1) drop-shadow(0 1px 2px rgba(0,0,0,0.3));
     }
 
     /* Logo Animation Container */
@@ -1036,12 +1043,13 @@
       }
 
       .usa-membership-btn {
-        padding: 0.5rem 0.8rem !important;
-        font-size: 0.8rem;
+        padding: 0.65rem 1rem !important;
+        font-size: 0.75rem;
+        gap: 0.4rem;
       }
 
       .usa-membership-btn img {
-        height: 16px;
+        height: 18px;
       }
 
       section {
