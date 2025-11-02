@@ -86,13 +86,13 @@
     <a href="about.html">About</a>
     <a href="schedule.html" class="active" aria-current="page">Schedule</a>
     <a href="contact.html">Contact</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
-    </a>
     <a href="winter-signups.html" class="winter-nav">
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">25-26 WINTER SEASON</span>
       <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">SIGN-UPS</span>
+    </a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
+      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
     </a>
   </nav>
 
@@ -114,6 +114,28 @@
           </thead>
           <tbody id="schedule-rows">
             <!-- Practice schedule loaded from JSON -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="content-card tournament-card">
+      <h2>UPCOMING PRACTICE DATES</h2>
+      <p style="margin-bottom: 2rem; text-align: center; color: #ccc;">
+        Next 8 weeks of scheduled practices with specific dates.
+      </p>
+      <div class="table-container">
+        <table class="admin-list">
+          <thead>
+            <tr>
+              <th>DATE</th>
+              <th>DAY</th>
+              <th>TIME</th>
+              <th>GROUP</th>
+            </tr>
+          </thead>
+          <tbody id="upcoming-practices">
+            <!-- Upcoming practices loaded from calendar events -->
           </tbody>
         </table>
       </div>
@@ -146,6 +168,7 @@
     async function run() {
       try {
         const schTbody = document.getElementById('schedule-rows');
+        const upcomingTbody = document.getElementById('upcoming-practices');
         const tTbody = document.getElementById('tournament-rows');
 
         // Load schedule from JSON
@@ -163,6 +186,49 @@
               <td data-label="DAY">${r.day}</td>
               <td data-label="TIME">${r.time}</td>
               <td data-label="GROUP">${r.group}</td>
+            </tr>
+          `).join('');
+        }
+
+        // Load calendar events and generate upcoming practice dates
+        const calendarRes = await fetch('data/calendar-events.json');
+        const calendarEvents = await calendarRes.json();
+        if (Array.isArray(calendarEvents) && calendarEvents.length) {
+          const upcomingPractices = [];
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          calendarEvents.forEach(event => {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const targetDay = days.indexOf(event.day);
+            const weeksToShow = event.weeks || 8;
+
+            for (let week = 0; week < weeksToShow; week++) {
+              const date = new Date(today);
+              const currentDay = date.getDay();
+              let daysUntilTarget = targetDay - currentDay;
+              if (daysUntilTarget < 0) daysUntilTarget += 7;
+              date.setDate(date.getDate() + daysUntilTarget + (week * 7));
+
+              upcomingPractices.push({
+                date: date,
+                dateStr: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                day: event.day,
+                time: event.time,
+                group: event.group
+              });
+            }
+          });
+
+          // Sort by date
+          upcomingPractices.sort((a, b) => a.date - b.date);
+
+          upcomingTbody.innerHTML = upcomingPractices.map(p => `
+            <tr>
+              <td data-label="DATE">${p.dateStr}</td>
+              <td data-label="DAY">${p.day}</td>
+              <td data-label="TIME">${p.time}</td>
+              <td data-label="GROUP">${p.group}</td>
             </tr>
           `).join('');
         }

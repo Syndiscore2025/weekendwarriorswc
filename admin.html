@@ -606,6 +606,47 @@
       </div>
 
       <div class="content-card">
+        <h2>Calendar Events (Recurring Practices)</h2>
+        <p style="margin-bottom: 1rem; color: #ccc; font-size: 0.9rem;">
+          Create recurring practice events that will display with actual dates on the schedule page.
+        </p>
+        <div class="stack">
+          <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1.5fr 1fr auto;">
+            <select id="cal-day">
+              <option value="">Select Day</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+            <input id="cal-start-time" type="time" placeholder="Start Time" />
+            <input id="cal-end-time" type="time" placeholder="End Time" />
+            <input id="cal-group" placeholder="Group (e.g., All Groups)" />
+            <input id="cal-weeks" type="number" min="1" max="52" value="8" placeholder="Weeks" style="max-width: 100px;" />
+            <button id="add-calendar-event" type="button" class="success">Add</button>
+          </div>
+          <div class="table-container">
+            <table class="admin-list">
+              <thead>
+                <tr>
+                  <th style="width: 15%;">Day</th>
+                  <th style="width: 20%;">Time</th>
+                  <th style="width: 30%;">Group</th>
+                  <th style="width: 15%;">Next Date</th>
+                  <th style="width: 10%;">Weeks</th>
+                  <th class="right" style="width: 10%;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="calendar-events-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
         <h2>Upcoming Tournaments</h2>
         <div class="stack">
           <div class="tournament-form">
@@ -831,6 +872,7 @@
         loadSlides(),
         loadAudio(),
         loadSchedule(),
+        loadCalendarEvents(),
         loadTournaments(),
         loadWinterSignups(),
         loadTeamRoster(),
@@ -839,7 +881,7 @@
       ]);
 
       results.forEach((result, index) => {
-        const names = ['Slides', 'Audio', 'Schedule', 'Tournaments', 'Winter Signups', 'Team Roster', 'Contact Messages', 'Slider Settings'];
+        const names = ['Slides', 'Audio', 'Schedule', 'Calendar Events', 'Tournaments', 'Winter Signups', 'Team Roster', 'Contact Messages', 'Slider Settings'];
         if (result.status === 'rejected') {
           console.error(`Failed to load ${names[index]}:`, result.reason);
         } else {
@@ -1509,6 +1551,117 @@
       }
     }
 
+    // Calendar Events Functions
+    function getNextDate(dayOfWeek) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const today = new Date();
+      const targetDay = days.indexOf(dayOfWeek);
+      const currentDay = today.getDay();
+      let daysUntilTarget = targetDay - currentDay;
+      if (daysUntilTarget <= 0) daysUntilTarget += 7;
+      const nextDate = new Date(today);
+      nextDate.setDate(today.getDate() + daysUntilTarget);
+      return nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    async function loadCalendarEvents() {
+      try {
+        const res = await fetch('data/calendar-events.json');
+        const data = await res.json();
+        const tbody = $('calendar-events-list');
+        tbody.innerHTML = '';
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const tr = document.createElement('tr');
+          const nextDate = getNextDate(row.day);
+          tr.innerHTML = `<td>${row.day}</td><td>${row.time}</td><td>${row.group}</td><td>${nextDate}</td><td>${row.weeks} weeks</td>` +
+            `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
+          tr.querySelector('button').addEventListener('click', () => deleteCalendarEvent(i));
+          tbody.appendChild(tr);
+        }
+      } catch (e) {
+        console.error('Load calendar events error:', e);
+      }
+    }
+
+    async function deleteCalendarEvent(index) {
+      if (!confirm('Delete this calendar event?')) return;
+
+      try {
+        const res = await fetch('data/calendar-events.json');
+        const events = await res.json();
+        events.splice(index, 1);
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/calendar-events.json',
+            content: JSON.stringify(events, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Calendar event deleted successfully!');
+          await loadCalendarEvents();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    async function handleAddCalendarEvent() {
+      const day = $('cal-day').value.trim();
+      const startTime = $('cal-start-time').value.trim();
+      const endTime = $('cal-end-time').value.trim();
+      const grp = $('cal-group').value.trim();
+      const weeks = parseInt($('cal-weeks').value) || 8;
+
+      if (!day || !startTime || !endTime || !grp) return alert('All fields required');
+
+      const formatTime = (time24) => {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      };
+      const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
+      try {
+        const res = await fetch('data/calendar-events.json');
+        const events = await res.json();
+        events.push({ day, time, group: grp, weeks });
+
+        const saveRes = await fetch(`${API_URL}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            file: 'data/calendar-events.json',
+            content: JSON.stringify(events, null, 2)
+          })
+        });
+
+        const result = await saveRes.json();
+        if (result.success) {
+          alert('✅ Calendar event added successfully!');
+          $('cal-day').value = '';
+          $('cal-start-time').value = '';
+          $('cal-end-time').value = '';
+          $('cal-group').value = '';
+          $('cal-weeks').value = '8';
+          await loadCalendarEvents();
+        } else {
+          alert('❌ Error: ' + result.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
     async function loadTournaments() {
       try {
         const res = await fetch('data/tournaments.json');
@@ -2013,6 +2166,13 @@
         const newAddScheduleBtn = addScheduleBtn.cloneNode(true);
         addScheduleBtn.parentNode.replaceChild(newAddScheduleBtn, addScheduleBtn);
         $('add-schedule').addEventListener('click', handleAddSchedule);
+      }
+
+      const addCalendarEventBtn = $('add-calendar-event');
+      if (addCalendarEventBtn) {
+        const newAddCalendarEventBtn = addCalendarEventBtn.cloneNode(true);
+        addCalendarEventBtn.parentNode.replaceChild(newAddCalendarEventBtn, addCalendarEventBtn);
+        $('add-calendar-event').addEventListener('click', handleAddCalendarEvent);
       }
 
       const addTournamentBtn = $('add-tournament');
