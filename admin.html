@@ -681,8 +681,8 @@
     // API Configuration
     const API_URL = 'https://api.weekendwarriorswc.com';
 
-    // Check if already signed in
-    if (localStorage.getItem('admin-auth') === 'true') {
+    // Check if already signed in (session-based)
+    if (sessionStorage.getItem('admin-auth') === 'true') {
       showDashboard();
     }
 
@@ -696,7 +696,7 @@
         const data = await res.json();
 
         if (password === data.password) {
-          localStorage.setItem('admin-auth', 'true');
+          sessionStorage.setItem('admin-auth', 'true');
           showDashboard();
         } else {
           authError.textContent = 'Incorrect password';
@@ -713,7 +713,7 @@
 
     // Sign out handler
     $('sign-out').addEventListener('click', () => {
-      localStorage.removeItem('admin-auth');
+      sessionStorage.removeItem('admin-auth');
       authView.classList.remove('hidden');
       userView.classList.add('hidden');
       dash.classList.add('hidden');

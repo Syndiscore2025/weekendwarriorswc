@@ -1189,11 +1189,18 @@ footer a:hover {
   }
   nav {
     flex-wrap: wrap;
+    gap: 0.5rem;
   }
   nav a {
-    padding: 1rem;
-    flex: 1 1 50%;
+    padding: 0.9rem 0.5rem;
+    flex: 1 1 calc(50% - 0.25rem);
     text-align: center;
+    font-size: 0.85rem;
+  }
+  /* Winter nav link takes full width on mobile */
+  nav a.winter-nav {
+    flex: 1 1 100%;
+    padding: 1rem 0.5rem;
   }
   section {
     padding: 3rem 1rem;
@@ -1261,15 +1268,24 @@ footer a:hover {
 
 /* Landscape Mode Fixes - Remove White Bars */
 @media (max-width: 926px) and (orientation: landscape) {
-  html, body {
-    width: 100vw;
-    max-width: 100vw;
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
   }
 
   body {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
     background-attachment: scroll; /* Better performance on mobile landscape */
   }
 
@@ -1356,6 +1372,28 @@ footer a:hover {
     max-width: 100%;
     padding: 1.5rem;
     box-sizing: border-box;
+  }
+
+  /* Ensure all containers fit within viewport */
+  .table-container,
+  .program-info-container,
+  .program-options,
+  .program-card,
+  .logo-animation-container,
+  .signup-form-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Prevent any element from causing horizontal scroll */
+  * {
+    max-width: 100vw;
+  }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
   }
 }
 
