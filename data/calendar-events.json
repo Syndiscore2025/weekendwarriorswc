@@ -1,2 +1,8 @@
-[]
-
+[
+  {
+    "day": "Tuesday",
+    "time": "5:00 PM - 6:30 PM",
+    "group": "All Groups",
+    "weeks": 14
+  }
+]
