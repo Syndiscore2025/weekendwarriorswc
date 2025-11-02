@@ -815,6 +815,12 @@
     // API Configuration
     const API_URL = 'https://api.weekendwarriorswc.com';
 
+    // Cache-busting function to ensure fresh data
+    const cacheBust = (url) => {
+      const separator = url.includes('?') ? '&' : '?';
+      return `${url}${separator}_=${Date.now()}`;
+    };
+
     // Check if already signed in (session-based)
     if (sessionStorage.getItem('admin-auth') === 'true') {
       showDashboard();
@@ -890,7 +896,7 @@
     async function loadSlides() {
       try {
         console.log('Loading slides...');
-        const res = await fetch('data/slides.json');
+        const res = await fetch(cacheBust('data/slides.json'));
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
@@ -929,7 +935,7 @@
       if (!confirm('Delete this slide?')) return;
 
       try {
-        const res = await fetch('data/slides.json');
+        const res = await fetch(cacheBust('data/slides.json'));
         const slides = await res.json();
         slides.splice(index, 1);
 
@@ -969,7 +975,7 @@
 
       try {
         // Read current slides first
-        const res = await fetch('data/slides.json');
+        const res = await fetch(cacheBust('data/slides.json'));
         const slides = await res.json();
 
         // Upload all files
@@ -1041,7 +1047,7 @@
 
     async function loadAudio() {
       try {
-        const res = await fetch('data/audio.json');
+        const res = await fetch(cacheBust('data/audio.json'));
         const data = await res.json();
         const div = $('current-audio');
 
@@ -1246,7 +1252,7 @@
       if (!confirm('Delete this track from the playlist?')) return;
 
       try {
-        const res = await fetch('data/audio.json');
+        const res = await fetch(cacheBust('data/audio.json'));
         const data = await res.json();
 
         // Handle both formats
@@ -1284,7 +1290,7 @@
       if (fromIndex === toIndex || toIndex < 0) return;
 
       try {
-        const res = await fetch('data/audio.json');
+        const res = await fetch(cacheBust('data/audio.json'));
         const data = await res.json();
         let tracks = data?.tracks || [];
 
@@ -1322,7 +1328,7 @@
         const startTime = parseTime(startInput.value);
         const endTime = parseTime(endInput.value);
 
-        const res = await fetch('data/audio.json');
+        const res = await fetch(cacheBust('data/audio.json'));
         const data = await res.json();
         let tracks = data?.tracks || [];
 
@@ -1362,7 +1368,7 @@
 
       try {
         // Load existing tracks
-        const res = await fetch('data/audio.json');
+        const res = await fetch(cacheBust('data/audio.json'));
         const data = await res.json();
         let tracks = [];
 
@@ -1470,7 +1476,7 @@
 
     async function loadCalendarEvents() {
       try {
-        const res = await fetch('data/calendar-events.json');
+        const res = await fetch(cacheBust('data/calendar-events.json'));
         const data = await res.json();
         const tbody = $('calendar-events-list');
         tbody.innerHTML = '';
@@ -1493,7 +1499,7 @@
       if (!confirm('Delete this calendar event?')) return;
 
       try {
-        const res = await fetch('data/calendar-events.json');
+        const res = await fetch(cacheBust('data/calendar-events.json'));
         const events = await res.json();
         events.splice(index, 1);
 
@@ -1537,7 +1543,7 @@
       const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
 
       try {
-        const res = await fetch('data/calendar-events.json');
+        const res = await fetch(cacheBust('data/calendar-events.json'));
         const events = await res.json();
 
         const newEvent = { day, time, group: grp };
@@ -1576,7 +1582,7 @@
     // One-Off Practices Functions
     async function loadOneOffPractices() {
       try {
-        const res = await fetch('data/one-off-practices.json');
+        const res = await fetch(cacheBust('data/one-off-practices.json'));
         const data = await res.json();
         const tbody = $('oneoff-practices-list');
         tbody.innerHTML = '';
@@ -1621,7 +1627,7 @@
       if (!confirm('Delete this one-off practice?')) return;
 
       try {
-        const res = await fetch('data/one-off-practices.json');
+        const res = await fetch(cacheBust('data/one-off-practices.json'));
         const practices = await res.json();
         practices.splice(index, 1);
 
@@ -1666,7 +1672,7 @@
       try {
         let practices = [];
         try {
-          const res = await fetch('data/one-off-practices.json');
+          const res = await fetch(cacheBust('data/one-off-practices.json'));
           practices = await res.json();
         } catch (e) {
           // File doesn't exist yet, start with empty array
@@ -1701,7 +1707,7 @@
 
     async function loadTournaments() {
       try {
-        const res = await fetch('data/tournaments.json');
+        const res = await fetch(cacheBust('data/tournaments.json'));
         const data = await res.json();
         const tbody = $('tournament-list');
         tbody.innerHTML = '';
@@ -1728,7 +1734,7 @@
       if (!confirm('Delete this tournament?')) return;
 
       try {
-        const res = await fetch('data/tournaments.json');
+        const res = await fetch(cacheBust('data/tournaments.json'));
         const tournaments = await res.json();
         tournaments.splice(index, 1);
 
@@ -1766,7 +1772,7 @@
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
       try {
-        const res = await fetch('data/tournaments.json');
+        const res = await fetch(cacheBust('data/tournaments.json'));
         const tournaments = await res.json();
         tournaments.push({
           date,
@@ -1812,7 +1818,7 @@
     // Winter Sign Ups management
     async function loadWinterSignups() {
       try {
-        const res = await fetch('data/winter-signups.json');
+        const res = await fetch(cacheBust('data/winter-signups.json'));
         const data = await res.json();
         const tbody = $('winter-signups-list');
         tbody.innerHTML = '';
@@ -1866,7 +1872,7 @@
       if (!confirm('Delete this signup?')) return;
 
       try {
-        const res = await fetch('data/winter-signups.json');
+        const res = await fetch(cacheBust('data/winter-signups.json'));
         const signups = await res.json();
         signups.splice(index, 1);
 
@@ -1895,7 +1901,7 @@
 
     async function toggleTeamMember(index, addToTeam) {
       try {
-        const res = await fetch('data/winter-signups.json');
+        const res = await fetch(cacheBust('data/winter-signups.json'));
         const signups = await res.json();
 
         signups[index].on_team = addToTeam;
@@ -1928,7 +1934,7 @@
 
     async function loadTeamRoster() {
       try {
-        const res = await fetch('data/winter-signups.json');
+        const res = await fetch(cacheBust('data/winter-signups.json'));
         const data = await res.json();
 
         // Filter only team members
@@ -2050,7 +2056,7 @@
     // Contact Messages management
     async function loadContactMessages() {
       try {
-        const res = await fetch('data/contact-messages.json');
+        const res = await fetch(cacheBust('data/contact-messages.json'));
         const data = await res.json();
         const tbody = $('contact-messages-list');
         tbody.innerHTML = '';
@@ -2103,7 +2109,7 @@
       if (!confirm('Delete this message?')) return;
 
       try {
-        const res = await fetch('data/contact-messages.json');
+        const res = await fetch(cacheBust('data/contact-messages.json'));
         const messages = await res.json();
         messages.splice(index, 1);
 
@@ -2132,7 +2138,7 @@
     // Load slider time settings
     async function loadSliderSettings() {
       try {
-        const res = await fetch('data/settings.json');
+        const res = await fetch(cacheBust('data/settings.json'));
         const settings = await res.json();
         const sliderTime = settings.sliderInterval || 5;
 

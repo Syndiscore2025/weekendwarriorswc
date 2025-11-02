@@ -99,9 +99,6 @@
   <section>
     <div class="content-card tournament-card">
       <h2>UPCOMING PRACTICE DATES</h2>
-      <p style="margin-bottom: 2rem; text-align: center; color: #ccc;">
-        Next week of scheduled practices with specific dates.
-      </p>
       <div class="table-container">
         <table class="admin-list">
           <thead>
@@ -143,19 +140,25 @@
     </div>
 
   <script>
+    // Cache-busting function to ensure fresh data
+    const cacheBust = (url) => {
+      const separator = url.includes('?') ? '&' : '?';
+      return `${url}${separator}_=${Date.now()}`;
+    };
+
     async function run() {
       try {
         const upcomingTbody = document.getElementById('upcoming-practices');
         const tTbody = document.getElementById('tournament-rows');
 
         // Load calendar events and generate upcoming practice dates
-        const calendarRes = await fetch('data/calendar-events.json');
+        const calendarRes = await fetch(cacheBust('data/calendar-events.json'));
         const calendarEvents = await calendarRes.json();
 
         // Load one-off practices
         let oneOffPractices = [];
         try {
-          const oneOffRes = await fetch('data/one-off-practices.json');
+          const oneOffRes = await fetch(cacheBust('data/one-off-practices.json'));
           oneOffPractices = await oneOffRes.json();
         } catch (e) {
           console.log('No one-off practices found');
@@ -237,7 +240,7 @@
         }
 
         // Load tournaments from JSON
-        const tournamentsRes = await fetch('data/tournaments.json');
+        const tournamentsRes = await fetch(cacheBust('data/tournaments.json'));
         const tournaments = await tournamentsRes.json();
         if (Array.isArray(tournaments) && tournaments.length) {
           tTbody.innerHTML = tournaments.map(r => {
