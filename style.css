@@ -245,25 +245,7 @@ nav a.active::before, nav a[aria-current="page"]::before {
   overflow: hidden;
 }
 
-.usa-membership-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 100%);
-  transition: left 0.6s ease;
-  pointer-events: none;
-}
-
-.usa-membership-btn:hover::before {
-  left: 100%;
-}
-
+.usa-membership-btn::before,
 .usa-membership-btn::after {
   display: none !important;
 }
@@ -315,26 +297,7 @@ nav a.winter-nav {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Subtle shine effect */
-nav a.winter-nav::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    transparent 100%);
-  transition: left 0.6s ease;
-  pointer-events: none;
-}
-
-nav a.winter-nav:hover::before {
-  left: 100%;
-}
-
+nav a.winter-nav::before,
 nav a.winter-nav::after {
   display: none !important;
 }
