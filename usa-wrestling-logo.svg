@@ -1,14 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
-  <!-- USA Map in Red -->
-  <path d="M60,80 L60,50 L90,50 L90,80 L120,80 L120,50 L150,50 L150,80 L180,80 L180,110 L150,110 L150,140 L120,140 L120,110 L90,110 L90,140 L60,140 L60,110 L30,110 L30,80 Z" fill="#8B1538"/>
-  
-  <!-- Wrestlers silhouette in white -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+  <!-- Red section (left side of USA map) -->
+  <path d="M10,30 Q15,25 25,25 L70,25 Q75,25 75,30 L75,50 Q75,55 70,55 L50,55 L50,70 Q50,75 45,75 L30,75 Q25,75 25,70 L25,55 L15,55 Q10,55 10,50 Z" fill="#8B1538"/>
+
+  <!-- White wrestlers silhouette in center -->
   <g fill="white">
-    <ellipse cx="100" cy="95" rx="35" ry="30" transform="rotate(-20 100 95)"/>
-    <ellipse cx="140" cy="95" rx="35" ry="30" transform="rotate(20 140 95)"/>
+    <ellipse cx="75" cy="52" rx="22" ry="18" transform="rotate(-25 75 52)"/>
+    <ellipse cx="105" cy="52" rx="22" ry="18" transform="rotate(25 105 52)"/>
+    <circle cx="90" cy="60" r="8" opacity="0.9"/>
   </g>
-  
-  <!-- USA Map in Blue -->
-  <path d="M180,80 L210,80 L210,50 L240,50 L240,80 L270,80 L270,110 L240,110 L240,140 L210,140 L210,110 L180,110 Z" fill="#003B7A"/>
+
+  <!-- Blue section (right side of USA map) -->
+  <path d="M105,30 Q105,25 110,25 L155,25 Q165,25 170,30 L185,45 Q190,50 190,55 L190,70 Q190,75 185,75 L150,75 Q145,75 145,70 L145,55 L125,55 Q120,55 120,50 L120,35 Q115,30 105,30 Z" fill="#003B7A"/>
 </svg>
 
