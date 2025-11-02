@@ -5,8 +5,22 @@ const { Octokit } = require('@octokit/rest');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS Configuration - Allow requests from your website
+const corsOptions = {
+  origin: [
+    'https://www.weekendwarriorswc.com',
+    'https://weekendwarriorswc.com',
+    'http://localhost:3000',
+    'http://localhost:8000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '25mb' }));
 
 // GitHub configuration

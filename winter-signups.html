@@ -439,30 +439,14 @@
       font-weight: 700;
       margin: 1.5rem 0;
       text-align: center;
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
       padding: 1rem 1.5rem;
       border-radius: 12px;
-      border: 2px solid rgba(255, 215, 0, 0.4);
-      box-shadow:
-        0 4px 15px rgba(255, 215, 0, 0.2),
-        inset 0 1px 0 rgba(255, 215, 0, 0.3);
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-      animation: priceGlow 3s ease-in-out infinite;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.15);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
       position: relative;
       z-index: 1;
-    }
-
-    @keyframes priceGlow {
-      0%, 100% {
-        box-shadow:
-          0 4px 15px rgba(255, 215, 0, 0.2),
-          inset 0 1px 0 rgba(255, 215, 0, 0.3);
-      }
-      50% {
-        box-shadow:
-          0 6px 25px rgba(255, 215, 0, 0.4),
-          inset 0 1px 0 rgba(255, 215, 0, 0.5);
-      }
     }
 
     .schedule-info {
@@ -494,31 +478,15 @@
     }
 
     .important-note {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
-      border: 3px solid #ffd700;
-      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.08) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      border-radius: 12px;
       padding: 1.5rem;
       margin: 2.5rem 0;
       text-align: center;
-      box-shadow:
-        0 6px 20px rgba(255, 215, 0, 0.3),
-        inset 0 1px 0 rgba(255, 215, 0, 0.4);
-      animation: noteGlow 4s ease-in-out infinite;
+      box-shadow: 0 3px 12px rgba(255, 215, 0, 0.2);
       position: relative;
       z-index: 1;
-    }
-
-    @keyframes noteGlow {
-      0%, 100% {
-        box-shadow:
-          0 6px 20px rgba(255, 215, 0, 0.3),
-          inset 0 1px 0 rgba(255, 215, 0, 0.4);
-      }
-      50% {
-        box-shadow:
-          0 8px 30px rgba(255, 215, 0, 0.5),
-          inset 0 1px 0 rgba(255, 215, 0, 0.6);
-      }
     }
 
     .important-note p {
@@ -527,7 +495,7 @@
       font-weight: 700;
       margin: 0;
       letter-spacing: 1.5px;
-      text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
     .add-ons {
@@ -596,11 +564,11 @@
       color: #ffd700;
       font-weight: 700;
       font-size: 1.3rem;
-      text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-      background: rgba(255, 215, 0, 0.1);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      background: rgba(255, 215, 0, 0.08);
       padding: 0.25rem 0.75rem;
       border-radius: 8px;
-      border: 1px solid rgba(255, 215, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.25);
     }
 
     /* Sign Up Form */
@@ -1193,13 +1161,22 @@
 
       try {
         // Load current signups
+        console.log('📥 Loading current signups...');
         const res = await fetch('data/winter-signups.json');
+
+        if (!res.ok) {
+          throw new Error(`Failed to load signups: ${res.status} ${res.statusText}`);
+        }
+
         const signups = await res.json();
+        console.log('✅ Current signups loaded:', signups.length);
 
         // Add new signup
         signups.push(formData);
+        console.log('➕ Added new signup, total:', signups.length);
 
         // Save to API
+        console.log('💾 Saving to API...');
         const saveRes = await fetch(`${API_URL}/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1209,9 +1186,20 @@
           })
         });
 
+        console.log('📡 API Response status:', saveRes.status);
+
+        if (!saveRes.ok) {
+          const errorText = await saveRes.text();
+          console.error('❌ API Error Response:', errorText);
+          throw new Error(`API returned ${saveRes.status}: ${errorText}`);
+        }
+
         const result = await saveRes.json();
+        console.log('✅ API Response:', result);
 
         if (result.success) {
+          console.log('🎉 Registration successful!');
+
           // Show success message
           successMessage.classList.add('show');
           form.reset();
@@ -1238,13 +1226,30 @@
             window.location.href = 'index.html';
           }, 5000);
         } else {
-          alert('❌ Error submitting registration: ' + result.error);
+          console.error('❌ Save failed:', result.error);
+          alert('❌ Error submitting registration: ' + (result.error || 'Unknown error'));
           submitBtn.textContent = originalBtnText;
           submitBtn.disabled = false;
         }
       } catch (error) {
-        console.error('Submission error:', error);
-        alert('❌ Error submitting registration. Please try again or contact us directly.');
+        console.error('❌ Submission error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+
+        let errorMessage = 'Error submitting registration. ';
+
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage += 'Cannot connect to server. Please check your internet connection or try again later.';
+        } else if (error.message.includes('Failed to load signups')) {
+          errorMessage += 'Cannot load registration data. Please refresh the page and try again.';
+        } else {
+          errorMessage += error.message || 'Please try again or contact us directly.';
+        }
+
+        alert('❌ ' + errorMessage);
         submitBtn.textContent = originalBtnText;
         submitBtn.disabled = false;
       }

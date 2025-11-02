@@ -85,7 +85,7 @@
   </footer>
 
   <script>
-    const API_URL = 'https://weekendwarriorswc-api.vercel.app/api';
+    const API_URL = 'https://api.weekendwarriorswc.com';
 
     const contactForm = document.getElementById('contact-form');
     const successMsg = document.getElementById('contact-success');
@@ -108,13 +108,22 @@
 
       try {
         // Load existing messages
+        console.log('📥 Loading current messages...');
         const res = await fetch('data/contact-messages.json');
+
+        if (!res.ok) {
+          throw new Error(`Failed to load messages: ${res.status} ${res.statusText}`);
+        }
+
         const messages = await res.json();
+        console.log('✅ Current messages loaded:', messages.length);
 
         // Add new message
         messages.push(messageData);
+        console.log('➕ Added new message, total:', messages.length);
 
         // Save to API
+        console.log('💾 Saving to API...');
         const saveRes = await fetch(`${API_URL}/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -124,9 +133,20 @@
           })
         });
 
+        console.log('📡 API Response status:', saveRes.status);
+
+        if (!saveRes.ok) {
+          const errorText = await saveRes.text();
+          console.error('❌ API Error Response:', errorText);
+          throw new Error(`API returned ${saveRes.status}: ${errorText}`);
+        }
+
         const result = await saveRes.json();
+        console.log('✅ API Response:', result);
 
         if (result.success) {
+          console.log('🎉 Message sent successfully!');
+
           // Show success message
           contactForm.style.display = 'none';
           successMsg.style.display = 'block';
@@ -140,8 +160,24 @@
           throw new Error(result.error || 'Failed to send message');
         }
       } catch (error) {
-        console.error('Error sending message:', error);
-        alert('Failed to send message. Please try again or contact us directly at weekendwarriorswrestlingclub@gmail.com');
+        console.error('❌ Error sending message:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+
+        let errorMessage = 'Failed to send message. ';
+
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage += 'Cannot connect to server. Please check your internet connection or try again later.';
+        } else if (error.message.includes('Failed to load messages')) {
+          errorMessage += 'Cannot load message data. Please refresh the page and try again.';
+        } else {
+          errorMessage += 'Please try again or contact us directly at weekendwarriorswrestlingclub@gmail.com';
+        }
+
+        alert(errorMessage);
       } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;

@@ -780,8 +780,12 @@
         }
         console.log(`Loaded ${data.length} slides`);
       } catch (e) {
-        console.error('Load slides error:', e);
-        alert('Failed to load slides: ' + e.message);
+        console.error('❌ Load slides error:', e);
+        // Don't block the page with an alert on initial load
+        const tbody = $('slides-list');
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem; color: #ff6b6b;">⚠️ Error loading slides. Please refresh the page.</td></tr>';
+        }
       }
     }
 
