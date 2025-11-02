@@ -955,13 +955,19 @@
       }
 
       .modal-footer {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+        padding: 1rem !important;
       }
 
-      .modal-footer p {
-        font-size: 0.85rem !important;
+      .modal-footer button {
+        width: 100%;
+        font-size: 1rem !important;
+        padding: 0.8rem 1.5rem !important;
+      }
+
+      /* Mobile waiver info grid */
+      .modal-body > div > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
       }
     }
 
@@ -1244,6 +1250,11 @@
                 <option value="High School">High School</option>
               </select>
             </div>
+
+            <div class="form-group">
+              <label for="wrestler-weight">Approximate Weight (lbs) *</label>
+              <input type="number" id="wrestler-weight" name="wrestler-weight" placeholder="e.g., 85" min="30" max="400" required>
+            </div>
           </div>
         </div>
 
@@ -1264,6 +1275,16 @@
             <div class="form-group form-group-full">
               <label for="email">Email Address *</label>
               <input type="email" id="email" name="email" placeholder="parent@example.com" required>
+            </div>
+
+            <div class="form-group form-group-full">
+              <label for="address">Street Address *</label>
+              <input type="text" id="address" name="address" placeholder="123 Main Street" required>
+            </div>
+
+            <div class="form-group">
+              <label for="town">Town/City *</label>
+              <input type="text" id="town" name="town" placeholder="e.g., Wethersfield" required>
             </div>
           </div>
         </div>
@@ -1345,26 +1366,34 @@
               </li>
             </ol>
 
-            <p style="margin-bottom: 1rem; font-weight: 600; color: #e60000;">
+            <p style="margin-bottom: 1.5rem; font-weight: 600; color: #e60000; font-size: 1rem; line-height: 1.6; padding: 1rem; background: rgba(230, 0, 0, 0.1); border-left: 4px solid #e60000; border-radius: 4px;">
               I HAVE READ THIS RELEASE OF LIABILITY AND ASSUMPTION OF RISK AGREEMENT, FULLY UNDERSTAND ITS TERMS, AND UNDERSTAND THAT I HAVE GIVEN UP SUBSTANTIAL RIGHTS BY SIGNING IT. I SIGN IT FREELY AND VOLUNTARILY WITHOUT ANY INDUCEMENT.
             </p>
 
-            <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #aaa;">
-              <strong>Effective Date:</strong> This waiver is valid for the current wrestling season and all related activities.
-            </p>
-
-            <p style="font-size: 0.9rem; color: #aaa;">
-              <strong>Governing Law:</strong> This agreement shall be governed by the laws of the State of Connecticut.
-            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; background: rgba(0, 0, 0, 0.3); border-radius: 6px; margin-top: 1rem;">
+              <div>
+                <p style="margin: 0; font-size: 0.85rem; color: #888;">
+                  <strong style="color: #4db8ff;">Effective Date:</strong>
+                </p>
+                <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: #ddd;">
+                  Current wrestling season and all related activities
+                </p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 0.85rem; color: #888;">
+                  <strong style="color: #4db8ff;">Governing Law:</strong>
+                </p>
+                <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: #ddd;">
+                  State of Connecticut
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="modal-footer" style="background: rgba(0, 0, 0, 0.5); padding: 1.5rem 2rem; border-radius: 0 0 10px 10px; display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #e60000;">
-          <p style="margin: 0; font-size: 0.9rem; color: #aaa; font-style: italic;">
-            By closing this window and checking the agreement box, you acknowledge acceptance of these terms.
-          </p>
-          <button id="close-modal-btn" class="primary" style="padding: 0.75rem 2rem; background: linear-gradient(135deg, #e60000 0%, #b30000 100%); color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(230, 0, 0, 0.3);">
-            I Understand - Close
+        <div class="modal-footer" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%); padding: 1.25rem 2rem; border-radius: 0 0 10px 10px; display: flex; justify-content: center; align-items: center; border-top: 2px solid #e60000;">
+          <button id="close-modal-btn" class="primary" style="padding: 0.9rem 3rem; background: linear-gradient(135deg, #e60000 0%, #b30000 100%); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(230, 0, 0, 0.4); text-transform: uppercase; letter-spacing: 1px;">
+            ✓ I Understand - Close
           </button>
         </div>
       </div>
@@ -1473,8 +1502,11 @@
         wrestler_name: document.getElementById('wrestler-name').value.trim(),
         wrestler_dob: document.getElementById('wrestler-dob').value,
         wrestler_grade: document.getElementById('wrestler-grade').value,
+        wrestler_weight: document.getElementById('wrestler-weight').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         email: document.getElementById('email').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        town: document.getElementById('town').value.trim(),
         waiver_acknowledged: true,
         waiver_acknowledged_at: new Date().toISOString(),
         submitted_at: new Date().toISOString(),

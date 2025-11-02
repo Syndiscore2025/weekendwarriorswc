@@ -674,13 +674,15 @@
           <table class="admin-list">
             <thead>
               <tr>
-                <th style="width: 14%;">Parent Name</th>
-                <th style="width: 14%;">Wrestler Name</th>
-                <th style="width: 10%;">DOB</th>
-                <th style="width: 8%;">Grade</th>
-                <th style="width: 12%;">Phone</th>
-                <th style="width: 18%;">Email</th>
-                <th style="width: 14%;">Submitted</th>
+                <th style="width: 12%;">Parent Name</th>
+                <th style="width: 12%;">Wrestler Name</th>
+                <th style="width: 8%;">DOB</th>
+                <th style="width: 6%;">Grade</th>
+                <th style="width: 6%;">Weight</th>
+                <th style="width: 10%;">Phone</th>
+                <th style="width: 14%;">Email</th>
+                <th style="width: 10%;">Town</th>
+                <th style="width: 12%;">Submitted</th>
                 <th class="right" style="width: 10%;">Actions</th>
               </tr>
             </thead>
@@ -714,13 +716,15 @@
           <table class="admin-list">
             <thead>
               <tr>
-                <th style="width: 5%;"><input type="checkbox" id="select-all-checkbox" style="cursor: pointer;"></th>
-                <th style="width: 18%;">Wrestler Name</th>
-                <th style="width: 10%;">Grade</th>
-                <th style="width: 12%;">DOB</th>
-                <th style="width: 18%;">Parent Name</th>
-                <th style="width: 22%;">Email</th>
-                <th style="width: 15%;">Phone</th>
+                <th style="width: 4%;"><input type="checkbox" id="select-all-checkbox" style="cursor: pointer;"></th>
+                <th style="width: 14%;">Wrestler Name</th>
+                <th style="width: 8%;">Grade</th>
+                <th style="width: 7%;">Weight</th>
+                <th style="width: 10%;">DOB</th>
+                <th style="width: 14%;">Parent Name</th>
+                <th style="width: 18%;">Email</th>
+                <th style="width: 12%;">Phone</th>
+                <th style="width: 13%;">Town</th>
               </tr>
             </thead>
             <tbody id="team-roster-list"></tbody>
@@ -1613,7 +1617,7 @@
         tbody.innerHTML = '';
 
         if (!data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
           return;
         }
 
@@ -1631,8 +1635,10 @@
             <td><strong>${row.wrestler_name || ''}</strong></td>
             <td>${dob}</td>
             <td>${row.wrestler_grade || ''}</td>
+            <td>${row.wrestler_weight ? row.wrestler_weight + ' lbs' : '-'}</td>
             <td>${row.phone || ''}</td>
             <td>${row.email || ''}</td>
+            <td>${row.town || '-'}</td>
             <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
             <td class='right'>
               <button class='${isOnTeam ? 'secondary' : 'primary'}' data-index='${i}' data-action='team' style="margin-right: 0.5rem; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
@@ -1758,10 +1764,12 @@
           <td><input type="checkbox" class="member-checkbox" data-email="${member.email}" ${isSelected ? 'checked' : ''} style="cursor: pointer;"></td>
           <td><strong>${member.wrestler_name || ''}</strong></td>
           <td>${member.wrestler_grade || ''}</td>
+          <td>${member.wrestler_weight ? member.wrestler_weight + ' lbs' : '-'}</td>
           <td>${dob}</td>
           <td>${member.parent_name || ''}</td>
           <td>${member.email || ''}</td>
           <td>${member.phone || ''}</td>
+          <td>${member.town || '-'}</td>
         `;
 
         const checkbox = tr.querySelector('.member-checkbox');
