@@ -4,5 +4,11 @@
     "time": "5:00 PM - 6:30 PM",
     "group": "All Groups",
     "weeks": 14
+  },
+  {
+    "day": "Wednesday",
+    "time": "5:00 PM - 7:00 PM",
+    "group": "Advanced Group",
+    "weeks": 14
   }
 ]
