@@ -223,6 +223,169 @@
       font-weight: 600;
     }
 
+    /* Program Information Section */
+    .program-info-container {
+      background: linear-gradient(135deg, rgba(0, 45, 77, 0.95) 0%, rgba(0, 26, 51, 0.95) 100%);
+      border: 3px solid #4db8ff;
+      border-radius: 15px;
+      padding: 2.5rem;
+      margin: 2rem auto;
+      max-width: 900px;
+      box-shadow: 0 12px 40px rgba(77, 184, 255, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .program-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(77, 184, 255, 0.3);
+    }
+
+    .program-header h2 {
+      color: #4db8ff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .program-header .grades {
+      color: #80d4ff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+    .program-header .location {
+      color: #b3e0ff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0.5rem 0;
+    }
+
+    .program-options {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .program-card {
+      background: rgba(0, 26, 51, 0.6);
+      border: 2px solid #4db8ff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .program-card:hover {
+      background: rgba(0, 45, 77, 0.8);
+      box-shadow: 0 8px 24px rgba(77, 184, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .program-card h3 {
+      color: #4db8ff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.4;
+    }
+
+    .price-highlight {
+      color: #ffd700;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      text-align: center;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .schedule-info {
+      color: #b3e0ff;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .schedule-info p {
+      margin: 0.5rem 0;
+    }
+
+    .schedule-info strong {
+      color: #80d4ff;
+      font-weight: 700;
+    }
+
+    .important-note {
+      background: rgba(255, 215, 0, 0.15);
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .important-note p {
+      color: #ffd700;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .add-ons {
+      background: rgba(0, 26, 51, 0.6);
+      border: 2px solid #4db8ff;
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .add-ons h3 {
+      color: #4db8ff;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .add-ons ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .add-ons li {
+      color: #b3e0ff;
+      font-size: 1.1rem;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: rgba(0, 45, 77, 0.4);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .add-ons li:hover {
+      background: rgba(0, 45, 77, 0.7);
+      transform: translateX(5px);
+    }
+
+    .addon-price {
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
     /* Sign Up Form */
     .signup-form-container {
       background: linear-gradient(135deg, rgba(0, 45, 77, 0.9) 0%, rgba(0, 26, 51, 0.9) 100%);
@@ -409,6 +572,65 @@
         font-size: 1rem;
       }
 
+      /* Program Info Mobile Styles */
+      .program-info-container {
+        padding: 1.5rem 1rem;
+        margin: 1rem 1rem;
+        width: calc(100% - 2rem);
+      }
+
+      .program-header h2 {
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+      }
+
+      .program-header .grades {
+        font-size: 1.1rem;
+      }
+
+      .program-header .location {
+        font-size: 1rem;
+      }
+
+      .program-card {
+        padding: 1rem;
+      }
+
+      .program-card h3 {
+        font-size: 0.95rem;
+        line-height: 1.3;
+      }
+
+      .price-highlight {
+        font-size: 0.95rem;
+        padding: 0.6rem;
+      }
+
+      .schedule-info {
+        font-size: 0.9rem;
+      }
+
+      .important-note p {
+        font-size: 1.1rem;
+      }
+
+      .add-ons {
+        padding: 1rem;
+      }
+
+      .add-ons h3 {
+        font-size: 1.1rem;
+      }
+
+      .add-ons li {
+        font-size: 0.95rem;
+        padding: 0.6rem;
+      }
+
+      .addon-price {
+        font-size: 1rem;
+      }
+
       .signup-form-container {
         padding: 2rem 1.5rem;
         margin: 1rem 1rem 2rem;
@@ -498,6 +720,54 @@
     <div class="partnership-title">
       <h2><span>❄️</span> Winter 2025 Partnership <span>❄️</span></h2>
       <p>Weekend Warriors Wrestling Club × Wethersfield Youth Wrestling Club</p>
+    </div>
+
+    <!-- Program Information -->
+    <div class="program-info-container">
+      <div class="program-header">
+        <h2>December 1<sup>st</sup> 2025 – March 1<sup>st</sup> 2026</h2>
+        <p class="grades">Grades 4<sup>th</sup>-8<sup>th</sup></p>
+        <p class="location">@ Wethersfield High School Wrestling Room</p>
+      </div>
+
+      <div class="program-options">
+        <!-- Non-Competitive Program -->
+        <div class="program-card">
+          <h3>WWWC NON-COMPETITIVE BEGINNER BASICS AND FUNDAMENTAL SKILLS TRAINING:</h3>
+          <p class="price-highlight">***($120 Includes Team T-Shirt and USA Wrestling Card) ***</p>
+          <div class="schedule-info">
+            <p><strong>TUESDAYS & THURSDAYS</strong></p>
+            <p>5-6:30 pm</p>
+          </div>
+        </div>
+
+        <!-- Competition Team -->
+        <div class="program-card">
+          <h3>WETHERSFIELD WEEKEND WARRIORS COMPETITION TEAM:</h3>
+          <p class="price-highlight">***($150 Includes Team Performance T Shirt and USA Wrestling Card ***</p>
+          <div class="schedule-info">
+            <p><strong>TUESDAYS & THURSDAYS</strong></p>
+            <p>5-6:30 pm</p>
+            <p><strong>WEDNESDAYS or FRIDAYS</strong> (Depends on HS Match Schedule that Week)</p>
+            <p>5-7 pm</p>
+            <p><strong>SUNDAY TOURNAMENTS</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="important-note">
+        <p>***USA WRESTLING CARD IS REQUIRED***</p>
+      </div>
+
+      <div class="add-ons">
+        <h3>ADD ons:</h3>
+        <ul>
+          <li>Extra Team T Shirt <span class="addon-price">$20</span></li>
+          <li>Extra Team Performance T-Shirt <span class="addon-price">$25</span></li>
+          <li>Team Hooded Sweat Shirt <span class="addon-price">$40</span></li>
+          <li>Competition Singlet <span class="addon-price">$65</span></li>
+        </ul>
+      </div>
     </div>
 
     <!-- Sign Up Form -->
