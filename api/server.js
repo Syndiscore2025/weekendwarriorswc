@@ -119,7 +119,7 @@ async function sendEmailNotification(subject, htmlContent, textContent) {
 
     const msg = {
       to: emails,
-      from: 'notifications@weekendwarriorswc.com', // Must be verified in SendGrid
+      from: 'michael.horak01@gmail.com', // Must be verified in SendGrid
       subject: subject,
       text: textContent,
       html: htmlContent,
