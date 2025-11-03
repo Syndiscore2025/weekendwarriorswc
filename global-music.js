@@ -36,14 +36,7 @@
 
   // Initialize music player
   function initGlobalMusic() {
-    // Check if music is globally enabled
-    const musicEnabled = localStorage.getItem(STORAGE_KEYS.ENABLED);
-    if (musicEnabled === 'false') {
-      console.log('Global music is disabled');
-      return;
-    }
-
-    // Get DOM elements
+    // Get DOM elements first
     bgAudio1 = document.getElementById('bg-audio-1');
     bgAudio2 = document.getElementById('bg-audio-2');
     audioToggle = document.getElementById('audio-toggle');
@@ -53,6 +46,15 @@
 
     if (!bgAudio1 || !bgAudio2 || !audioToggle) {
       console.log('Music player elements not found on this page');
+      return;
+    }
+
+    // Check if music is globally enabled
+    const musicEnabled = localStorage.getItem(STORAGE_KEYS.ENABLED);
+    if (musicEnabled === 'false') {
+      console.log('Global music is disabled');
+      // Explicitly hide audio controls on all devices (desktop and mobile)
+      audioToggle.style.display = 'none';
       return;
     }
 
