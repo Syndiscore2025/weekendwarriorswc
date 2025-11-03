@@ -8,20 +8,5 @@
     "email": "michael.horak01@gmail.com",
     "submitted_at": "2025-11-02T11:02:10.696Z",
     "on_team": true
-  },
-  {
-    "parent_name": "Michael horak",
-    "wrestler_name": "Michael Horak",
-    "wrestler_dob": "2025-11-03",
-    "wrestler_grade": "4th",
-    "wrestler_weight": "200",
-    "phone": "8602026706",
-    "email": "michael.horak01@gmail.com",
-    "address": "101 Oxford st",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-03T16:29:47.671Z",
-    "submitted_at": "2025-11-03T16:29:47.671Z",
-    "on_team": false
   }
 ]
