@@ -25,6 +25,7 @@ const corsOptions = {
   origin: [
     'https://www.weekendwarriorswc.com',
     'https://weekendwarriorswc.com',
+    'https://weekendwarriorswc.onrender.com',
     'http://localhost:3000',
     'http://localhost:8000',
     'http://127.0.0.1:3000',
@@ -121,7 +122,11 @@ async function sendEmailNotification(subject, htmlContent, textContent, recipien
 
     const msg = {
       to: emails,
-      from: 'michael.horak01@gmail.com', // Verified sender
+      from: {
+        email: 'notifications@weekendwarriorswc.com', // Authenticated domain
+        name: 'Weekend Warriors Wrestling Club'
+      },
+      replyTo: 'michael.horak01@gmail.com', // Recipients can reply to your Gmail
       subject: subject,
       text: textContent,
       html: htmlContent,
