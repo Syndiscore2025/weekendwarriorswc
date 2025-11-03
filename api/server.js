@@ -119,7 +119,7 @@ async function sendEmailNotification(subject, htmlContent, textContent) {
 
     const msg = {
       to: emails,
-      from: 'notifications@weekendwarriorswc.com', // Authenticated domain
+      from: 'michael.horak01@gmail.com', // Verified sender - reverting temporarily to test
       subject: subject,
       text: textContent,
       html: htmlContent,
