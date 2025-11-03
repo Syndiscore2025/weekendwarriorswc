@@ -724,6 +724,9 @@ th {
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 2px 8px rgba(230, 0, 0, 0.3);
   position: relative;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.3;
 }
 
 th::after {
@@ -740,7 +743,7 @@ td {
   background-color: rgba(20, 20, 20, 0.8);
   color: #e0e0e0;
   border-bottom: 1px solid rgba(230, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  /* Removed transition to eliminate hover animation */
 }
 
 tr:last-child td {
@@ -753,6 +756,15 @@ tbody tr {
 
 /* Removed hover animation and scale effect */
 
+/* Ensure no hover effects on any table rows */
+tbody tr:hover,
+table.admin-list tr:hover,
+.tournament-table tr:hover {
+  background: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 /* Admin Dashboard Style Tournament Card */
 .tournament-card {
   background: rgba(36, 36, 36, 0.95) !important;
@@ -762,7 +774,9 @@ tbody tr {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
   max-width: 100% !important;
   width: 100% !important;
-  overflow-x: visible;
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
 }
 
 .tournament-card h2 {
@@ -794,12 +808,20 @@ table.admin-list {
   width: 100%;
   background: transparent;
   table-layout: auto;
+  max-width: 100%;
+}
+
+/* Tournament table specific - prevent overflow */
+.tournament-table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
 }
 
 table.admin-list th {
   background: rgba(26, 26, 26, 0.95);
   padding: 0.8rem 0.5rem;
-  text-align: left;
+  text-align: center;
   font-weight: 700;
   white-space: normal;
   word-wrap: break-word;
@@ -808,6 +830,8 @@ table.admin-list th {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 2px solid #e60000;
+  vertical-align: middle;
+  line-height: 1.3;
 }
 
 table.admin-list td {
@@ -866,11 +890,27 @@ table.admin-list tr:last-child td {
 .table-container {
   scrollbar-width: none;
   overflow: hidden !important; /* Prevent any scrollbars */
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
 }
 .table-container::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* Tournament table specific styling for centered headers */
+.tournament-table th {
+  text-align: center !important;
+  vertical-align: middle !important;
+  line-height: 1.3 !important;
+  padding: 0.8rem 0.5rem !important;
+}
+
+/* Ensure tournament table cells are centered */
+.tournament-table td {
+  text-align: center !important;
+  vertical-align: middle !important;
 }
 
 /* CONTACT FORM - Enhanced with modern styling */
@@ -1169,7 +1209,9 @@ footer a:hover {
     padding: 0.4rem 0.2rem;
     font-size: 0.55rem;
     letter-spacing: 0.2px;
-    line-height: 1.2;
+    line-height: 1.3;
+    text-align: center;
+    vertical-align: middle;
   }
 
   table.admin-list td {
@@ -1180,7 +1222,9 @@ footer a:hover {
 
   /* Remove horizontal scroll on mobile */
   .table-container {
-    overflow-x: hidden;
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -1353,7 +1397,11 @@ footer a:hover {
 
 /* Stack tables into readable cards on small phones (no horizontal scroll) */
 @media (max-width: 768px) {
-  .table-container { overflow-x: hidden; }
+  .table-container {
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+  }
 
   /* Hide header and display rows as blocks */
   table.admin-list thead { display: none; }
