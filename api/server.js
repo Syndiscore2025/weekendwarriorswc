@@ -8,12 +8,14 @@ const PORT = process.env.PORT || 3000;
 
 // SendGrid configuration
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const NOTIFICATION_EMAILS = process.env.NOTIFICATION_EMAILS || 'WeekendWarriorsWC@yahoo.com';
+const CONTACT_NOTIFICATION_EMAIL = process.env.CONTACT_NOTIFICATION_EMAIL || 'WeekendWarriorsWC@yahoo.com';
+const REGISTRATION_NOTIFICATION_EMAIL = process.env.REGISTRATION_NOTIFICATION_EMAIL || 'michael.horak01@gmail.com';
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
   console.log('SendGrid configured for email notifications');
-  console.log('Notification emails will be sent to:', NOTIFICATION_EMAILS);
+  console.log('Contact form notifications will be sent to:', CONTACT_NOTIFICATION_EMAIL);
+  console.log('Registration notifications will be sent to:', REGISTRATION_NOTIFICATION_EMAIL);
 } else {
   console.warn('⚠️  SENDGRID_API_KEY not set - email notifications disabled');
 }
@@ -108,18 +110,18 @@ async function updateGitHubFile(path, content, message) {
 }
 
 // Helper function to send email notifications
-async function sendEmailNotification(subject, htmlContent, textContent) {
+async function sendEmailNotification(subject, htmlContent, textContent, recipientEmail) {
   if (!SENDGRID_API_KEY) {
     console.log('Email notification skipped (SendGrid not configured)');
     return { success: false, reason: 'SendGrid not configured' };
   }
 
   try {
-    const emails = NOTIFICATION_EMAILS.split(',').map(e => e.trim());
+    const emails = recipientEmail.split(',').map(e => e.trim());
 
     const msg = {
       to: emails,
-      from: 'michael.horak01@gmail.com', // Verified sender - reverting temporarily to test
+      from: 'michael.horak01@gmail.com', // Verified sender
       subject: subject,
       text: textContent,
       html: htmlContent,
@@ -324,7 +326,7 @@ ${latestMessage.message}
 View all messages in the admin dashboard: https://www.weekendwarriorswc.com/admin.html
           `;
 
-          await sendEmailNotification(subject, htmlContent, textContent);
+          await sendEmailNotification(subject, htmlContent, textContent, CONTACT_NOTIFICATION_EMAIL);
         }
       } catch (emailError) {
         console.error('Error sending contact notification email:', emailError);
@@ -394,7 +396,7 @@ Submitted: ${new Date(latestSignup.submitted_at).toLocaleString()}
 View all registrations in the admin dashboard: https://www.weekendwarriorswc.com/admin.html
           `;
 
-          await sendEmailNotification(subject, htmlContent, textContent);
+          await sendEmailNotification(subject, htmlContent, textContent, REGISTRATION_NOTIFICATION_EMAIL);
         }
       } catch (emailError) {
         console.error('Error sending registration notification email:', emailError);
