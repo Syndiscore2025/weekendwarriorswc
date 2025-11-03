@@ -122,11 +122,7 @@ async function sendEmailNotification(subject, htmlContent, textContent, recipien
 
     const msg = {
       to: emails,
-      from: {
-        email: 'notifications@weekendwarriorswc.com', // Authenticated domain
-        name: 'Weekend Warriors Wrestling Club'
-      },
-      replyTo: 'michael.horak01@gmail.com', // Recipients can reply to your Gmail
+      from: 'michael.horak01@gmail.com',
       subject: subject,
       text: textContent,
       html: htmlContent,
