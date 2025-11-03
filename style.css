@@ -748,19 +748,10 @@ tr:last-child td {
 }
 
 tbody tr {
-  transition: all 0.3s ease;
+  /* Removed transition for hover animation */
 }
 
-tbody tr:hover {
-  transform: scale(1.01);
-  box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
-}
-
-tbody tr:hover td {
-  background-color: rgba(230, 0, 0, 0.2);
-  color: #fff;
-  border-color: rgba(230, 0, 0, 0.4);
-}
+/* Removed hover animation and scale effect */
 
 /* Admin Dashboard Style Tournament Card */
 .tournament-card {
@@ -832,14 +823,7 @@ table.admin-list td {
   overflow-wrap: break-word;
 }
 
-table.admin-list tr:hover {
-  background: rgba(51, 51, 51, 0.6) !important;
-}
-
-table.admin-list tr:hover td {
-  background: transparent;
-  color: #fff;
-}
+/* Removed hover effects for schedule tables */
 
 table.admin-list tr:last-child td {
   border-bottom: none;
@@ -878,9 +862,16 @@ table.admin-list tr:last-child td {
   text-align: center;
 }
 
-/* Hide any accidental inner scrollbars in schedule tables */
-.table-container { scrollbar-width: none; }
-.table-container::-webkit-scrollbar { display: none; height: 0; }
+/* Hide any scrollbars in schedule tables */
+.table-container {
+  scrollbar-width: none;
+  overflow: hidden !important; /* Prevent any scrollbars */
+}
+.table-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
 
 /* CONTACT FORM - Enhanced with modern styling */
 form {
