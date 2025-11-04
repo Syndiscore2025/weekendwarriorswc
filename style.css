@@ -332,6 +332,23 @@ nav a.winter-nav[aria-current="page"] {
   border-color: rgba(135, 206, 250, 0.7);
 }
 
+/* Keep nav links centered and pin Sign out on the right */
+.nav-signout {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .nav-signout {
+    position: static;
+    transform: none;
+    margin-left: auto !important; /* move to the end on small screens */
+  }
+}
+
 @keyframes iceGlare {
   0% {
     left: -60%;

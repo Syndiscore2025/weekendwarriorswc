@@ -110,12 +110,18 @@ $('password').addEventListener('keypress', (e) => {
 // Sign out handler
 $('sign-out').addEventListener('click', () => {
   sessionStorage.removeItem('admin-auth');
+  // Show the entire sign-in card again
+  const authCard = authView?.closest('.content-card');
+  if (authCard) authCard.classList.remove('hidden');
   authView.classList.remove('hidden');
   dash.classList.add('hidden');
   $('sign-out').style.display = 'none';
 });
 
 function showDashboard() {
+  // Hide the entire sign-in card and show dashboard
+  const authCard = authView?.closest('.content-card');
+  if (authCard) authCard.classList.add('hidden');
   authView.classList.add('hidden');
   dash.classList.remove('hidden');
   $('sign-out').style.display = 'block';
