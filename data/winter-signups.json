@@ -23,20 +23,5 @@
     "waiver_acknowledged_at": "2025-11-03T20:12:38.565Z",
     "submitted_at": "2025-11-03T20:12:38.565Z",
     "on_team": false
-  },
-  {
-    "parent_name": "Jdjd",
-    "wrestler_name": "Memen",
-    "wrestler_dob": "2025-11-25",
-    "wrestler_grade": "6th",
-    "wrestler_weight": "100",
-    "phone": "8602026706",
-    "email": "michael.horak01@gmail.com",
-    "address": "101 Oxford st",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-03T20:27:05.765Z",
-    "submitted_at": "2025-11-03T20:27:05.765Z",
-    "on_team": false
   }
 ]
