@@ -564,9 +564,14 @@ async function loadCalendarEvents() {
 
   data.forEach((event, i) => {
     const tr = document.createElement('tr');
+    // Handle both old schema (time) and new schema (start_time, end_time)
+    const timeDisplay = event.start_time && event.end_time
+      ? `${event.start_time} - ${event.end_time}`
+      : event.time || '-';
+
     tr.innerHTML = `
       <td>${event.day}</td>
-      <td>${event.start_time} - ${event.end_time}</td>
+      <td>${timeDisplay}</td>
       <td>${event.group}</td>
       <td>${event.start_date || 'Immediate'}</td>
       <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
@@ -628,13 +633,18 @@ async function loadTournaments() {
 
   data.forEach((t, i) => {
     const tr = document.createElement('tr');
-    const regLink = t.registration_url
-      ? `<a href="${t.registration_url}" target="_blank" style="color: #4db8ff;">Register</a>`
+    // Handle both old schema (event, url) and new schema (event_name, registration_url)
+    const eventName = t.event_name || t.event || '-';
+    const location = t.location || '-';
+    const regUrl = t.registration_url || t.url || '';
+    const regLink = regUrl
+      ? `<a href="${regUrl}" target="_blank" style="color: #4db8ff;">Register</a>`
       : '-';
+
     tr.innerHTML = `
       <td>${t.date}</td>
-      <td>${t.event_name}</td>
-      <td>${t.location}</td>
+      <td>${eventName}</td>
+      <td>${location}</td>
       <td>${regLink}</td>
       <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
     `;
@@ -902,7 +912,6 @@ async function loadTeamRoster() {
     const tr = document.createElement('tr');
     const teamGroup = teams.find(t => t.name === member.team_group);
     const teamColor = teamGroup ? teamGroup.color : '#666';
-    const teamName = member.team_group || 'Unassigned';
 
     tr.innerHTML = `
       <td><input type="checkbox" class="team-checkbox" data-index="${i}" data-email="${member.email}"></td>
