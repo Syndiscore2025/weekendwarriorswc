@@ -493,7 +493,7 @@
   <header>
     <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo">
     <h1>Weekend Warriors Wrestling Club</h1>
-    <p>Enhanced Admin Dashboard</p>
+    <p>Admin Dashboard</p>
   </header>
   <nav>
     <a href="index.html">Home</a>
@@ -504,7 +504,7 @@
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">25-26 WINTER SEASON</span>
       <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">SIGN-UPS</span>
     </a>
-    <a href="admin-enhanced.html" class="active" aria-current="page">Admin</a>
+    <button id="sign-out" class="small-btn" style="display: none; margin-left: auto; background: #e60000; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600;">Sign out</button>
   </nav>
 
   <section class="admin-wrap">
@@ -519,12 +519,6 @@
         <div id="auth-error" class="muted" style="color: #ff5252;"></div>
       </div>
 
-      <div id="user-view" class="hidden">
-        <div class="topbar">
-          <div>Signed in as <span class="mono">Admin</span></div>
-          <div><button id="sign-out" class="small-btn">Sign out</button></div>
-        </div>
-      </div>
     </div>
 
     <!-- Main Dashboard (Hidden until authenticated) -->

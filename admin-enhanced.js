@@ -3,7 +3,6 @@
 
 const $ = (id) => document.getElementById(id);
 const authView = $('auth-view');
-const userView = $('user-view');
 const dash = $('dash');
 const authError = $('auth-error');
 
@@ -112,14 +111,14 @@ $('password').addEventListener('keypress', (e) => {
 $('sign-out').addEventListener('click', () => {
   sessionStorage.removeItem('admin-auth');
   authView.classList.remove('hidden');
-  userView.classList.add('hidden');
   dash.classList.add('hidden');
+  $('sign-out').style.display = 'none';
 });
 
 function showDashboard() {
   authView.classList.add('hidden');
-  userView.classList.remove('hidden');
   dash.classList.remove('hidden');
+  $('sign-out').style.display = 'block';
   initializeTabs();
   loadAllData();
 }
