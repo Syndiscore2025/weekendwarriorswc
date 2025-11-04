@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "wrestler": "Brayden Horak",
+    "date": "2025-11-04",
+    "stance": 5,
+    "takedowns": 5,
+    "escapes": 3,
+    "reversals": 2,
+    "pins": 4,
+    "defense": 4,
+    "conditioning": 5,
+    "mental": 5,
+    "notes": "",
+    "assessed_at": "2025-11-04T21:35:01.392Z"
+  }
+]

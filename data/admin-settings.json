@@ -4,8 +4,9 @@
   "stripe_secret_key": "",
   "registration_fee": 200,
   "club_name": "Weekend Warriors Wrestling Club",
-  "contact_email": "info@weekendwarriorswc.com",
-  "season_year": "2024-2025",
+  "contact_email": "WeekendWarriorsWC@yahoo.com",
+  "season_year": "2025-2026",
   "email_notifications_enabled": true,
-  "admin_notification_email": ""
+  "admin_notification_email": "",
+  "updated_at": "2025-11-04T18:58:03.353Z"
 }
