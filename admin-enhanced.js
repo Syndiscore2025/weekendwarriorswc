@@ -150,6 +150,7 @@ async function loadAllData() {
     loadWebsiteTab(),
     loadRegistrationsTab(),
     loadTeamTab(),
+    loadTournamentTab(),
     loadAttendanceTab(),
     loadWeightTab(),
     loadResultsTab(),
@@ -194,6 +195,52 @@ async function loadWebsiteTab() {
               </tr>
             </thead>
             <tbody id="slides-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h2>Background Music Settings</h2>
+      <div class="stack">
+        <!-- Global Music Control -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; background: linear-gradient(135deg, rgba(230,0,0,0.15) 0%, rgba(180,0,0,0.15) 100%); border-radius: 10px; border: 2px solid rgba(230,0,0,0.4); margin-bottom: 1rem;">
+          <div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #e60000; margin-bottom: 0.25rem;">
+              Global Music Control
+            </div>
+            <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+              Enable or disable background music across the entire website
+            </div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+            <span id="music-status-text" style="font-weight: 600; color: #4db8ff; font-size: 0.95rem;">Enabled</span>
+            <div style="position: relative; width: 60px; height: 30px; background: rgba(0,0,0,0.4); border-radius: 15px; border: 2px solid #4db8ff;" id="music-toggle-bg">
+              <input type="checkbox" id="global-music-toggle" checked style="opacity: 0; width: 0; height: 0;">
+              <div style="position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: #4db8ff; border-radius: 50%; box-shadow: 0 2px 8px rgba(77,184,255,0.5); transition: all 0.3s;" id="music-toggle-slider"></div>
+            </div>
+          </label>
+        </div>
+
+        <h3 style="margin-top: 1.5rem;">Music Playlist</h3>
+        <div class="note">Upload MP3 files for background music. Music will play randomly from the playlist.</div>
+        <div class="row" style="grid-template-columns: 2fr 1fr auto;">
+          <input id="music-file" type="file" accept="audio/mp3,audio/mpeg" />
+          <input id="music-title" placeholder="Song Title (optional)" />
+          <button id="add-music" class="success">Upload</button>
+        </div>
+        <div id="music-upload-status" class="muted"></div>
+
+        <div class="table-container" style="margin-top: 1rem;">
+          <table class="admin-list">
+            <thead>
+              <tr>
+                <th style="width: 50%;">Song Title</th>
+                <th style="width: 30%;">File</th>
+                <th class="right" style="width: 20%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="music-list"></tbody>
           </table>
         </div>
       </div>
@@ -268,14 +315,56 @@ async function loadWebsiteTab() {
   // Attach event listeners and load data
   attachWebsiteEventListeners();
   await loadSlides();
+  await loadMusicSettings();
   await loadCalendarEvents();
   await loadTournaments();
 }
 
 function attachWebsiteEventListeners() {
   $('add-slide')?.addEventListener('click', handleAddSlide);
+  $('add-music')?.addEventListener('click', handleAddMusic);
   $('add-calendar-event')?.addEventListener('click', handleAddCalendarEvent);
   $('add-tournament')?.addEventListener('click', handleAddTournament);
+
+  // Global music toggle
+  const globalMusicToggle = $('global-music-toggle');
+  if (globalMusicToggle) {
+    const musicEnabled = localStorage.getItem('wwwc_music_enabled') !== 'false';
+    globalMusicToggle.checked = musicEnabled;
+    updateMusicToggleUI(musicEnabled);
+
+    globalMusicToggle.addEventListener('change', function() {
+      const enabled = this.checked;
+      localStorage.setItem('wwwc_music_enabled', enabled.toString());
+      updateMusicToggleUI(enabled);
+
+      if (enabled) {
+        alert('✅ Background music enabled! Music will play when you visit other pages.');
+      } else {
+        alert('🔇 Background music disabled globally. Music will stop on all pages.');
+      }
+    });
+  }
+}
+
+function updateMusicToggleUI(enabled) {
+  const statusText = $('music-status-text');
+  const toggleBg = $('music-toggle-bg');
+  const toggleSlider = $('music-toggle-slider');
+
+  if (statusText) {
+    statusText.textContent = enabled ? 'Enabled' : 'Disabled';
+    statusText.style.color = enabled ? '#4db8ff' : '#999';
+  }
+
+  if (toggleBg) {
+    toggleBg.style.borderColor = enabled ? '#4db8ff' : '#666';
+  }
+
+  if (toggleSlider) {
+    toggleSlider.style.left = enabled ? '32px' : '2px';
+    toggleSlider.style.background = enabled ? '#4db8ff' : '#666';
+  }
 }
 
 async function loadSlides() {
@@ -369,6 +458,94 @@ async function deleteSlide(index) {
   if (result.success) {
     alert('✅ Slide deleted successfully!');
     await loadSlides();
+  }
+}
+
+// Music Settings Functions
+async function loadMusicSettings() {
+  const data = await loadJSON('music-playlist.json');
+  if (!data) return;
+
+  const tbody = $('music-list');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  data.forEach((song, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${song.title || 'Untitled'}</td>
+      <td>${song.filename || song.url.split('/').pop()}</td>
+      <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
+    `;
+    tr.querySelector('button').addEventListener('click', () => deleteMusic(i));
+    tbody.appendChild(tr);
+  });
+}
+
+async function handleAddMusic() {
+  const file = $('music-file').files[0];
+  const title = $('music-title').value.trim();
+  const status = $('music-upload-status');
+
+  if (!file) {
+    return alert('Please select an audio file');
+  }
+
+  status.textContent = 'Uploading music file...';
+  status.style.color = '#4db8ff';
+
+  try {
+    const fileName = `music-${Date.now()}-${file.name}`;
+    const url = `media/${fileName}`;
+
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    await fetch(`${API_URL}/upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: `media/${fileName}`, content: base64 })
+    });
+
+    const playlist = await loadJSON('music-playlist.json') || [];
+    playlist.push({
+      url,
+      title: title || file.name.replace(/\.[^/.]+$/, ''),
+      filename: file.name
+    });
+
+    const saveRes = await saveData('data/music-playlist.json', JSON.stringify(playlist, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      status.textContent = '✅ Music uploaded successfully!';
+      status.style.color = '#00ff00';
+      $('music-file').value = '';
+      $('music-title').value = '';
+      await loadMusicSettings();
+    }
+  } catch (err) {
+    status.textContent = '❌ Error: ' + err.message;
+    status.style.color = '#e60000';
+  }
+}
+
+async function deleteMusic(index) {
+  if (!confirm('Delete this music file?')) return;
+
+  const playlist = await loadJSON('music-playlist.json');
+  playlist.splice(index, 1);
+
+  const saveRes = await saveData('data/music-playlist.json', JSON.stringify(playlist, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    alert('✅ Music deleted successfully!');
+    await loadMusicSettings();
   }
 }
 
@@ -620,12 +797,30 @@ async function loadTeamTab() {
   const container = $('tab-team');
   container.innerHTML = `
     <div class="content-card">
+      <h2>Team Groups Management</h2>
+      <p class="note">Create and manage different team groups (e.g., Beginners, Advanced, Experienced)</p>
+
+      <div class="row" style="grid-template-columns: 2fr 1fr auto; margin-bottom: 1.5rem;">
+        <input id="new-team-name" placeholder="Team Group Name (e.g., Beginners)" />
+        <input id="new-team-color" type="color" value="#e60000" title="Team Color" />
+        <button id="add-team-group" class="success">Create Team Group</button>
+      </div>
+
+      <div id="team-groups-list" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;"></div>
+    </div>
+
+    <div class="content-card">
       <h2>Team Roster</h2>
       <p class="note">Manage team members and send mass emails</p>
 
       <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
         <div style="flex: 1; min-width: 250px;">
           <input type="text" id="team-search" placeholder="Search by name, email, or grade..." style="width: 100%;">
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+          <select id="team-filter" style="width: 100%;">
+            <option value="">All Teams</option>
+          </select>
         </div>
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
           <button id="select-all-team" class="secondary">Select All</button>
@@ -640,13 +835,13 @@ async function loadTeamTab() {
             <tr>
               <th style="width: 4%;"><input type="checkbox" id="select-all-checkbox"></th>
               <th>Wrestler Name</th>
+              <th>Team Group</th>
               <th>Grade</th>
               <th>Weight</th>
               <th>DOB</th>
               <th>Parent Name</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Town</th>
               <th class="right">Actions</th>
             </tr>
           </thead>
@@ -657,11 +852,14 @@ async function loadTeamTab() {
   `;
 
   attachTeamEventListeners();
+  await loadTeamGroups();
   await loadTeamRoster();
 }
 
 function attachTeamEventListeners() {
+  $('add-team-group')?.addEventListener('click', handleAddTeamGroup);
   $('team-search')?.addEventListener('input', filterTeamRoster);
+  $('team-filter')?.addEventListener('change', filterTeamRoster);
   $('select-all-team')?.addEventListener('click', () => selectAllTeam(true));
   $('deselect-all-team')?.addEventListener('click', () => selectAllTeam(false));
   $('email-selected')?.addEventListener('click', emailSelectedTeam);
@@ -670,8 +868,10 @@ function attachTeamEventListeners() {
 
 async function loadTeamRoster() {
   const data = await loadJSON('team-roster.json');
+  const teams = await loadJSON('team-groups.json') || [];
+
   if (!data || data.length === 0) {
-    $('team-roster-list').innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #aaa;">No team members yet. Add wrestlers from the Registrations tab.</td></tr>';
+    $('team-roster-list').innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 2rem; color: #aaa;">No team members yet. Add wrestlers from the Registrations tab.</td></tr>';
     return;
   }
 
@@ -680,20 +880,30 @@ async function loadTeamRoster() {
 
   data.forEach((member, i) => {
     const tr = document.createElement('tr');
+    const teamGroup = teams.find(t => t.name === member.team_group);
+    const teamColor = teamGroup ? teamGroup.color : '#666';
+    const teamName = member.team_group || 'Unassigned';
+
     tr.innerHTML = `
       <td><input type="checkbox" class="team-checkbox" data-index="${i}" data-email="${member.email}"></td>
       <td>${member.wrestler_name}</td>
+      <td>
+        <select class="team-group-select" data-index="${i}" style="background: ${teamColor}; color: #fff; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600;">
+          <option value="">Unassigned</option>
+          ${teams.map(t => `<option value="${t.name}" ${member.team_group === t.name ? 'selected' : ''}>${t.name}</option>`).join('')}
+        </select>
+      </td>
       <td>${member.wrestler_grade}</td>
       <td>${member.wrestler_weight || '-'}</td>
       <td>${member.wrestler_dob}</td>
       <td>${member.parent_name}</td>
       <td>${member.email}</td>
       <td>${member.phone}</td>
-      <td>${member.town || '-'}</td>
       <td class='right'><button class='danger' data-index='${i}'>Remove</button></td>
     `;
 
     tr.querySelector('.team-checkbox').addEventListener('change', updateSelectedCount);
+    tr.querySelector('.team-group-select').addEventListener('change', (e) => updateMemberTeam(i, e.target.value));
     tr.querySelector('.danger').addEventListener('click', () => removeFromTeam(i));
     tbody.appendChild(tr);
   });
@@ -703,11 +913,18 @@ async function loadTeamRoster() {
 
 function filterTeamRoster() {
   const searchTerm = $('team-search').value.toLowerCase();
+  const teamFilter = $('team-filter').value;
   const rows = document.querySelectorAll('#team-roster-list tr');
 
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(searchTerm) ? '' : 'none';
+    const teamSelect = row.querySelector('.team-group-select');
+    const teamValue = teamSelect ? teamSelect.value : '';
+
+    const matchesSearch = text.includes(searchTerm);
+    const matchesTeam = !teamFilter || teamValue === teamFilter;
+
+    row.style.display = (matchesSearch && matchesTeam) ? '' : 'none';
   });
 }
 
@@ -746,6 +963,331 @@ async function removeFromTeam(index) {
   if (result.success) {
     alert('✅ Wrestler removed from team!');
     await loadTeamRoster();
+  }
+}
+
+// Team Groups Management Functions
+async function loadTeamGroups() {
+  const teams = await loadJSON('team-groups.json') || [];
+  const container = $('team-groups-list');
+  const filterSelect = $('team-filter');
+
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  // Update filter dropdown
+  if (filterSelect) {
+    filterSelect.innerHTML = '<option value="">All Teams</option>';
+    teams.forEach(team => {
+      const option = document.createElement('option');
+      option.value = team.name;
+      option.textContent = team.name;
+      filterSelect.appendChild(option);
+    });
+  }
+
+  // Display team groups as badges
+  teams.forEach((team, i) => {
+    const badge = document.createElement('div');
+    badge.style.cssText = `
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: ${team.color};
+      color: #fff;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    `;
+    badge.innerHTML = `
+      <span>${team.name}</span>
+      <button style="background: rgba(255,255,255,0.3); border: none; color: #fff; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-weight: bold;" data-index="${i}">×</button>
+    `;
+    badge.querySelector('button').addEventListener('click', () => deleteTeamGroup(i));
+    container.appendChild(badge);
+  });
+}
+
+async function handleAddTeamGroup() {
+  const name = $('new-team-name').value.trim();
+  const color = $('new-team-color').value;
+
+  if (!name) {
+    return alert('Please enter a team group name');
+  }
+
+  const teams = await loadJSON('team-groups.json') || [];
+
+  // Check for duplicate
+  if (teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+    return alert('A team group with this name already exists');
+  }
+
+  teams.push({ name, color });
+
+  const saveRes = await saveData('data/team-groups.json', JSON.stringify(teams, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    alert('✅ Team group created successfully!');
+    $('new-team-name').value = '';
+    $('new-team-color').value = '#e60000';
+    await loadTeamGroups();
+    await loadTeamRoster();
+  }
+}
+
+async function deleteTeamGroup(index) {
+  const teams = await loadJSON('team-groups.json');
+  const teamName = teams[index].name;
+
+  if (!confirm(`Delete team group "${teamName}"? Wrestlers in this group will be marked as Unassigned.`)) return;
+
+  teams.splice(index, 1);
+
+  const saveRes = await saveData('data/team-groups.json', JSON.stringify(teams, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    alert('✅ Team group deleted!');
+    await loadTeamGroups();
+    await loadTeamRoster();
+  }
+}
+
+async function updateMemberTeam(index, teamName) {
+  const roster = await loadJSON('team-roster.json');
+  roster[index].team_group = teamName;
+
+  const saveRes = await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    await loadTeamRoster();
+  }
+}
+
+// ============================================================================
+// TOURNAMENT DAY ROSTER TAB - Manage Tournament Day Lineups
+// ============================================================================
+async function loadTournamentTab() {
+  const container = $('tab-tournament');
+  container.innerHTML = `
+    <div class="content-card">
+      <h2>Tournament Day Roster</h2>
+      <p class="note">Select wrestlers for tournament day and assign mat numbers as announced by Flo-wrestling/tournament director</p>
+
+      <div style="margin-bottom: 1.5rem;">
+        <div class="row" style="grid-template-columns: 2fr 1fr auto; margin-bottom: 1rem;">
+          <input id="tournament-name" placeholder="Tournament Name" />
+          <input id="tournament-date" type="date" />
+          <button id="create-tournament-roster" class="success">Create New Roster</button>
+        </div>
+
+        <div id="tournament-roster-selector" class="hidden">
+          <h3>Select Wrestlers for Tournament</h3>
+          <div style="margin-bottom: 1rem;">
+            <button id="select-all-tournament" class="secondary">Select All</button>
+            <button id="deselect-all-tournament" class="secondary">Deselect All</button>
+          </div>
+          <div id="tournament-wrestler-selection" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;"></div>
+          <button id="generate-tournament-roster" class="primary">Generate Tournament Roster</button>
+        </div>
+      </div>
+
+      <div id="tournament-print-area"></div>
+    </div>
+  `;
+
+  attachTournamentEventListeners();
+  await loadSavedTournamentRoster();
+}
+
+function attachTournamentEventListeners() {
+  $('create-tournament-roster')?.addEventListener('click', showTournamentWrestlerSelection);
+  $('select-all-tournament')?.addEventListener('click', () => selectAllTournamentWrestlers(true));
+  $('deselect-all-tournament')?.addEventListener('click', () => selectAllTournamentWrestlers(false));
+  $('generate-tournament-roster')?.addEventListener('click', generateTournamentRoster);
+}
+
+async function showTournamentWrestlerSelection() {
+  const tournamentName = $('tournament-name').value.trim();
+  const tournamentDate = $('tournament-date').value;
+
+  if (!tournamentName || !tournamentDate) {
+    return alert('Please enter tournament name and date');
+  }
+
+  const roster = await loadJSON('team-roster.json') || [];
+
+  if (roster.length === 0) {
+    return alert('No wrestlers in team roster. Add wrestlers from the Registrations tab first.');
+  }
+
+  const container = $('tournament-wrestler-selection');
+  container.innerHTML = '';
+
+  roster.forEach((wrestler, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'padding: 0.75rem; background: #2a2a2a; border: 1px solid #444; border-radius: 6px;';
+    div.innerHTML = `
+      <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <input type="checkbox" class="tournament-wrestler-checkbox" data-index="${i}" style="width: 18px; height: 18px;">
+        <span style="font-weight: 600;">${wrestler.wrestler_name}</span>
+        <span style="color: #aaa; font-size: 0.85rem;">(Grade ${wrestler.wrestler_grade}, ${wrestler.wrestler_weight || '?'} lbs)</span>
+      </label>
+    `;
+    container.appendChild(div);
+  });
+
+  $('tournament-roster-selector').classList.remove('hidden');
+}
+
+function selectAllTournamentWrestlers(checked) {
+  document.querySelectorAll('.tournament-wrestler-checkbox').forEach(cb => {
+    cb.checked = checked;
+  });
+}
+
+async function generateTournamentRoster() {
+  const tournamentName = $('tournament-name').value.trim();
+  const tournamentDate = $('tournament-date').value;
+  const roster = await loadJSON('team-roster.json') || [];
+
+  const selectedWrestlers = [];
+  document.querySelectorAll('.tournament-wrestler-checkbox:checked').forEach(cb => {
+    const index = parseInt(cb.dataset.index);
+    selectedWrestlers.push(roster[index]);
+  });
+
+  if (selectedWrestlers.length === 0) {
+    return alert('Please select at least one wrestler');
+  }
+
+  const printArea = $('tournament-print-area');
+  printArea.innerHTML = `
+    <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(230,0,0,0.2) 0%, rgba(180,0,0,0.2) 100%); border-radius: 10px; border: 2px solid #e60000;">
+      <h2 style="margin: 0 0 0.5rem 0; color: #e60000;">${tournamentName}</h2>
+      <p style="margin: 0; color: #ccc;">Date: ${new Date(tournamentDate).toLocaleDateString()}</p>
+      <p style="margin: 0.5rem 0 0 0; color: #ccc;">Total Wrestlers: ${selectedWrestlers.length}</p>
+      <button id="print-tournament-roster" class="primary no-print" style="margin-top: 1rem;">Print Roster</button>
+      <button id="save-tournament-roster" class="success no-print" style="margin-top: 1rem; margin-left: 0.5rem;">Save Roster</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
+      ${selectedWrestlers.map((wrestler, i) => `
+        <div class="tournament-wrestler-card" style="padding: 1.5rem; background: #2a2a2a; border: 2px solid #444; border-radius: 10px;">
+          <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e60000;">
+            <h3 style="margin: 0 0 0.25rem 0; color: #e60000; font-size: 1.25rem;">${wrestler.wrestler_name}</h3>
+            <div style="color: #aaa; font-size: 0.9rem;">Grade ${wrestler.wrestler_grade}</div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #ccc; font-weight: 600;">Weight (lbs):</label>
+            <input type="number" class="tournament-weight" data-index="${i}" value="${wrestler.wrestler_weight || ''}"
+              style="width: 100%; padding: 0.75rem; background: #1a1a1a; border: 1px solid #555; color: #fff; border-radius: 6px; font-size: 1rem;"
+              placeholder="Enter weight">
+          </div>
+
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; color: #ccc; font-weight: 600;">Mat Numbers (5 boxes):</label>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+              ${[1,2,3,4,5].map(n => `
+                <input type="text" class="tournament-mat" data-index="${i}" data-mat="${n}"
+                  style="padding: 0.75rem; background: #1a1a1a; border: 1px solid #555; color: #fff; border-radius: 6px; text-align: center; font-size: 1rem; font-weight: 600;"
+                  placeholder="${n}">
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  $('print-tournament-roster')?.addEventListener('click', () => window.print());
+  $('save-tournament-roster')?.addEventListener('click', () => saveTournamentRoster(tournamentName, tournamentDate, selectedWrestlers));
+}
+
+async function saveTournamentRoster(name, date, wrestlers) {
+  const tournamentData = {
+    name,
+    date,
+    wrestlers: wrestlers.map((w, i) => ({
+      ...w,
+      tournament_weight: document.querySelector(`.tournament-weight[data-index="${i}"]`)?.value || w.wrestler_weight,
+      mat_numbers: [1,2,3,4,5].map(n =>
+        document.querySelector(`.tournament-mat[data-index="${i}"][data-mat="${n}"]`)?.value || ''
+      )
+    }))
+  };
+
+  const saveRes = await saveData('data/tournament-roster.json', JSON.stringify(tournamentData, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    alert('✅ Tournament roster saved successfully!');
+  }
+}
+
+async function loadSavedTournamentRoster() {
+  const data = await loadJSON('tournament-roster.json');
+  if (!data) return;
+
+  const printArea = $('tournament-print-area');
+  printArea.innerHTML = `
+    <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(230,0,0,0.2) 0%, rgba(180,0,0,0.2) 100%); border-radius: 10px; border: 2px solid #e60000;">
+      <h2 style="margin: 0 0 0.5rem 0; color: #e60000;">${data.name}</h2>
+      <p style="margin: 0; color: #ccc;">Date: ${new Date(data.date).toLocaleDateString()}</p>
+      <p style="margin: 0.5rem 0 0 0; color: #ccc;">Total Wrestlers: ${data.wrestlers.length}</p>
+      <button id="print-tournament-roster" class="primary no-print" style="margin-top: 1rem;">Print Roster</button>
+      <button id="clear-tournament-roster" class="danger no-print" style="margin-top: 1rem; margin-left: 0.5rem;">Clear Roster</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
+      ${data.wrestlers.map((wrestler, i) => `
+        <div class="tournament-wrestler-card" style="padding: 1.5rem; background: #2a2a2a; border: 2px solid #444; border-radius: 10px;">
+          <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e60000;">
+            <h3 style="margin: 0 0 0.25rem 0; color: #e60000; font-size: 1.25rem;">${wrestler.wrestler_name}</h3>
+            <div style="color: #aaa; font-size: 0.9rem;">Grade ${wrestler.wrestler_grade}</div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #ccc; font-weight: 600;">Weight (lbs):</label>
+            <div style="padding: 0.75rem; background: #1a1a1a; border: 1px solid #555; color: #fff; border-radius: 6px; font-size: 1rem; font-weight: 600;">
+              ${wrestler.tournament_weight || wrestler.wrestler_weight || 'Not set'}
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; color: #ccc; font-weight: 600;">Mat Numbers:</label>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+              ${wrestler.mat_numbers.map((mat, n) => `
+                <div style="padding: 0.75rem; background: #1a1a1a; border: 1px solid #555; color: #fff; border-radius: 6px; text-align: center; font-size: 1rem; font-weight: 600;">
+                  ${mat || '-'}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  $('print-tournament-roster')?.addEventListener('click', () => window.print());
+  $('clear-tournament-roster')?.addEventListener('click', clearTournamentRoster);
+}
+
+async function clearTournamentRoster() {
+  if (!confirm('Clear the current tournament roster? This cannot be undone.')) return;
+
+  const saveRes = await saveData('data/tournament-roster.json', JSON.stringify(null, null, 2));
+  const result = await saveRes.json();
+
+  if (result.success) {
+    alert('✅ Tournament roster cleared!');
+    await loadTournamentTab();
   }
 }
 
