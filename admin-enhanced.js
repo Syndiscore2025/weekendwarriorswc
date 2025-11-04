@@ -721,13 +721,21 @@ async function loadWinterSignups() {
   const data = await loadJSON('winter-signups.json');
   if (!data) return;
 
+  // Load team roster once to check who's already on the team
+  const roster = await loadJSON('team-roster.json') || [];
+
   const tbody = $('winter-signups-list');
   tbody.innerHTML = '';
 
   data.forEach((signup, i) => {
     const tr = document.createElement('tr');
     const submittedDate = new Date(signup.submitted_at).toLocaleDateString();
-    const onTeam = signup.on_team;
+
+    // Check if wrestler is already on team roster
+    const onTeam = roster.some(member =>
+      member.wrestler_name === signup.wrestler_name &&
+      member.wrestler_dob === signup.wrestler_dob
+    );
 
     tr.innerHTML = `
       <td>${signup.parent_name}</td>
@@ -740,7 +748,7 @@ async function loadWinterSignups() {
       <td>${signup.town || '-'}</td>
       <td>${submittedDate}</td>
       <td class='right'>
-        ${!onTeam ? `<button class='success' style="margin-right: 0.5rem;" data-index='${i}'>Add to Team</button>` : ''}
+        ${!onTeam ? `<button class='success' style="margin-right: 0.5rem;" data-index='${i}'>Add to Team</button>` : '<span style="color: #28a745; font-weight: 600;">✓ On Team</span>'}
         <button class='danger' data-index='${i}'>Delete</button>
       </td>
     `;
@@ -759,14 +767,20 @@ async function addToTeam(index) {
   const signups = await loadJSON('winter-signups.json');
   const signup = signups[index];
 
-  // Mark as on team
-  signup.on_team = true;
-
-  // Save updated signups
-  await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
-
-  // Add to team roster (we'll create this file)
+  // Add to team roster
   const roster = await loadJSON('team-roster.json') || [];
+
+  // Check if already on team
+  const alreadyOnTeam = roster.some(member =>
+    member.wrestler_name === signup.wrestler_name &&
+    member.wrestler_dob === signup.wrestler_dob
+  );
+
+  if (alreadyOnTeam) {
+    alert('This wrestler is already on the team roster.');
+    return;
+  }
+
   roster.push(signup);
 
   await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));

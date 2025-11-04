@@ -134,6 +134,8 @@ header p {
 nav {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   background: linear-gradient(90deg, #0a0a0a 0%, #1a0000 50%, #0a0a0a 100%);
   border-top: 2px solid #e60000;
   border-bottom: 2px solid #e60000;
