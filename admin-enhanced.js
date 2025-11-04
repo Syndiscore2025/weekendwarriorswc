@@ -871,7 +871,7 @@ async function loadTeamRoster() {
   const teams = await loadJSON('team-groups.json') || [];
 
   if (!data || data.length === 0) {
-    $('team-roster-list').innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 2rem; color: #aaa;">No team members yet. Add wrestlers from the Registrations tab.</td></tr>';
+    $('team-roster-list').innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #aaa;">No team members yet. Add wrestlers from the Registrations tab.</td></tr>';
     return;
   }
 
