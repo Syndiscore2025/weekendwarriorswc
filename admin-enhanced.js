@@ -10,6 +10,36 @@ const authError = $('auth-error');
 // API Configuration
 const API_URL = 'https://api.weekendwarriorswc.com';
 
+// ============================================================================
+// THEME TOGGLE FUNCTIONALITY
+// ============================================================================
+function initThemeToggle() {
+  const themeToggle = $('theme-toggle');
+  const savedTheme = localStorage.getItem('theme');
+
+  // Apply saved theme on load
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-mode');
+    themeToggle.textContent = 'Dark Mode';
+  }
+
+  // Theme toggle click handler
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+
+    if (document.body.classList.contains('light-mode')) {
+      localStorage.setItem('theme', 'light');
+      themeToggle.textContent = 'Dark Mode';
+    } else {
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = 'Light Mode';
+    }
+  });
+}
+
+// Initialize theme toggle on page load
+document.addEventListener('DOMContentLoaded', initThemeToggle);
+
 // Cache-busting function
 const cacheBust = (url) => {
   const separator = url.includes('?') ? '&' : '?';
@@ -484,10 +514,7 @@ async function loadRegistrationsTab() {
   const container = $('tab-registrations');
   container.innerHTML = `
     <div class="content-card">
-      <h2 style="display: flex; align-items: center; gap: 0.5rem;">
-        <span style="font-size: 1.3rem;">❄️</span>
-        <span>25-26 Winter Season Sign-Ups</span>
-      </h2>
+      <h2>25-26 Winter Season Sign-Ups</h2>
       <p class="note">Partnership with Wethersfield Youth Wrestling Club - View all registrations</p>
       <div class="table-container">
         <table class="admin-list">
@@ -594,20 +621,17 @@ async function loadTeamTab() {
   const container = $('tab-team');
   container.innerHTML = `
     <div class="content-card">
-      <h2 style="display: flex; align-items: center; gap: 0.5rem;">
-        <span style="font-size: 1.3rem;">🤼</span>
-        <span>Team Roster</span>
-      </h2>
+      <h2>Team Roster</h2>
       <p class="note">Manage team members and send mass emails</p>
 
       <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
         <div style="flex: 1; min-width: 250px;">
-          <input type="text" id="team-search" placeholder="🔍 Search by name, email, or grade..." style="width: 100%;">
+          <input type="text" id="team-search" placeholder="Search by name, email, or grade..." style="width: 100%;">
         </div>
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
           <button id="select-all-team" class="secondary">Select All</button>
           <button id="deselect-all-team" class="secondary">Deselect All</button>
-          <button id="email-selected" class="primary">📧 Email Selected (<span id="selected-count">0</span>)</button>
+          <button id="email-selected" class="primary">Email Selected (<span id="selected-count">0</span>)</button>
         </div>
       </div>
 
@@ -733,7 +757,7 @@ async function loadAttendanceTab() {
   const container = $('tab-attendance');
   container.innerHTML = `
     <div class="content-card">
-      <h2>✅ Attendance Tracking</h2>
+      <h2>Attendance Tracking</h2>
       <p class="note">Mark attendance for practices and tournaments. View attendance statistics per wrestler.</p>
 
       <div class="stack">
@@ -944,7 +968,7 @@ async function loadWeightTab() {
   const container = $('tab-weight');
   container.innerHTML = `
     <div class="content-card">
-      <h2>⚖️ Weight Tracking Over Time</h2>
+      <h2>Weight Tracking Over Time</h2>
       <p class="note">Track wrestler weights throughout the season for weight class planning</p>
 
       <div class="stack">
@@ -1130,7 +1154,7 @@ async function loadResultsTab() {
   const container = $('tab-results');
   container.innerHTML = `
     <div class="content-card">
-      <h2>🏆 Tournament Results & Win/Loss Records</h2>
+      <h2>Tournament Results & Win/Loss Records</h2>
       <p class="note">Track match results, opponents, and season statistics</p>
 
       <div class="stack">
@@ -1333,7 +1357,7 @@ async function loadPaymentsTab() {
   const container = $('tab-payments');
   container.innerHTML = `
     <div class="content-card">
-      <h2>💰 Payment & Dues Tracking</h2>
+      <h2>Payment & Dues Tracking</h2>
       <p class="note">Track registration fees, outstanding balances, and payment history</p>
 
       <div class="stack">
@@ -1516,7 +1540,7 @@ async function loadCommunicationTab() {
   const container = $('tab-communication');
   container.innerHTML = `
     <div class="content-card">
-      <h2>📧 Parent Communication Log</h2>
+      <h2>Parent Communication Log</h2>
       <p class="note">Record dated notes from parent conversations, medical information, and behavioral notes</p>
 
       <div class="stack">
@@ -1561,7 +1585,7 @@ async function loadCommunicationTab() {
     </div>
 
     <div class="content-card">
-      <h2>📧 Contact Form Messages</h2>
+      <h2>Contact Form Messages</h2>
       <p class="note">Messages submitted through the contact form</p>
       <div class="table-container">
         <table class="admin-list">
@@ -1727,7 +1751,7 @@ async function loadPracticeTab() {
   const container = $('tab-practice');
   container.innerHTML = `
     <div class="content-card">
-      <h2>📋 Practice Plans & Drills Library</h2>
+      <h2>Practice Plans & Drills Library</h2>
       <p class="note">Store, organize, and schedule practice plans, technique videos, and drill sequences</p>
 
       <div class="stack">
@@ -1871,7 +1895,7 @@ async function loadPhotosTab() {
   const container = $('tab-photos');
   container.innerHTML = `
     <div class="content-card">
-      <h2>📸 Photo Gallery by Event</h2>
+      <h2>Photo Gallery by Event</h2>
       <p class="note">Upload and organize team photos categorized by tournaments and practices</p>
 
       <div class="stack">
@@ -2029,7 +2053,7 @@ async function loadEquipmentTab() {
   const container = $('tab-equipment');
   container.innerHTML = `
     <div class="content-card">
-      <h2>🎽 Equipment Checkout System</h2>
+      <h2>Equipment Checkout System</h2>
       <p class="note">Track borrowed club equipment (headgear, singlets, etc.) with checkout/return dates</p>
 
       <div class="stack">
@@ -2216,7 +2240,7 @@ async function loadVolunteersTab() {
   const container = $('tab-volunteers');
   container.innerHTML = `
     <div class="content-card">
-      <h2>👥 Volunteer & Parent Helper Scheduler</h2>
+      <h2>Volunteer & Parent Helper Scheduler</h2>
       <p class="note">Digital sign-up sheets for tournament help, snack duty, and carpool coordination</p>
 
       <div class="stack">
@@ -2388,7 +2412,7 @@ async function loadMedicalTab() {
   const container = $('tab-medical');
   container.innerHTML = `
     <div class="content-card">
-      <h2>🏥 Injury & Medical Tracking</h2>
+      <h2>Injury & Medical Tracking</h2>
       <p class="note">Log injuries with dates, track return-to-play dates, and required medical clearances</p>
 
       <div class="stack">
@@ -2508,7 +2532,7 @@ async function loadMedicalData() {
   const active = injuries.filter(i => !i.actual_return_date);
   active.forEach((injury, i) => {
     const clearanceStatus = injury.clearance_required
-      ? (injury.clearance_received ? '✅ Received' : '⚠️ Required')
+      ? (injury.clearance_received ? 'Received' : 'Required')
       : '-';
     const clearanceColor = injury.clearance_required && !injury.clearance_received ? '#ffc107' : '#28a745';
 
@@ -2639,7 +2663,7 @@ async function loadSkillsTab() {
   const container = $('tab-skills');
   container.innerHTML = `
     <div class="content-card">
-      <h2>📊 Skill Assessment Matrix</h2>
+      <h2>Skill Assessment Matrix</h2>
       <p class="note">Track technique mastery per wrestler (takedowns, escapes, pins, reversals, etc.)</p>
 
       <div class="stack">
@@ -2837,7 +2861,7 @@ async function loadSettingsTab() {
   const container = $('tab-settings');
   container.innerHTML = `
     <div class="content-card">
-      <h2>⚙️ Admin Settings</h2>
+      <h2>Admin Settings</h2>
       <p class="note">Configure system-wide settings including Stripe payment integration</p>
 
       <div class="stack">
@@ -2905,7 +2929,7 @@ async function loadSettingsTab() {
         </div>
 
         <div style="margin-top: 2rem; text-align: center;">
-          <button id="save-settings" class="success" style="padding: 1rem 3rem; font-size: 1.1rem;">💾 Save All Settings</button>
+          <button id="save-settings" class="success" style="padding: 1rem 3rem; font-size: 1.1rem;">Save All Settings</button>
         </div>
       </div>
     </div>
