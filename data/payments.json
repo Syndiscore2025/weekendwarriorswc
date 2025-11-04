@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "wrestler": "Brayden Horak",
+    "amount": 150,
+    "date": "2025-11-04",
+    "method": "Cash",
+    "notes": "",
+    "recorded_at": "2025-11-04T20:33:50.333Z"
+  }
+]
