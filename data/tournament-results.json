@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "wrestler": "Brayden Horak",
+    "date": "2025-11-04",
+    "tournament": "Bristol",
+    "opponent": "DDWC",
+    "outcome": "Win",
+    "method": "Pin",
+    "recorded_at": "2025-11-04T20:33:35.227Z"
+  }
+]
