@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{CLUB_NAME}} - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="global-music.js" defer></script>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="{{CLUB_NAME}} Logo" class="logo">
+    <h1>{{CLUB_NAME}}</h1>
+    <p>Building Strength, Discipline, and Champions</p>
+  </header>
+
+  <nav>
+    <a href="index.html" class="active" aria-current="page">Home</a>
+    <a href="about.html">About</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="contact.html">Contact</a>
+    <a href="winter-signups.html" class="winter-nav">
+      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">WINTER SEASON</span>
+      <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">SIGN-UPS</span>
+    </a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
+      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
+      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
+    </a>
+  </nav>
+
+  <section class="hero-slider" aria-label="Showcase">
+    <div class="slides" id="slides-container">
+      <!-- Slides loaded from JSON -->
+    </div>
+    <button class="slider-arrow prev" aria-label="Previous">&#10094;</button>
+    <button class="slider-arrow next" aria-label="Next">&#10095;</button>
+    <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
+  </section>
+
+  <!-- Background audio - dual audio elements for crossfade -->
+  <audio id="bg-audio-1"></audio>
+  <audio id="bg-audio-2"></audio>
+  <!-- Audio toggle button - starts as PLAY button -->
+  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music">
+    <!-- Play icon - shown by default -->
+    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <!-- Muted speaker icon - shown when playing -->
+    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;">
+      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+    </svg>
+    <!-- Playing speaker icon - shown when unmuted -->
+    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    </svg>
+  </div>
+
+  <script>
+    const slider = document.querySelector('.hero-slider');
+    const slidesContainer = document.getElementById('slides-container');
+    const dotsWrap = slider?.querySelector('.slider-dots');
+    const prevBtn = slider?.querySelector('.prev');
+    const nextBtn = slider?.querySelector('.next');
+
+    let slides = [];
+    let index = 0;
+
+    // Robust timer/state management
+    let autoTimerId = null;          // advances slides
+    let settingsPollId = null;       // polls for updated interval
+    let sliderInterval = 5000;       // ms (default 5s)
+    let initialized = false;
+
+    async function loadSlides() {
+      try {
+        // Load settings for slider interval (no-store to avoid stale cache)
+        const settingsRes = await fetch('data/settings.json', { cache: 'no-store' });
+        const settingsData = await settingsRes.json();
+        const sec = parseFloat(settingsData?.sliderInterval);
+        const nextInterval = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        sliderInterval = nextInterval;
+
+        // Load slides from JSON
+        const slidesRes = await fetch('data/slides.json', { cache: 'no-store' });
+        const slidesData = await slidesRes.json();
+
+        if (Array.isArray(slidesData) && slidesData.length) {
+          slidesContainer.innerHTML = '';
+          slidesData.forEach((slide, i) => {
+            const div = document.createElement('div');
+            div.className = 'slide' + (i === 0 ? ' is-active' : '');
+
+            if (slide.type === 'video') {
+              const video = document.createElement('video');
+              video.src = slide.url;
+              video.autoplay = true;
+              video.muted = true;
+              video.loop = true;
+              video.playsInline = true;
+              div.appendChild(video);
+            } else {
+              const img = document.createElement('img');
+              img.src = slide.url;
+              img.alt = slide.caption || 'Slide';
+              div.appendChild(img);
+            }
+
+            if (slide.caption) {
+              const cap = document.createElement('div');
+              cap.className = 'caption';
+              cap.textContent = slide.caption;
+              div.appendChild(cap);
+            }
+
+            slidesContainer.appendChild(div);
+          });
+
+          slides = Array.from(slidesContainer.querySelectorAll('.slide'));
+          buildDots();
+          if (!initialized) {
+            initialized = true;
+            initSlider();
+            startSettingsWatcher();
+          }
+        }
+      } catch (err) {
+        console.error('Error loading slides:', err);
+      }
+    }
+
+    function buildDots() {
+      if (!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Slide ${i + 1}`);
+        dot.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function goTo(n) {
+      if (!slides.length) return;
+      slides[index].classList.remove('is-active');
+      const dots = dotsWrap?.querySelectorAll('.dot');
+      if (dots && dots[index]) dots[index].classList.remove('active');
+
+      index = (n + slides.length) % slides.length;
+      slides[index].classList.add('is-active');
+      if (dots && dots[index]) dots[index].classList.add('active');
+
+      restartTimer();
+    }
+
+    function initSlider() {
+      prevBtn?.addEventListener('click', () => goTo(index - 1));
+      nextBtn?.addEventListener('click', () => goTo(index + 1));
+
+      // Pause on hover
+      slider?.addEventListener('mouseenter', stopTimer);
+      slider?.addEventListener('mouseleave', startTimer);
+
+      startTimer();
+    }
+
+    function startTimer() {
+      stopTimer();
+      autoTimerId = setInterval(() => goTo(index + 1), sliderInterval);
+    }
+
+    function stopTimer() {
+      if (autoTimerId) clearInterval(autoTimerId);
+      autoTimerId = null;
+    }
+
+    function restartTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    async function refreshSettingsIfChanged() {
+      try {
+        const res = await fetch('data/settings.json', { cache: 'no-store' });
+        const data = await res.json();
+        const sec = parseFloat(data?.sliderInterval);
+        const newMs = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        if (newMs !== sliderInterval) {
+          sliderInterval = newMs;
+          restartTimer();
+        }
+      } catch (_) {}
+    }
+
+    function startSettingsWatcher() {
+      if (settingsPollId) clearInterval(settingsPollId);
+      settingsPollId = setInterval(refreshSettingsIfChanged, 3000);
+    }
+
+    // Load slides on page load
+    loadSlides();
+  </script>
+
+  <section class="content-card">
+    <h2>Welcome to {{CLUB_NAME}}</h2>
+    <p>
+      We are dedicated to developing young athletes through the sport of wrestling.
+      Our program focuses on building physical strength, mental discipline, and the
+      character of true champions. Join us and become part of a community that values
+      hard work, respect, and excellence.
+    </p>
+  </section>
+
+  <footer>
+    <div>&copy; 2025 {{CLUB_NAME}}.</div>
+    <div class="powered-by-syndiscore">
+      Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
+    </div>
+    <div style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
+      <a href="admin.html" style="color: #666; text-decoration: none;">Admin</a>
+    </div>
+  </footer>
+</body>
+</html>
+
