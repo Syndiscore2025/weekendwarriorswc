@@ -88,5 +88,20 @@
     "waiver_acknowledged_at": "2025-11-20T19:50:02.679Z",
     "submitted_at": "2025-11-20T19:50:02.679Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Brianna Herold",
+    "wrestler_name": "William Flynn",
+    "wrestler_dob": "2015-05-26",
+    "wrestler_grade": "5th",
+    "wrestler_weight": "66",
+    "phone": "8608747709",
+    "email": "briannamherold@gmail.com",
+    "address": "227 Griswold Road",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-23T00:22:53.400Z",
+    "submitted_at": "2025-11-23T00:22:53.400Z",
+    "on_team": false
   }
 ]
