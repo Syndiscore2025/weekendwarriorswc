@@ -1664,14 +1664,28 @@
         const data = await res.json();
         const tbody = $('tournament-list');
         tbody.innerHTML = '';
+
+        // Helper to convert 24-hour format to 12-hour if needed
+        const ensureAMPM = (time) => {
+          if (!time || time === '-') return '-';
+          // If already has AM/PM, return as-is
+          if (time.includes('AM') || time.includes('PM')) return time;
+          // Convert 24-hour format (HH:MM) to 12-hour format
+          const [hours, minutes] = time.split(':');
+          const hour = parseInt(hours);
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const hour12 = hour % 12 || 12;
+          return `${hour12}:${minutes} ${ampm}`;
+        };
+
         for (let i = 0; i < data.length; i++) {
           const row = data[i];
           const tr = document.createElement('tr');
           const d = row.date ? new Date(row.date).toLocaleDateString() : '';
-          const weighinES = row.weighinES || row.weighin || '-';
-          const startES = row.startES || '-';
-          const weighinMS = row.weighinMS || '-';
-          const startMS = row.startMS || '-';
+          const weighinES = ensureAMPM(row.weighinES || row.weighin || '-');
+          const startES = ensureAMPM(row.startES || '-');
+          const weighinMS = ensureAMPM(row.weighinMS || '-');
+          const startMS = ensureAMPM(row.startMS || '-');
           const link = row.url ? `<a href="${row.url}" target="_blank" rel="noopener noreferrer">Register</a>` : '-';
           tr.innerHTML = `<td>${d}</td><td>${row.event}</td><td>${row.location}</td><td>${weighinES}</td><td>${startES}</td><td>${weighinMS}</td><td>${startMS}</td><td>${link}</td>` +
             `<td class='right'><button class='danger' data-index='${i}'>Delete</button></td>`;
@@ -1716,6 +1730,16 @@
       const link = $('t-link') ? $('t-link').value.trim() : '';
       if (!date || !event || !location) return alert('Date, event, and location are required');
 
+      // Convert 24-hour time to 12-hour format with AM/PM
+      const formatTime = (time24) => {
+        if (!time24) return '';
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      };
+
       try {
         const res = await fetch(cacheBust('data/tournaments.json'));
         const tournaments = await res.json();
@@ -1723,10 +1747,10 @@
           date,
           event,
           location,
-          weighinES,
-          startES,
-          weighinMS,
-          startMS,
+          weighinES: formatTime(weighinES),
+          startES: formatTime(startES),
+          weighinMS: formatTime(weighinMS),
+          startMS: formatTime(startMS),
           url: link
         });
 
