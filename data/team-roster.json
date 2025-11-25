@@ -4,10 +4,15 @@
     "wrestler_name": "Brayden Horak",
     "wrestler_dob": "2012-03-05",
     "wrestler_grade": "8th",
-    "phone": "860-922-9875",
+    "wrestler_weight": "182",
+    "phone": "8609229875",
     "email": "michael.horak01@gmail.com",
-    "submitted_at": "2025-11-02T11:02:10.696Z",
-    "on_team": true,
+    "address": "101 Oxford St.",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-12T13:20:31.868Z",
+    "submitted_at": "2025-11-12T13:20:31.868Z",
+    "on_team": false,
     "team_group": "Competiton Group"
   }
 ]
