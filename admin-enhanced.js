@@ -562,12 +562,28 @@ async function loadCalendarEvents() {
   const tbody = $('calendar-events-list');
   tbody.innerHTML = '';
 
+  // Helper to convert 24-hour format to 12-hour if needed
+  const formatTime = (time24) => {
+    if (!time24) return '';
+    // If already has AM/PM, return as-is
+    if (time24.includes('AM') || time24.includes('PM')) return time24;
+    // Convert 24-hour format (HH:MM) to 12-hour format
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
   data.forEach((event, i) => {
     const tr = document.createElement('tr');
     // Handle both old schema (time) and new schema (start_time, end_time)
-    const timeDisplay = event.start_time && event.end_time
-      ? `${event.start_time} - ${event.end_time}`
-      : event.time || '-';
+    let timeDisplay;
+    if (event.start_time && event.end_time) {
+      timeDisplay = `${formatTime(event.start_time)} - ${formatTime(event.end_time)}`;
+    } else {
+      timeDisplay = event.time || '-';
+    }
 
     tr.innerHTML = `
       <td>${event.day}</td>
@@ -592,8 +608,20 @@ async function handleAddCalendarEvent() {
     return alert('Please fill in all required fields');
   }
 
+  // Convert 24-hour time to 12-hour format with AM/PM
+  const formatTime = (time24) => {
+    if (!time24) return '';
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
+  const time = `${formatTime(startTime)} - ${formatTime(endTime)}`;
+
   const events = await loadJSON('calendar-events.json') || [];
-  events.push({ day, start_time: startTime, end_time: endTime, start_date: startDate, group });
+  events.push({ day, time, group, start_date: startDate });
 
   const saveRes = await saveData('data/calendar-events.json', JSON.stringify(events, null, 2));
   const result = await saveRes.json();
