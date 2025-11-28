@@ -43,7 +43,8 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-28T17:43:30.268Z",
     "submitted_at": "2025-11-28T17:43:30.268Z",
-    "on_team": false
+    "on_team": false,
+    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Katie Lam",
