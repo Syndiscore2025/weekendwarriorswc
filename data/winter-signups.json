@@ -133,5 +133,20 @@
     "waiver_acknowledged_at": "2025-11-30T17:31:37.988Z",
     "submitted_at": "2025-11-30T17:31:37.990Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Dillon Somma",
+    "wrestler_name": "Daylon Somma",
+    "wrestler_dob": "2012-09-03",
+    "wrestler_grade": "8th",
+    "wrestler_weight": "170",
+    "phone": "8603715974",
+    "email": "dillonsomma93@gmail.com",
+    "address": "51 Wright Rd",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-12-02T00:21:01.982Z",
+    "submitted_at": "2025-12-02T00:21:01.982Z",
+    "on_team": false
   }
 ]
