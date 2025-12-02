@@ -89,8 +89,7 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-12-02T00:21:01.982Z",
     "submitted_at": "2025-12-02T00:21:01.982Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
+    "on_team": false
   },
   {
     "parent_name": "David Sena",
@@ -105,6 +104,7 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-30T17:31:37.988Z",
     "submitted_at": "2025-11-30T17:31:37.990Z",
-    "on_team": false
+    "on_team": false,
+    "team_group": "Competiton Group"
   }
 ]
