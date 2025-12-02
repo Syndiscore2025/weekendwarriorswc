@@ -106,5 +106,20 @@
     "submitted_at": "2025-11-30T17:31:37.990Z",
     "on_team": false,
     "team_group": "Competiton Group"
+  },
+  {
+    "parent_name": "Krista torres",
+    "wrestler_name": "Xavier peltz",
+    "wrestler_dob": "2013-02-12",
+    "wrestler_grade": "7th",
+    "wrestler_weight": "85",
+    "phone": "8608366709",
+    "email": "torresbae85@gmail.com",
+    "address": "28 chamberlain rd",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-16T23:43:14.682Z",
+    "submitted_at": "2025-11-16T23:43:14.682Z",
+    "on_team": false
   }
 ]
