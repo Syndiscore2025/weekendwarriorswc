@@ -45,35 +45,51 @@ const cacheBust = (url) => {
   return `${url}${separator}_=${Date.now()}`;
 };
 
-// Helper function to save data
-async function saveData(file, content) {
-  const response = await fetch(`${API_URL}/save?_=${Date.now()}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0'
-    },
-    body: JSON.stringify({ file, content })
-  });
+// Helper function to save data with retry logic
+async function saveData(file, content, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(`${API_URL}/save?_=${Date.now()}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        body: JSON.stringify({ file, content })
+      });
 
-  if (!response.ok) {
-    throw new Error(`Save failed: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Save failed: ${response.status} ${response.statusText}`);
+      }
+
+      return response;
+    } catch (error) {
+      if (attempt === retries) {
+        throw error;
+      }
+      // Wait 1 second before retry (helps with Render cold starts)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
-
-  return response;
 }
 
-// Helper function to load JSON data
-async function loadJSON(file) {
-  try {
-    const res = await fetch(cacheBust(`data/${file}`));
-    if (!res.ok) throw new Error(`Failed to load ${file}`);
-    return await res.json();
-  } catch (e) {
-    console.error(`Error loading ${file}:`, e);
-    return null;
+// Helper function to load JSON data with retry logic
+async function loadJSON(file, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(cacheBust(`data/${file}`));
+      if (!res.ok) throw new Error(`Failed to load ${file}`);
+      return await res.json();
+    } catch (e) {
+      if (attempt === retries) {
+        console.error(`Error loading ${file}:`, e);
+        return null;
+      }
+      // Wait 500ms before retry
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
   }
 }
 
@@ -293,22 +309,54 @@ async function loadWebsiteTab() {
     <div class="content-card">
       <h2>Upcoming Tournaments</h2>
       <div class="stack">
-        <div class="row" style="grid-template-columns: 1fr 2fr 2fr 1fr auto;">
-          <input id="t-date" type="date" placeholder="Date" />
-          <input id="t-event" placeholder="Event Name" />
-          <input id="t-location" placeholder="Location" />
-          <input id="t-link" type="url" placeholder="Registration URL" />
-          <button id="add-tournament" class="success">Add</button>
+        <div class="tournament-form" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+          <div class="form-field">
+            <label>Date</label>
+            <input id="t-date" type="date" />
+          </div>
+          <div class="form-field">
+            <label>Event Name</label>
+            <input id="t-event" placeholder="Tournament name" />
+          </div>
+          <div class="form-field">
+            <label>Location</label>
+            <input id="t-location" placeholder="Venue" />
+          </div>
+          <div class="form-field">
+            <label>8/10U Weigh-In</label>
+            <input id="t-weighin-es" type="time" />
+          </div>
+          <div class="form-field">
+            <label>8/10U Start</label>
+            <input id="t-start-es" type="time" />
+          </div>
+          <div class="form-field">
+            <label>12U/MS Weigh-In</label>
+            <input id="t-weighin-ms" type="time" />
+          </div>
+          <div class="form-field">
+            <label>12U/MS Start</label>
+            <input id="t-start-ms" type="time" />
+          </div>
+          <div class="form-field">
+            <label>Registration URL</label>
+            <input id="t-link" type="url" placeholder="https://..." />
+          </div>
         </div>
-        <div class="table-container">
+        <button id="add-tournament" class="success" style="margin-top: 1rem;">Add Tournament</button>
+        <div class="table-container" style="margin-top: 1rem;">
           <table class="admin-list">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Event</th>
-                <th>Location</th>
-                <th>Registration</th>
-                <th class="right">Actions</th>
+                <th style="width: 10%;">Date</th>
+                <th style="width: 18%;">Event</th>
+                <th style="width: 15%;">Location</th>
+                <th style="width: 10%;">8/10U Weigh-In</th>
+                <th style="width: 10%;">8/10U Start</th>
+                <th style="width: 10%;">12U/MS Weigh-In</th>
+                <th style="width: 10%;">12U/MS Start</th>
+                <th style="width: 8%;">Register</th>
+                <th class="right" style="width: 9%;">Actions</th>
               </tr>
             </thead>
             <tbody id="tournament-list"></tbody>
@@ -657,6 +705,7 @@ async function loadTournaments() {
   if (!data) return;
 
   const tbody = $('tournament-list');
+  if (!tbody) return;
   tbody.innerHTML = '';
 
   data.forEach((t, i) => {
@@ -664,6 +713,10 @@ async function loadTournaments() {
     // Handle both old schema (event, url) and new schema (event_name, registration_url)
     const eventName = t.event_name || t.event || '-';
     const location = t.location || '-';
+    const weighinES = t.weighinES || '-';
+    const startES = t.startES || '-';
+    const weighinMS = t.weighinMS || '-';
+    const startMS = t.startMS || '-';
     const regUrl = t.registration_url || t.url || '';
     const regLink = regUrl
       ? `<a href="${regUrl}" target="_blank" style="color: #4db8ff;">Register</a>`
@@ -673,6 +726,10 @@ async function loadTournaments() {
       <td>${t.date}</td>
       <td>${eventName}</td>
       <td>${location}</td>
+      <td>${weighinES}</td>
+      <td>${startES}</td>
+      <td>${weighinMS}</td>
+      <td>${startMS}</td>
       <td>${regLink}</td>
       <td class='right'><button class='danger' data-index='${i}'>Delete</button></td>
     `;
@@ -685,18 +742,36 @@ async function handleAddTournament() {
   const date = $('t-date').value;
   const eventName = $('t-event').value.trim();
   const location = $('t-location').value.trim();
+  const weighinES = $('t-weighin-es').value.trim();
+  const startES = $('t-start-es').value.trim();
+  const weighinMS = $('t-weighin-ms').value.trim();
+  const startMS = $('t-start-ms').value.trim();
   const link = $('t-link').value.trim();
 
   if (!date || !eventName || !location) {
     return alert('Please fill in date, event name, and location');
   }
 
+  // Convert 24-hour time to 12-hour format with AM/PM
+  const formatTime = (time24) => {
+    if (!time24) return '';
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
   const tournaments = await loadJSON('tournaments.json') || [];
   tournaments.push({
     date,
-    event_name: eventName,
+    event: eventName,
     location,
-    registration_url: link
+    weighinES: formatTime(weighinES),
+    startES: formatTime(startES),
+    weighinMS: formatTime(weighinMS),
+    startMS: formatTime(startMS),
+    url: link
   });
 
   const saveRes = await saveData('data/tournaments.json', JSON.stringify(tournaments, null, 2));
@@ -707,6 +782,10 @@ async function handleAddTournament() {
     $('t-date').value = '';
     $('t-event').value = '';
     $('t-location').value = '';
+    $('t-weighin-es').value = '';
+    $('t-start-es').value = '';
+    $('t-weighin-ms').value = '';
+    $('t-start-ms').value = '';
     $('t-link').value = '';
     await loadTournaments();
   }

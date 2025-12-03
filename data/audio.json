@@ -1,22 +1,3 @@
 {
-  "tracks": [
-    {
-      "url": "media/audio-1761837215335-0.mp3",
-      "name": "Survivor - Eye Of The Tiger (Official HD Video)",
-      "startTime": 0,
-      "endTime": null
-    },
-    {
-      "url": "media/audio-1761837330467-0.mp3",
-      "name": "ACDC - Thunderstruck",
-      "startTime": 0,
-      "endTime": null
-    },
-    {
-      "url": "media/audio-1761829015024.mp3",
-      "name": "Track 1",
-      "startTime": 0,
-      "endTime": null
-    }
-  ]
+  "tracks": []
 }
