@@ -3825,8 +3825,12 @@ async function loadSettingsTab() {
               <label style="display: block; margin-bottom: 0.5rem; color: #aaa;">Stripe Secret Key</label>
               <input id="stripe-secret-key" type="password" placeholder="sk_live_..." style="width: 100%;" />
             </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #444;">
             <div style="margin-bottom: 1rem;">
-              <label style="display: block; margin-bottom: 0.5rem; color: #aaa;">Registration Fee ($)</label>
+              <label style="display: block; margin-bottom: 0.5rem; color: #aaa; font-weight: 600;">Registration Fee ($)</label>
+              <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">This is the expected fee shown in Payment Summary. Change this to update all balances.</p>
               <input id="registration-fee" type="number" step="0.01" placeholder="200.00" style="width: 200px;" />
             </div>
           </div>
