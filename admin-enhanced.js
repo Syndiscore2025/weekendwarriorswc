@@ -503,15 +503,36 @@ async function handleAddSlide() {
 async function deleteSlide(index) {
   if (!confirm('Delete this slide?')) return;
 
-  const slides = await loadJSON('slides.json');
-  slides.splice(index, 1);
+  const tbody = $('slides-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/slides.json', JSON.stringify(slides, null, 2));
-  const result = await saveRes.json();
+  try {
+    const slides = await loadJSON('slides.json');
+    slides.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Slide deleted successfully!');
-    await loadSlides();
+    const saveRes = await saveData('data/slides.json', JSON.stringify(slides, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      tbody.querySelectorAll('tr').forEach((tr, i) => {
+        const btn = tr.querySelector('button.danger');
+        if (btn) btn.onclick = () => deleteSlide(i);
+      });
+      alert('✅ Slide deleted successfully!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting slide: ' + err.message);
   }
 }
 
@@ -688,15 +709,42 @@ async function handleAddCalendarEvent() {
 async function deleteCalendarEvent(index) {
   if (!confirm('Delete this practice?')) return;
 
-  const events = await loadJSON('calendar-events.json');
-  events.splice(index, 1);
+  // Optimistic UI: Remove from DOM immediately
+  const tbody = $('calendar-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/calendar-events.json', JSON.stringify(events, null, 2));
-  const result = await saveRes.json();
+  try {
+    const events = await loadJSON('calendar-events.json');
+    events.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Practice deleted successfully!');
-    await loadCalendarEvents();
+    const saveRes = await saveData('data/calendar-events.json', JSON.stringify(events, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      // Remove from DOM immediately
+      if (rows[index]) rows[index].remove();
+      // Re-index remaining delete buttons
+      tbody.querySelectorAll('tr').forEach((tr, i) => {
+        const btn = tr.querySelector('button.danger');
+        if (btn) {
+          btn.onclick = () => deleteCalendarEvent(i);
+        }
+      });
+      alert('✅ Practice deleted successfully!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    // Restore UI on error
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting practice: ' + err.message);
   }
 }
 
@@ -794,15 +842,42 @@ async function handleAddTournament() {
 async function deleteTournament(index) {
   if (!confirm('Delete this tournament?')) return;
 
-  const tournaments = await loadJSON('tournaments.json');
-  tournaments.splice(index, 1);
+  // Optimistic UI: Remove from DOM immediately
+  const tbody = $('tournament-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/tournaments.json', JSON.stringify(tournaments, null, 2));
-  const result = await saveRes.json();
+  try {
+    const tournaments = await loadJSON('tournaments.json');
+    tournaments.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Tournament deleted successfully!');
-    await loadTournaments();
+    const saveRes = await saveData('data/tournaments.json', JSON.stringify(tournaments, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      // Remove from DOM immediately without waiting for reload
+      if (rows[index]) rows[index].remove();
+      // Re-index remaining delete buttons
+      tbody.querySelectorAll('tr').forEach((tr, i) => {
+        const btn = tr.querySelector('button.danger');
+        if (btn) {
+          btn.onclick = () => deleteTournament(i);
+        }
+      });
+      alert('✅ Tournament deleted successfully!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    // Restore UI on error
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting tournament: ' + err.message);
   }
 }
 
@@ -915,15 +990,39 @@ async function addToTeam(index) {
 async function deleteSignup(index) {
   if (!confirm('Delete this registration?')) return;
 
-  const signups = await loadJSON('winter-signups.json');
-  signups.splice(index, 1);
+  const tbody = $('winter-signups-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
-  const result = await saveRes.json();
+  try {
+    const signups = await loadJSON('winter-signups.json');
+    signups.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Registration deleted successfully!');
-    await loadWinterSignups();
+    const saveRes = await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      tbody.querySelectorAll('tr').forEach((tr, i) => {
+        const btns = tr.querySelectorAll('button');
+        btns.forEach(btn => {
+          if (btn.classList.contains('success')) btn.onclick = () => addToTeam(i);
+          if (btn.classList.contains('danger')) btn.onclick = () => deleteSignup(i);
+        });
+      });
+      alert('✅ Registration deleted successfully!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting registration: ' + err.message);
   }
 }
 
@@ -1181,15 +1280,33 @@ async function deleteTeamGroup(index) {
 
   if (!confirm(`Delete team group "${teamName}"? Wrestlers in this group will be marked as Unassigned.`)) return;
 
-  teams.splice(index, 1);
+  // Optimistic UI: Find and fade the badge
+  const container = $('team-groups-container');
+  const badges = container.querySelectorAll('div');
+  if (badges[index]) {
+    badges[index].style.opacity = '0.5';
+    badges[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/team-groups.json', JSON.stringify(teams, null, 2));
-  const result = await saveRes.json();
+  try {
+    teams.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Team group deleted!');
-    await loadTeamGroups();
-    await loadTeamRoster();
+    const saveRes = await saveData('data/team-groups.json', JSON.stringify(teams, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (badges[index]) badges[index].remove();
+      alert('✅ Team group deleted!');
+      await loadTeamRoster();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (badges[index]) {
+      badges[index].style.opacity = '1';
+      badges[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting team group: ' + err.message);
   }
 }
 
@@ -1626,15 +1743,33 @@ async function loadAttendanceData() {
 async function deleteAttendanceRecord(index) {
   if (!confirm('Delete this attendance record?')) return;
 
-  const attendance = await loadJSON('attendance.json');
-  attendance.splice(index, 1);
+  const tbody = $('attendance-history');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/attendance.json', JSON.stringify(attendance, null, 2));
-  const result = await saveRes.json();
+  try {
+    const attendance = await loadJSON('attendance.json');
+    attendance.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Attendance record deleted!');
-    await loadAttendanceData();
+    const saveRes = await saveData('data/attendance.json', JSON.stringify(attendance, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Attendance record deleted!');
+      await loadAttendanceData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting attendance: ' + err.message);
   }
 }
 
@@ -1812,15 +1947,33 @@ async function addWeightRecord() {
 async function deleteWeightRecord(index) {
   if (!confirm('Delete this weight record?')) return;
 
-  const weights = await loadJSON('weight-tracking.json');
-  weights.splice(index, 1);
+  const tbody = $('current-weights');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/weight-tracking.json', JSON.stringify(weights, null, 2));
-  const result = await saveRes.json();
+  try {
+    const weights = await loadJSON('weight-tracking.json');
+    weights.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Weight record deleted!');
-    await loadWeightData();
+    const saveRes = await saveData('data/weight-tracking.json', JSON.stringify(weights, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Weight record deleted!');
+      await loadWeightData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting weight record: ' + err.message);
   }
 }
 
@@ -2015,15 +2168,33 @@ async function addMatchResult() {
 async function deleteMatchResult(index) {
   if (!confirm('Delete this match result?')) return;
 
-  const results = await loadJSON('tournament-results.json');
-  results.splice(index, 1);
+  const tbody = $('results-history');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/tournament-results.json', JSON.stringify(results, null, 2));
-  const result = await saveRes.json();
+  try {
+    const results = await loadJSON('tournament-results.json');
+    results.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Match result deleted!');
-    await loadResultsData();
+    const saveRes = await saveData('data/tournament-results.json', JSON.stringify(results, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Match result deleted!');
+      await loadResultsData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting match result: ' + err.message);
   }
 }
 
@@ -2198,15 +2369,34 @@ async function addPaymentRecord() {
 async function deletePaymentRecord(index) {
   if (!confirm('Delete this payment record?')) return;
 
-  const payments = await loadJSON('payments.json');
-  payments.splice(index, 1);
+  const tbody = $('payment-history');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/payments.json', JSON.stringify(payments, null, 2));
-  const result = await saveRes.json();
+  try {
+    const payments = await loadJSON('payments.json');
+    payments.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Payment record deleted!');
-    await loadPaymentsData();
+    const saveRes = await saveData('data/payments.json', JSON.stringify(payments, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Payment record deleted!');
+      // Refresh the summary section
+      await loadPaymentsData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting payment: ' + err.message);
   }
 }
 
@@ -2394,30 +2584,64 @@ async function saveCommNote() {
 async function deleteCommNote(index) {
   if (!confirm('Delete this communication note?')) return;
 
-  const commLog = await loadJSON('communication-log.json');
-  commLog.splice(index, 1);
+  const tbody = $('comm-log-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/communication-log.json', JSON.stringify(commLog, null, 2));
-  const result = await saveRes.json();
+  try {
+    const commLog = await loadJSON('communication-log.json');
+    commLog.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Note deleted!');
-    await loadCommunicationData();
+    const saveRes = await saveData('data/communication-log.json', JSON.stringify(commLog, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Note deleted!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting note: ' + err.message);
   }
 }
 
 async function deleteContactMessage(index) {
   if (!confirm('Delete this contact message?')) return;
 
-  const messages = await loadJSON('contact-messages.json');
-  messages.splice(index, 1);
+  const tbody = $('contact-messages-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/contact-messages.json', JSON.stringify(messages, null, 2));
-  const result = await saveRes.json();
+  try {
+    const messages = await loadJSON('contact-messages.json');
+    messages.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Message deleted!');
-    await loadCommunicationData();
+    const saveRes = await saveData('data/contact-messages.json', JSON.stringify(messages, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Message deleted!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting message: ' + err.message);
   }
 }
 
@@ -2553,15 +2777,32 @@ async function savePracticePlan() {
 async function deletePracticePlan(index) {
   if (!confirm('Delete this practice plan?')) return;
 
-  const plans = await loadJSON('practice-plans.json');
-  plans.splice(index, 1);
+  const tbody = $('practice-plans-list');
+  const rows = tbody.querySelectorAll('tr');
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/practice-plans.json', JSON.stringify(plans, null, 2));
-  const result = await saveRes.json();
+  try {
+    const plans = await loadJSON('practice-plans.json');
+    plans.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Practice plan deleted!');
-    await loadPracticePlansData();
+    const saveRes = await saveData('data/practice-plans.json', JSON.stringify(plans, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Practice plan deleted!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting practice plan: ' + err.message);
   }
 }
 
@@ -3066,15 +3307,32 @@ async function signUpVolunteer(index) {
 async function deleteVolunteerOpp(index) {
   if (!confirm('Delete this volunteer opportunity?')) return;
 
-  const volunteers = await loadJSON('volunteers.json');
-  volunteers.splice(index, 1);
+  const container = $('volunteer-opps');
+  const cards = container.querySelectorAll('div');
+  if (cards[index]) {
+    cards[index].style.opacity = '0.5';
+    cards[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/volunteers.json', JSON.stringify(volunteers, null, 2));
-  const result = await saveRes.json();
+  try {
+    const volunteers = await loadJSON('volunteers.json');
+    volunteers.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Volunteer opportunity deleted!');
-    await loadVolunteersData();
+    const saveRes = await saveData('data/volunteers.json', JSON.stringify(volunteers, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (cards[index]) cards[index].remove();
+      alert('✅ Volunteer opportunity deleted!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (cards[index]) {
+      cards[index].style.opacity = '1';
+      cards[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting volunteer opportunity: ' + err.message);
   }
 }
 
