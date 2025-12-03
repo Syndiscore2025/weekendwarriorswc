@@ -14,5 +14,13 @@
     "method": "Cash",
     "notes": "",
     "recorded_at": "2025-12-02T13:36:29.301Z"
+  },
+  {
+    "wrestler": "Jordan",
+    "amount": 100,
+    "date": "2025-12-03",
+    "method": "Cash",
+    "notes": "",
+    "recorded_at": "2025-12-03T20:03:33.381Z"
   }
 ]
