@@ -14,5 +14,13 @@
     "method": "Cash",
     "notes": "",
     "recorded_at": "2025-12-04T12:06:24.161Z"
+  },
+  {
+    "wrestler": "Xavier peltz",
+    "amount": 70,
+    "date": "2025-12-03",
+    "method": "Cash",
+    "notes": "",
+    "recorded_at": "2025-12-04T12:06:46.707Z"
   }
 ]
