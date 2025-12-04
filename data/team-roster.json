@@ -59,8 +59,7 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-14T16:21:23.260Z",
     "submitted_at": "2025-11-14T16:21:23.260Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
+    "on_team": false
   },
   {
     "parent_name": "Brianna Herold",
@@ -75,7 +74,8 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-23T00:22:53.400Z",
     "submitted_at": "2025-11-23T00:22:53.400Z",
-    "on_team": false
+    "on_team": false,
+    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Dillon Somma",
