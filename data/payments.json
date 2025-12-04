@@ -32,11 +32,19 @@
     "recorded_at": "2025-12-04T12:07:12.043Z"
   },
   {
-    "wrestler": "Daylon Somma",
+    "wrestler": "Jordan",
+    "amount": 100,
+    "date": "2025-12-04",
+    "method": "Cash",
+    "notes": "",
+    "recorded_at": "2025-12-04T12:07:43.187Z"
+  },
+  {
+    "wrestler": "ZACHARY Sena",
     "amount": 100,
     "date": "2025-12-03",
-    "method": "Venmo",
+    "method": "Cash",
     "notes": "",
-    "recorded_at": "2025-12-04T12:08:02.987Z"
+    "recorded_at": "2025-12-04T12:08:29.624Z"
   }
 ]
