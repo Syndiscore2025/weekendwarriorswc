@@ -59,7 +59,8 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-14T16:21:23.260Z",
     "submitted_at": "2025-11-14T16:21:23.260Z",
-    "on_team": false
+    "on_team": false,
+    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Brianna Herold",
@@ -152,7 +153,6 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-12-10T00:10:09.734Z",
     "submitted_at": "2025-12-10T00:10:09.734Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
+    "on_team": false
   }
 ]
