@@ -163,5 +163,20 @@
     "waiver_acknowledged_at": "2025-12-10T00:10:09.734Z",
     "submitted_at": "2025-12-10T00:10:09.734Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Matthew Campbell",
+    "wrestler_name": "Bryce campbell",
+    "wrestler_dob": "2013-11-05",
+    "wrestler_grade": "6th",
+    "wrestler_weight": "150",
+    "phone": "7816302086",
+    "email": "matthewcampbell428@gmail.com",
+    "address": "41 cheston circle",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-12-10T21:10:49.175Z",
+    "submitted_at": "2025-12-10T21:10:49.175Z",
+    "on_team": false
   }
 ]
