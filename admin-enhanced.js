@@ -1360,7 +1360,7 @@ async function deleteTeamGroup(index) {
     if (result.success) {
       if (badges[index]) badges[index].remove();
       alert('✅ Team group deleted!');
-      await loadTeamRoster();
+      // Don't reload - optimistic UI already removed the element
     } else {
       throw new Error('Save failed');
     }
@@ -1823,7 +1823,7 @@ async function deleteAttendanceRecord(index) {
     if (result.success) {
       if (rows[index]) rows[index].remove();
       alert('✅ Attendance record deleted!');
-      await loadAttendanceData();
+      // Don't reload - optimistic UI already removed the row
     } else {
       throw new Error('Save failed');
     }
@@ -2027,7 +2027,7 @@ async function deleteWeightRecord(index) {
     if (result.success) {
       if (rows[index]) rows[index].remove();
       alert('✅ Weight record deleted!');
-      await loadWeightData();
+      // Don't reload - optimistic UI already removed the row
     } else {
       throw new Error('Save failed');
     }
@@ -2248,7 +2248,7 @@ async function deleteMatchResult(index) {
     if (result.success) {
       if (rows[index]) rows[index].remove();
       alert('✅ Match result deleted!');
-      await loadResultsData();
+      // Don't reload - optimistic UI already removed the row
     } else {
       throw new Error('Save failed');
     }
@@ -2449,8 +2449,8 @@ async function deletePaymentRecord(index) {
     if (result.success) {
       if (rows[index]) rows[index].remove();
       alert('✅ Payment record deleted!');
-      // Refresh the summary section
-      await loadPaymentsData();
+      // Don't reload - optimistic UI already removed the row
+      // User can refresh the tab to see updated summary if needed
     } else {
       throw new Error('Save failed');
     }
@@ -3020,6 +3020,7 @@ async function deletePhoto(event, index) {
 
   if (result.success) {
     alert('✅ Photo deleted!');
+    // Reload photos to update the gallery
     await loadPhotosData();
   }
 }
