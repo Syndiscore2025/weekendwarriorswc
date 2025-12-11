@@ -2,9 +2,6 @@
 // Weekend Warriors Wrestling Club
 
 const $ = (id) => document.getElementById(id);
-const authView = $('auth-view');
-const dash = $('dash');
-const authError = $('auth-error');
 
 // API Configuration
 const API_URL = 'https://api.weekendwarriorswc.com';
@@ -14,6 +11,8 @@ const API_URL = 'https://api.weekendwarriorswc.com';
 // ============================================================================
 function initThemeToggle() {
   const themeToggle = $('theme-toggle');
+  if (!themeToggle) return; // Exit if theme toggle doesn't exist
+
   const savedTheme = localStorage.getItem('theme');
 
   // Apply saved theme on load
@@ -93,56 +92,67 @@ async function loadJSON(file, retries = 2) {
   }
 }
 
-// Check if already signed in
-if (sessionStorage.getItem('admin-auth') === 'true') {
-  showDashboard();
-}
+// ============================================================================
+// AUTHENTICATION & INITIALIZATION
+// ============================================================================
+function init() {
+  const authView = $('auth-view');
+  const dash = $('dash');
+  const authError = $('auth-error');
 
-// Sign in handler
-$('sign-in').addEventListener('click', async () => {
-  const password = $('password').value;
-  authError.textContent = '';
-
-  try {
-    const res = await fetch('data/admin-password.json');
-    const data = await res.json();
-
-    if (password === data.password) {
-      sessionStorage.setItem('admin-auth', 'true');
-      showDashboard();
-    } else {
-      authError.textContent = 'Incorrect password';
-    }
-  } catch (e) {
-    authError.textContent = 'Error loading password file';
+  // Check if already signed in
+  if (sessionStorage.getItem('admin-auth') === 'true') {
+    showDashboard();
   }
-});
 
-// Allow Enter key to sign in
-$('password').addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') $('sign-in').click();
-});
+  // Sign in handler
+  $('sign-in')?.addEventListener('click', async () => {
+    const password = $('password').value;
+    if (authError) authError.textContent = '';
 
-// Sign out handler
-$('sign-out').addEventListener('click', () => {
-  sessionStorage.removeItem('admin-auth');
-  // Show the entire sign-in card again
-  const authCard = authView?.closest('.content-card');
-  if (authCard) authCard.classList.remove('hidden');
-  authView.classList.remove('hidden');
-  dash.classList.add('hidden');
-  $('sign-out').style.display = 'none';
-});
+    try {
+      const res = await fetch('data/admin-password.json');
+      const data = await res.json();
 
-function showDashboard() {
-  // Hide the entire sign-in card and show dashboard
-  const authCard = authView?.closest('.content-card');
-  if (authCard) authCard.classList.add('hidden');
-  authView.classList.add('hidden');
-  dash.classList.remove('hidden');
-  $('sign-out').style.display = 'block';
-  initializeTabs();
-  loadAllData();
+      if (password === data.password) {
+        sessionStorage.setItem('admin-auth', 'true');
+        showDashboard();
+      } else {
+        if (authError) authError.textContent = 'Incorrect password';
+      }
+    } catch (e) {
+      if (authError) authError.textContent = 'Error loading password file';
+    }
+  });
+
+  // Allow Enter key to sign in
+  $('password')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') $('sign-in')?.click();
+  });
+
+  // Sign out handler
+  $('sign-out')?.addEventListener('click', () => {
+    sessionStorage.removeItem('admin-auth');
+    // Show the entire sign-in card again
+    const authCard = authView?.closest('.content-card');
+    if (authCard) authCard.classList.remove('hidden');
+    if (authView) authView.classList.remove('hidden');
+    if (dash) dash.classList.add('hidden');
+    const signOutBtn = $('sign-out');
+    if (signOutBtn) signOutBtn.style.display = 'none';
+  });
+
+  function showDashboard() {
+    // Hide the entire sign-in card and show dashboard
+    const authCard = authView?.closest('.content-card');
+    if (authCard) authCard.classList.add('hidden');
+    if (authView) authView.classList.add('hidden');
+    if (dash) dash.classList.remove('hidden');
+    const signOutBtn = $('sign-out');
+    if (signOutBtn) signOutBtn.style.display = 'block';
+    initializeTabs();
+    loadAllData();
+  }
 }
 
 // Tab Management
@@ -2221,8 +2231,8 @@ async function addMatchResult() {
 async function deleteMatchResult(index) {
   if (!confirm('Delete this match result?')) return;
 
-  const tbody = $('results-history');
-  const rows = tbody.querySelectorAll('tr');
+  const tbody = $('results-history-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
   if (rows[index]) {
     rows[index].style.opacity = '0.5';
     rows[index].style.pointerEvents = 'none';
