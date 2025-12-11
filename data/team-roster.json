@@ -138,7 +138,8 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-11-16T21:12:34.449Z",
     "submitted_at": "2025-11-16T21:12:34.449Z",
-    "on_team": false
+    "on_team": false,
+    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Shannon Seeley",
