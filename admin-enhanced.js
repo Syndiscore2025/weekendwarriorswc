@@ -612,15 +612,32 @@ async function handleAddMusic() {
 async function deleteMusic(index) {
   if (!confirm('Delete this music file?')) return;
 
-  const playlist = await loadJSON('music-playlist.json');
-  playlist.splice(index, 1);
+  const tbody = $('music-playlist-list');
+  const rows = tbody?.querySelectorAll('tr');
+  if (rows && rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/music-playlist.json', JSON.stringify(playlist, null, 2));
-  const result = await saveRes.json();
+  try {
+    const playlist = await loadJSON('music-playlist.json');
+    playlist.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Music deleted successfully!');
-    await loadMusicSettings();
+    const saveRes = await saveData('data/music-playlist.json', JSON.stringify(playlist, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows && rows[index]) rows[index].remove();
+      alert('✅ Music deleted successfully!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows && rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error deleting music: ' + err.message);
   }
 }
 
@@ -710,8 +727,8 @@ async function deleteCalendarEvent(index) {
   if (!confirm('Delete this practice?')) return;
 
   // Optimistic UI: Remove from DOM immediately
-  const tbody = $('calendar-list');
-  const rows = tbody.querySelectorAll('tr');
+  const tbody = $('calendar-events-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
   if (rows[index]) {
     rows[index].style.opacity = '0.5';
     rows[index].style.pointerEvents = 'none';
@@ -962,6 +979,9 @@ async function loadWinterSignups() {
 }
 
 async function addToTeam(index) {
+  const tbody = $('winter-signups-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
+
   const signups = await loadJSON('winter-signups.json');
   const signup = signups[index];
 
@@ -981,10 +1001,21 @@ async function addToTeam(index) {
 
   roster.push(signup);
 
-  await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
+  const saveRes = await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
+  const result = await saveRes.json();
 
-  alert('✅ Added to team roster!');
-  await loadWinterSignups();
+  if (result.success) {
+    alert('✅ Added to team roster!');
+    // Immediately update the button to show "On Team" status
+    if (rows[index]) {
+      const actionCell = rows[index].querySelector('td.right');
+      if (actionCell) {
+        const deleteBtn = actionCell.querySelector('button.danger');
+        actionCell.innerHTML = `<span style="color: #28a745; font-weight: 600;">✓ On Team</span> ${deleteBtn.outerHTML}`;
+        actionCell.querySelector('button.danger').onclick = () => deleteSignup(index);
+      }
+    }
+  }
 }
 
 async function deleteSignup(index) {
@@ -1189,15 +1220,37 @@ function emailSelectedTeam() {
 async function removeFromTeam(index) {
   if (!confirm('Remove this wrestler from the team roster?')) return;
 
-  const roster = await loadJSON('team-roster.json');
-  roster.splice(index, 1);
+  const tbody = $('team-roster-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
-  const result = await saveRes.json();
+  try {
+    const roster = await loadJSON('team-roster.json');
+    roster.splice(index, 1);
 
-  if (result.success) {
-    alert('✅ Wrestler removed from team!');
-    await loadTeamRoster();
+    const saveRes = await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      // Re-index remaining delete buttons
+      tbody.querySelectorAll('tr').forEach((tr, i) => {
+        const btn = tr.querySelector('button.danger');
+        if (btn) btn.onclick = () => removeFromTeam(i);
+      });
+      alert('✅ Wrestler removed from team!');
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error removing wrestler: ' + err.message);
   }
 }
 
@@ -1743,8 +1796,8 @@ async function loadAttendanceData() {
 async function deleteAttendanceRecord(index) {
   if (!confirm('Delete this attendance record?')) return;
 
-  const tbody = $('attendance-history');
-  const rows = tbody.querySelectorAll('tr');
+  const tbody = $('attendance-history-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
   if (rows[index]) {
     rows[index].style.opacity = '0.5';
     rows[index].style.pointerEvents = 'none';
@@ -1947,8 +2000,8 @@ async function addWeightRecord() {
 async function deleteWeightRecord(index) {
   if (!confirm('Delete this weight record?')) return;
 
-  const tbody = $('current-weights');
-  const rows = tbody.querySelectorAll('tr');
+  const tbody = $('weight-history-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
   if (rows[index]) {
     rows[index].style.opacity = '0.5';
     rows[index].style.pointerEvents = 'none';
@@ -3135,19 +3188,37 @@ async function checkoutEquipment() {
 async function returnEquipment(index) {
   if (!confirm('Mark this equipment as returned?')) return;
 
-  const equipment = await loadJSON('equipment.json');
-  const checkedOut = equipment.filter(e => !e.return_date);
-  const item = checkedOut[index];
-  const globalIndex = equipment.indexOf(item);
+  const tbody = $('equipment-out-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  equipment[globalIndex].return_date = new Date().toISOString().split('T')[0];
+  try {
+    const equipment = await loadJSON('equipment.json');
+    const checkedOut = equipment.filter(e => !e.return_date);
+    const item = checkedOut[index];
+    const globalIndex = equipment.indexOf(item);
 
-  const saveRes = await saveData('data/equipment.json', JSON.stringify(equipment, null, 2));
-  const result = await saveRes.json();
+    equipment[globalIndex].return_date = new Date().toISOString().split('T')[0];
 
-  if (result.success) {
-    alert('✅ Equipment returned!');
-    await loadEquipmentData();
+    const saveRes = await saveData('data/equipment.json', JSON.stringify(equipment, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Equipment returned!');
+      await loadEquipmentData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error returning equipment: ' + err.message);
   }
 }
 
@@ -3548,19 +3619,36 @@ async function saveInjury() {
 }
 
 async function markClearanceReceived(index) {
-  const injuries = await loadJSON('injuries.json');
-  const active = injuries.filter(i => !i.actual_return_date);
-  const injury = active[index];
-  const globalIndex = injuries.indexOf(injury);
+  const tbody = $('active-injuries-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  injuries[globalIndex].clearance_received = true;
+  try {
+    const injuries = await loadJSON('injuries.json');
+    const active = injuries.filter(i => !i.actual_return_date);
+    const injury = active[index];
+    const globalIndex = injuries.indexOf(injury);
 
-  const saveRes = await saveData('data/injuries.json', JSON.stringify(injuries, null, 2));
-  const result = await saveRes.json();
+    injuries[globalIndex].clearance_received = true;
 
-  if (result.success) {
-    alert('✅ Medical clearance marked as received!');
-    await loadMedicalData();
+    const saveRes = await saveData('data/injuries.json', JSON.stringify(injuries, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      alert('✅ Medical clearance marked as received!');
+      await loadMedicalData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error marking clearance: ' + err.message);
   }
 }
 
@@ -3576,14 +3664,32 @@ async function markReturned(index) {
     }
   }
 
-  injuries[globalIndex].actual_return_date = new Date().toISOString().split('T')[0];
+  const tbody = $('active-injuries-list');
+  const rows = tbody?.querySelectorAll('tr') || [];
+  if (rows[index]) {
+    rows[index].style.opacity = '0.5';
+    rows[index].style.pointerEvents = 'none';
+  }
 
-  const saveRes = await saveData('data/injuries.json', JSON.stringify(injuries, null, 2));
-  const result = await saveRes.json();
+  try {
+    injuries[globalIndex].actual_return_date = new Date().toISOString().split('T')[0];
 
-  if (result.success) {
-    alert('✅ Wrestler marked as returned!');
-    await loadMedicalData();
+    const saveRes = await saveData('data/injuries.json', JSON.stringify(injuries, null, 2));
+    const result = await saveRes.json();
+
+    if (result.success) {
+      if (rows[index]) rows[index].remove();
+      alert('✅ Wrestler marked as returned!');
+      await loadMedicalData();
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch (err) {
+    if (rows[index]) {
+      rows[index].style.opacity = '1';
+      rows[index].style.pointerEvents = 'auto';
+    }
+    alert('❌ Error marking returned: ' + err.message);
   }
 }
 
