@@ -178,5 +178,20 @@
     "waiver_acknowledged_at": "2025-12-10T21:10:49.175Z",
     "submitted_at": "2025-12-10T21:10:49.175Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Matthew Peacock",
+    "wrestler_name": "Jaxon Peacock",
+    "wrestler_dob": "2015-05-07",
+    "wrestler_grade": "5th",
+    "wrestler_weight": "127",
+    "phone": "8608785015",
+    "email": "mpeacock74@yahoo.com",
+    "address": "101 Ridge Crest Circle",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-12-13T17:19:36.896Z",
+    "submitted_at": "2025-12-13T17:19:36.897Z",
+    "on_team": false
   }
 ]
