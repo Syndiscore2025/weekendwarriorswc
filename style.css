@@ -338,7 +338,7 @@ nav a.winter-nav.closed {
     rgba(100, 100, 100, 0.3) 0%,
     rgba(80, 80, 80, 0.4) 100%);
   border: 1px solid rgba(150, 150, 150, 0.3);
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
   position: relative;
