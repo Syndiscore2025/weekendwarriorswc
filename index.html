@@ -36,13 +36,22 @@
     </a>
   </nav>
 
-  <section class="hero-slider" aria-label="Showcase">
-    <div class="slides" id="slides-container">
-      <!-- Slides loaded from Supabase -->
+  <!-- Wrestling Mat Hero Section - Arena Environment -->
+  <section class="mat-hero">
+    <div class="arena-crowd-bg"></div>
+    <div class="mat-stage">
+      <div class="mat-surface">
+        <div class="mat-markings"></div>
+        <section class="hero-slider" aria-label="Showcase">
+          <div class="slides" id="slides-container">
+            <!-- Slides loaded from Supabase -->
+          </div>
+          <button class="slider-arrow prev" aria-label="Previous">&#10094;</button>
+          <button class="slider-arrow next" aria-label="Next">&#10095;</button>
+          <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
+        </section>
+      </div>
     </div>
-    <button class="slider-arrow prev" aria-label="Previous">&#10094;</button>
-    <button class="slider-arrow next" aria-label="Next">&#10095;</button>
-    <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
   </section>
 
   <!-- Background audio - dual audio elements for crossfade -->

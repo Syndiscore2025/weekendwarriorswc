@@ -423,17 +423,137 @@ section p {
 }
 
 
-/* HERO SLIDER */
+/* ============================================
+   WRESTLING MAT HERO SECTION
+   Realistic arena environment with mat stage
+   ============================================ */
+
+/* Main mat hero container */
+.mat-hero {
+  position: relative;
+  width: 100%;
+  padding: 3rem 1rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Arena crowd background with blur and vignette */
+.arena-crowd-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* Placeholder: Replace with actual arena crowd image */
+  /* background-image: url('media/arena-crowd.jpg'); */
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(40, 15, 15, 0.9) 0%, rgba(10, 5, 5, 0.98) 70%),
+    linear-gradient(180deg, #1a0808 0%, #0d0404 50%, #050202 100%);
+  background-size: cover;
+  background-position: center top;
+  filter: blur(2px);
+}
+
+/* Vignette overlay for arena */
+.arena-crowd-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+}
+
+/* Stadium lights effect - subtle rim glow from above */
+.mat-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 240, 220, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mat stage - the elevated platform */
+.mat-stage {
+  position: relative;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 12px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+  border-radius: 8px;
+  box-shadow:
+    /* Depth shadow below the stage */
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 8px 25px rgba(0, 0, 0, 0.6),
+    /* Subtle red rim light from arena lighting */
+    0 -1px 0 rgba(180, 50, 50, 0.15),
+    0 1px 0 rgba(0, 0, 0, 0.8),
+    /* Inner highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  z-index: 2;
+}
+
+/* Mat surface - the actual wrestling mat */
+.mat-surface {
+  position: relative;
+  background:
+    /* Rubber texture simulation */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 2px,
+      rgba(0, 0, 0, 0.02) 4px
+    ),
+    /* Base mat color - dark charcoal */
+    linear-gradient(135deg, #1f1f1f 0%, #151515 50%, #1a1a1a 100%);
+  border-radius: 6px;
+  padding: 8px;
+  /* Mat edge/lip effect */
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Wrestling mat markings overlay */
+.mat-markings {
+  position: absolute;
+  inset: 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    /* Outer circle */
+    radial-gradient(circle at 50% 50%, transparent 42%, rgba(180, 30, 30, 0.08) 42%, rgba(180, 30, 30, 0.08) 44%, transparent 44%),
+    /* Inner circle (starting area) */
+    radial-gradient(circle at 50% 50%, transparent 18%, rgba(180, 30, 30, 0.06) 18%, rgba(180, 30, 30, 0.06) 20%, transparent 20%),
+    /* Center circle */
+    radial-gradient(circle at 50% 50%, rgba(180, 30, 30, 0.1) 0%, rgba(180, 30, 30, 0.1) 6%, transparent 6%);
+}
+
+/* HERO SLIDER - Modified for mat integration */
 .hero-slider {
   position: relative;
   width: 100%;
-  max-width: 1200px;
-  margin: 2rem auto;
-  border: 2px solid #e60000;
-  border-radius: 10px;
+  max-width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(10,0,0,0.9));
-  box-shadow: 0 12px 40px rgba(230, 0, 0, 0.25);
+  background: #0a0a0a;
+  /* Subtle inset to feel recessed into mat */
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.6),
+    inset 0 0 20px rgba(0, 0, 0, 0.4);
   aspect-ratio: 16 / 9;
 }
 
@@ -472,34 +592,32 @@ section p {
   object-fit: contain; /* Fit video within the padded area */
 }
 
-/* Dynamic Caption Styling with Animations */
+/* Dynamic Caption Styling - Realistic, subtle */
 .hero-slider .caption {
   position: absolute;
   left: 50%;
   bottom: 2.5rem;
   transform: translateX(-50%);
   color: #fff;
-  font-weight: 800;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   text-align: center;
-  background: linear-gradient(135deg, rgba(230, 0, 0, 0.95) 0%, rgba(180, 0, 0, 0.95) 100%);
-  padding: 1rem 2.5rem;
-  border-radius: 12px;
-  border: 3px solid #ff3333;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 0.8rem 2rem;
+  border-radius: 6px;
+  border: 1px solid rgba(180, 50, 50, 0.4);
   box-shadow:
-    0 8px 32px rgba(230, 0, 0, 0.6),
-    0 0 40px rgba(230, 0, 0, 0.4),
-    inset 0 2px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   z-index: 2;
   opacity: 0;
   animation: captionSlideIn 0.8s ease-out 0.5s forwards;
   max-width: 80%;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes captionSlideIn {
@@ -529,13 +647,14 @@ section p {
   }
 }
 
+/* Slider arrows - subtle and professional */
 .hero-slider .slider-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  border: 2px solid #e60000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -545,30 +664,48 @@ section p {
   cursor: pointer;
   transition: all 0.25s ease;
   z-index: 3;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
-.hero-slider .slider-arrow:hover { background: #e60000; box-shadow: 0 6px 18px rgba(230, 0, 0, 0.5); }
+.hero-slider .slider-arrow:hover {
+  background: rgba(180, 30, 30, 0.8);
+  border-color: rgba(180, 30, 30, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
 .hero-slider .slider-arrow.prev { left: 12px; }
 .hero-slider .slider-arrow.next { right: 12px; }
 
+/* Slider dots - subtle indicators */
 .hero-slider .slider-dots {
   position: absolute;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 8px;
   z-index: 3;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .hero-slider .slider-dots button {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 2px solid #e60000;
-  background: transparent;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.hero-slider .slider-dots button.active { background: #e60000; }
+.hero-slider .slider-dots button:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+.hero-slider .slider-dots button.active {
+  background: rgba(180, 50, 50, 0.9);
+  box-shadow: 0 0 8px rgba(180, 50, 50, 0.5);
+}
 
 /* Audio controls - Enhanced with pulse animation */
 .audio-controls {
@@ -613,10 +750,33 @@ section p {
     line-height: 1.4;
   }
 
+  /* Mat Hero mobile adjustments */
+  .mat-hero {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .mat-stage {
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  .mat-surface {
+    padding: 4px;
+    border-radius: 4px;
+  }
+
+  .mat-markings {
+    inset: 4px;
+    /* Simplify markings on mobile for performance */
+    background:
+      radial-gradient(circle at 50% 50%, rgba(180, 30, 30, 0.08) 0%, rgba(180, 30, 30, 0.08) 8%, transparent 8%);
+  }
+
   .hero-slider {
-    margin: 1rem auto 1.5rem;
+    margin: 0;
     aspect-ratio: 16 / 9;
     max-width: 100%;
+    border-radius: 3px;
   }
   .hero-slider .slides { height: 100%; }
   .hero-slider .slide {
@@ -637,15 +797,28 @@ section p {
     height: 100%;
     object-fit: cover;
   }
-  .hero-slider .slider-arrow { width: 36px; height: 36px; }
-  .hero-slider .slider-arrow.prev { left: 8px; }
-  .hero-slider .slider-arrow.next { right: 8px; }
+  .hero-slider .slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  .hero-slider .slider-arrow.prev { left: 6px; }
+  .hero-slider .slider-arrow.next { right: 6px; }
   .hero-slider .caption {
-    font-size: 1rem;
-    padding: 0.8rem 1.5rem;
-    bottom: 1.5rem;
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    bottom: 1.2rem;
     max-width: 90%;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+  }
+  .hero-slider .slider-dots {
+    padding: 4px 8px;
+    gap: 6px;
+    bottom: 8px;
+  }
+  .hero-slider .slider-dots button {
+    width: 6px;
+    height: 6px;
   }
   .audio-controls {
     bottom: 1rem;
@@ -656,6 +829,48 @@ section p {
   .audio-controls svg {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .mat-hero {
+    padding: 1rem 0.25rem;
+  }
+
+  .mat-stage {
+    padding: 4px;
+  }
+
+  .mat-surface {
+    padding: 3px;
+  }
+
+  .hero-slider .caption {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+    bottom: 1rem;
+    letter-spacing: 0;
+  }
+
+  .hero-slider .slider-arrow {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slider .slide {
+    transition: opacity 0.3s ease;
+    transform: none;
+  }
+  .hero-slider .slide.is-active {
+    transform: none;
+  }
+  .hero-slider .caption {
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -1324,11 +1539,19 @@ footer a:hover {
     box-sizing: border-box;
   }
 
-  /* Hero slider landscape fixes */
+  /* Mat hero landscape fixes */
+  .mat-hero {
+    padding: 1rem 0.5rem;
+  }
+
+  .mat-stage {
+    max-width: 100%;
+  }
+
   .hero-slider {
     width: 100%;
     max-width: 100%;
-    margin: 1rem 0;
+    margin: 0;
   }
 
   /* Contact info landscape fixes */
