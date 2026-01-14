@@ -124,51 +124,29 @@ nav a::before {
   bottom: 0;
   left: 50%;
   width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #e60000, transparent);
+  height: 2px;
+  background: #e60000;
   transform: translateX(-50%);
   transition: width 0.3s ease;
 }
 
-nav a::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(230, 0, 0, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-nav a:hover::after {
-  left: 100%;
-}
-
 nav a:hover {
-  background: linear-gradient(180deg, #e60000 0%, #b30000 100%);
+  background: rgba(230, 0, 0, 0.15);
   color: #fff;
-  transform: translateY(-3px);
-  box-shadow:
-    0 6px 20px rgba(230, 0, 0, 0.5),
-    0 0 30px rgba(230, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 nav a:hover::before {
-  width: 90%;
+  width: 80%;
 }
 
 /* Active link */
 nav a.active, nav a[aria-current="page"] {
-  background: linear-gradient(180deg, #e60000 0%, #b30000 100%);
+  background: rgba(230, 0, 0, 0.2);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(230, 0, 0, 0.4);
 }
 
 nav a.active::before, nav a[aria-current="page"]::before {
-  width: 80%;
+  width: 70%;
 }
 
 /* USA Membership Button - Modern Glass Morphism */
@@ -327,20 +305,19 @@ nav a.winter-nav .closed-badge {
   pointer-events: none;
 }
 
-/* Registration Closed Banner - Compact Top Banner */
-.registration-closed-banner {
+/* Announcement Banner - Subtle top bar */
+.announcement-banner {
   width: 100%;
-  background: linear-gradient(135deg, #e60000 0%, #b40000 100%);
-  color: #fff;
+  background: linear-gradient(90deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
+  color: #ccc;
   text-align: center;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  border-bottom: 3px solid #ff3333;
-  box-shadow: 0 4px 12px rgba(230, 0, 0, 0.4);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(230, 0, 0, 0.3);
   position: relative;
-  z-index: 100;
+  z-index: 101;
 }
 
 /* Keep nav links centered and pin Sign out on the right */
@@ -853,12 +830,6 @@ section p {
 }
 
 @media (max-width: 768px) {
-  /* Registration banner mobile styling */
-  .registration-closed-banner {
-    font-size: 0.85rem;
-    padding: 0.6rem 0.75rem;
-    line-height: 1.4;
-  }
 
   /* Circular Mat mobile adjustments */
   .mat-hero {
@@ -1448,26 +1419,44 @@ footer a:hover {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  /* Announcement banner mobile */
+  .announcement-banner {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    line-height: 1.4;
+  }
+
   header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem 1rem;
-    gap: 1rem;
+    padding: 1rem 0.75rem;
+    gap: 0.5rem;
+  }
+  .header-title-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  /* Hide duplicate logos on mobile - show only one */
+  header img.logo.logo-right {
+    display: none;
   }
   header img.logo {
     width: auto;
     height: auto;
-    max-width: min(75vw, 280px);
-    max-height: 120px;
+    max-width: 100px;
+    max-height: 100px;
     object-fit: contain;
   }
   header h1 {
-    font-size: 1.8rem;
-    letter-spacing: 2px;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
   }
   header p {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   nav {
     flex-wrap: wrap;
@@ -1561,6 +1550,19 @@ footer a:hover {
   .content-card {
     padding: 1.5rem;
     margin: 1rem auto;
+  }
+
+  /* Smaller header for 480px */
+  header h1 {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+  }
+  header p {
+    font-size: 0.8rem;
+  }
+  .announcement-banner {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.5rem;
   }
 }
 
