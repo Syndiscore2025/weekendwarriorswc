@@ -36,22 +36,40 @@
     </a>
   </nav>
 
-  <!-- Wrestling Mat Hero Section - Arena Environment -->
+  <!-- Wrestling Mat Hero Section - Circular Mat Arena -->
   <section class="mat-hero">
-    <div class="arena-crowd-bg"></div>
-    <div class="mat-stage">
-      <div class="mat-surface">
-        <div class="mat-markings"></div>
-        <section class="hero-slider" aria-label="Showcase">
-          <div class="slides" id="slides-container">
-            <!-- Slides loaded from Supabase -->
-          </div>
-          <button class="slider-arrow prev" aria-label="Previous">&#10094;</button>
-          <button class="slider-arrow next" aria-label="Next">&#10095;</button>
-          <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
-        </section>
-      </div>
+    <!-- Arena crowd background image -->
+    <div class="arena-crowd-bg">
+      <img src="https://images.unsplash.com/photo-1578022761797-b8636ac1773c?w=1920&q=80" alt="" aria-hidden="true" class="arena-bg-img">
     </div>
+
+    <!-- Circular Wrestling Mat -->
+    <div class="wrestling-mat">
+      <!-- Mat circles (outer, middle, inner, center) -->
+      <div class="mat-circle mat-outer"></div>
+      <div class="mat-circle mat-middle"></div>
+      <div class="mat-circle mat-inner"></div>
+      <div class="mat-circle mat-center"></div>
+
+      <!-- Club logo - visible between slide transitions -->
+      <div class="mat-logo">
+        <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo">
+      </div>
+
+      <!-- Photo slideshow - clips to circular mat -->
+      <div class="mat-slideshow" aria-label="Showcase">
+        <div class="slides" id="slides-container">
+          <!-- Slides loaded from JSON -->
+        </div>
+      </div>
+
+      <!-- Navigation arrows (outside the mat) -->
+      <button class="slider-arrow prev" aria-label="Previous slide">&#10094;</button>
+      <button class="slider-arrow next" aria-label="Next slide">&#10095;</button>
+    </div>
+
+    <!-- Dot navigation below mat -->
+    <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
   </section>
 
   <!-- Background audio - dual audio elements for crossfade -->
@@ -74,28 +92,33 @@
   </div>
 
   <script>
-    const slider = document.querySelector('.hero-slider');
+    // Wrestling Mat Slideshow - Circular mat with logo reveal between slides
+    const matHero = document.querySelector('.mat-hero');
+    const wrestlingMat = document.querySelector('.wrestling-mat');
+    const matSlideshow = document.querySelector('.mat-slideshow');
     const slidesContainer = document.getElementById('slides-container');
-    const dotsWrap = slider?.querySelector('.slider-dots');
-    const prevBtn = slider?.querySelector('.prev');
-    const nextBtn = slider?.querySelector('.next');
+    const dotsWrap = document.querySelector('.mat-hero .slider-dots');
+    const prevBtn = document.querySelector('.wrestling-mat .prev');
+    const nextBtn = document.querySelector('.wrestling-mat .next');
 
     let slides = [];
     let index = 0;
 
-    // Robust timer/state management
-    let autoTimerId = null;          // advances slides
-    let settingsPollId = null;       // polls for updated interval
-    let sliderInterval = 5000;       // ms (default 5s)
+    // Timer and state management
+    let autoTimerId = null;
+    let settingsPollId = null;
+    let sliderInterval = 5000;        // Time each slide is shown (ms)
+    let matRevealDuration = 1500;     // Time mat/logo is visible between slides (ms)
     let initialized = false;
+    let isTransitioning = false;      // Prevent overlapping transitions
 
     async function loadSlides() {
       try {
-        // Load settings for slider interval (no-store to avoid stale cache)
+        // Load settings
         const settingsRes = await fetch('data/settings.json', { cache: 'no-store' });
         const settingsData = await settingsRes.json();
         const sec = parseFloat(settingsData?.sliderInterval);
-        const nextInterval = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        const nextInterval = Math.max(2000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
         sliderInterval = nextInterval;
 
         // Load slides from JSON
@@ -140,7 +163,8 @@
 
     function startTimer() {
       stopTimer();
-      autoTimerId = setInterval(() => goTo(index + 1), sliderInterval);
+      // Total cycle = slide display + mat reveal
+      autoTimerId = setInterval(() => transitionToNext(), sliderInterval + matRevealDuration);
     }
 
     function stopTimer() {
@@ -158,7 +182,7 @@
         const res = await fetch('data/settings.json', { cache: 'no-store' });
         const data = await res.json();
         const sec = parseFloat(data?.sliderInterval);
-        const newMs = Math.max(1000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
+        const newMs = Math.max(2000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
         if (newMs !== sliderInterval) {
           sliderInterval = newMs;
           restartTimer();
@@ -168,35 +192,51 @@
 
     function startSettingsWatcher() {
       if (settingsPollId) clearInterval(settingsPollId);
-      // Poll for admin changes periodically so the timer adapts dynamically
       settingsPollId = setInterval(refreshSettingsIfChanged, 15000);
     }
 
     function initSlider() {
-      if (!slider || initialized) return;
-      slides = Array.from(slider.querySelectorAll('.slide'));
+      if (!wrestlingMat || initialized) return;
+      slides = Array.from(matSlideshow.querySelectorAll('.slide'));
       if (slides.length === 0) return;
 
       initialized = true;
 
+      // Create dot navigation
       dotsWrap.innerHTML = '';
       slides.forEach((slide, i) => {
         const b = document.createElement('button');
-        b.setAttribute('aria-label', 'Go to slide ' + (i+1));
-        b.addEventListener('click', () => { goTo(i); restartTimer(); });
+        b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        b.addEventListener('click', () => {
+          if (!isTransitioning) {
+            transitionTo(i);
+            restartTimer();
+          }
+        });
         dotsWrap.appendChild(b);
 
         const video = slide.querySelector('video');
         if (video && i === 0) video.play().catch(() => {});
       });
 
-      prevBtn.addEventListener('click', () => { goTo(index - 1); restartTimer(); });
-      nextBtn.addEventListener('click', () => { goTo(index + 1); restartTimer(); });
+      // Arrow navigation
+      prevBtn.addEventListener('click', () => {
+        if (!isTransitioning) {
+          transitionTo(index - 1);
+          restartTimer();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (!isTransitioning) {
+          transitionTo(index + 1);
+          restartTimer();
+        }
+      });
 
-      update();
+      updateDots();
       startTimer();
 
-      // Pause when tab is hidden; resume (and re-read settings) when visible
+      // Visibility handling
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
           refreshSettingsIfChanged().finally(restartTimer);
@@ -205,7 +245,6 @@
         }
       });
 
-      // Handle back/forward cache restores (iOS Safari/Chrome)
       window.addEventListener('pageshow', (e) => {
         if (e.persisted || document.visibilityState === 'visible') {
           refreshSettingsIfChanged().finally(restartTimer);
@@ -214,22 +253,66 @@
       window.addEventListener('pagehide', stopTimer);
     }
 
-    function update() {
-      slides.forEach((s, i) => {
-        const isActive = i === index;
-        s.classList.toggle('is-active', isActive);
-        const video = s.querySelector('video');
-        if (video) {
-          if (isActive) video.play().catch(() => {});
-          else video.pause();
-        }
-      });
+    function updateDots() {
       Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === index));
     }
 
-    function goTo(i) {
-      index = (i + slides.length) % slides.length;
-      update();
+    // Transition with mat reveal effect
+    function transitionTo(newIndex) {
+      if (isTransitioning || slides.length === 0) return;
+
+      const targetIndex = (newIndex + slides.length) % slides.length;
+      if (targetIndex === index) return;
+
+      isTransitioning = true;
+
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        // Instant transition for reduced motion
+        slides[index].classList.remove('is-active');
+        pauseSlideVideo(index);
+        index = targetIndex;
+        slides[index].classList.add('is-active');
+        playSlideVideo(index);
+        updateDots();
+        isTransitioning = false;
+        return;
+      }
+
+      // Step 1: Fade out current slide (reveals mat + logo)
+      matSlideshow.classList.add('mat-reveal');
+      slides[index].classList.remove('is-active');
+      pauseSlideVideo(index);
+
+      // Step 2: After mat reveal pause, show next slide
+      setTimeout(() => {
+        index = targetIndex;
+        slides[index].classList.add('is-active');
+        playSlideVideo(index);
+        updateDots();
+
+        // Step 3: Fade in the new slide
+        setTimeout(() => {
+          matSlideshow.classList.remove('mat-reveal');
+          isTransitioning = false;
+        }, 100);
+      }, matRevealDuration);
+    }
+
+    function transitionToNext() {
+      transitionTo(index + 1);
+    }
+
+    function playSlideVideo(i) {
+      const video = slides[i]?.querySelector('video');
+      if (video) video.play().catch(() => {});
+    }
+
+    function pauseSlideVideo(i) {
+      const video = slides[i]?.querySelector('video');
+      if (video) video.pause();
     }
 
     loadSlides();
