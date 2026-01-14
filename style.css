@@ -425,126 +425,262 @@ section p {
 
 /* ============================================
    CIRCULAR WRESTLING MAT HERO SECTION
-   Realistic arena with circular mat and logo
+   Black mat with red accents - Arena environment
    ============================================ */
 
 /* Main container */
 .mat-hero {
   position: relative;
   width: 100%;
-  min-height: 600px;
+  min-height: 650px;
   padding: 2rem 1rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #0a0a0a;
 }
 
-/* Arena crowd background */
-.arena-crowd-bg {
+/* ===== ARENA ENVIRONMENT ===== */
+.arena-environment {
   position: absolute;
   inset: 0;
   z-index: 0;
   overflow: hidden;
 }
 
-.arena-bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 30%;
-  filter: blur(3px) brightness(0.35);
+/* Stadium crowd silhouettes in background */
+.arena-crowd {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Crowd silhouette rows - top section */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(30, 30, 35, 0.4) 8px,
+      rgba(30, 30, 35, 0.4) 12px
+    ),
+    /* Curved stadium seating effect */
+    radial-gradient(ellipse 150% 60% at 50% 0%, #1a1a1f 0%, #0d0d10 50%, #050507 100%);
+  opacity: 0.9;
 }
 
-/* Vignette overlay */
-.arena-crowd-bg::after {
+/* Individual crowd silhouettes - subtle head shapes */
+.arena-crowd::before {
+  content: '';
+  position: absolute;
+  top: 5%;
+  left: 0;
+  right: 0;
+  height: 25%;
+  background:
+    radial-gradient(ellipse 3px 5px at 10% 50%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 15% 45%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 22% 52%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 30% 48%, rgba(40, 40, 45, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 38% 55%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 45% 42%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 55% 48%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 62% 52%, rgba(40, 40, 45, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 70% 45%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 78% 55%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 85% 48%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
+    radial-gradient(ellipse 3px 5px at 92% 52%, rgba(40, 40, 45, 0.5) 50%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Gym floor texture around mat */
+.gym-floor {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Wood grain texture */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 40px,
+      rgba(60, 40, 25, 0.08) 40px,
+      rgba(60, 40, 25, 0.08) 42px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 120px,
+      rgba(80, 50, 30, 0.05) 120px,
+      rgba(80, 50, 30, 0.05) 125px
+    ),
+    /* Floor base gradient */
+    radial-gradient(ellipse 100% 80% at 50% 100%, #2a1f18 0%, #1a1310 40%, #0f0c0a 70%, #0a0a0a 100%);
+}
+
+/* Court lines on gym floor */
+.gym-floor::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0.85) 100%),
-    linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.5) 100%);
+    /* Outer boundary lines */
+    linear-gradient(90deg, transparent 5%, rgba(230, 0, 0, 0.15) 5%, rgba(230, 0, 0, 0.15) 5.3%, transparent 5.3%, transparent 94.7%, rgba(230, 0, 0, 0.15) 94.7%, rgba(230, 0, 0, 0.15) 95%, transparent 95%),
+    linear-gradient(180deg, transparent 8%, rgba(230, 0, 0, 0.15) 8%, rgba(230, 0, 0, 0.15) 8.5%, transparent 8.5%, transparent 91.5%, rgba(230, 0, 0, 0.15) 91.5%, rgba(230, 0, 0, 0.15) 92%, transparent 92%);
   pointer-events: none;
 }
 
-/* Stadium lights effect */
-.mat-hero::before {
-  content: '';
+/* Arena overhead lights */
+.arena-lights {
   position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 60%;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 245, 230, 0.12) 0%, transparent 60%);
+  inset: 0;
   pointer-events: none;
   z-index: 1;
 }
 
-/* ===== CIRCULAR WRESTLING MAT ===== */
+.spotlight {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+}
+
+.spotlight-1 {
+  top: -15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse at center, rgba(255, 250, 240, 0.5) 0%, rgba(255, 245, 230, 0.2) 40%, transparent 70%);
+}
+
+.spotlight-2 {
+  top: -10%;
+  left: 15%;
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(ellipse at center, rgba(230, 0, 0, 0.2) 0%, rgba(230, 0, 0, 0.1) 40%, transparent 70%);
+}
+
+.spotlight-3 {
+  top: -10%;
+  right: 15%;
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(ellipse at center, rgba(230, 0, 0, 0.2) 0%, rgba(230, 0, 0, 0.1) 40%, transparent 70%);
+}
+
+/* Vignette overlay for depth */
+.arena-environment::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 60%, transparent 20%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ===== CIRCULAR WRESTLING MAT - BLACK WITH RED ===== */
 .wrestling-mat {
   position: relative;
   width: min(520px, 85vw);
   height: min(520px, 85vw);
   border-radius: 50%;
-  z-index: 2;
-  /* Mat base - red wrestling mat color */
+  z-index: 3;
+  /* Mat base - BLACK with subtle texture */
   background:
-    /* Subtle rubber texture */
+    /* Rubber texture */
     repeating-linear-gradient(
       45deg,
       transparent 0px,
-      transparent 1px,
-      rgba(0,0,0,0.03) 1px,
-      rgba(0,0,0,0.03) 2px
+      transparent 2px,
+      rgba(255, 255, 255, 0.02) 2px,
+      rgba(255, 255, 255, 0.02) 4px
     ),
-    radial-gradient(circle at 50% 50%, #b91c1c 0%, #991b1b 60%, #7f1d1d 100%);
-  /* Mat depth and shadow */
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    ),
+    /* Black mat gradient */
+    radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0f0f0f 50%, #080808 100%);
+  /* Mat depth and shadow with red glow */
   box-shadow:
-    0 25px 80px rgba(0, 0, 0, 0.7),
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    inset 0 2px 10px rgba(255, 255, 255, 0.1),
-    inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+    0 0 80px rgba(230, 0, 0, 0.15),
+    0 25px 80px rgba(0, 0, 0, 0.8),
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    inset 0 2px 10px rgba(255, 255, 255, 0.05),
+    inset 0 -5px 20px rgba(0, 0, 0, 0.5);
+  /* Subtle red border */
+  border: 3px solid rgba(230, 0, 0, 0.4);
 }
 
-/* Mat circle markings */
+/* Mat circle markings - RED on BLACK */
 .mat-circle {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
 }
 
-/* Outer protection area - blue */
+/* Outer protection area - RED */
 .mat-circle.mat-outer {
-  inset: 3%;
-  border: 8px solid #1e3a5f;
+  inset: 4%;
+  border: 6px solid #e60000;
   background: transparent;
+  box-shadow: 0 0 15px rgba(230, 0, 0, 0.3);
 }
 
-/* Middle wrestling area border */
+/* Middle wrestling area border - SILVER/GRAY */
 .mat-circle.mat-middle {
-  inset: 12%;
-  border: 4px solid rgba(255, 215, 0, 0.6);
+  inset: 15%;
+  border: 3px solid #cccccc;
   background: transparent;
+  box-shadow: 0 0 8px rgba(204, 204, 204, 0.2);
 }
 
-/* Inner starting circle */
+/* Inner starting circle - RED */
 .mat-circle.mat-inner {
-  inset: 35%;
-  border: 3px solid rgba(255, 255, 255, 0.4);
+  inset: 32%;
+  border: 4px solid #e60000;
   background: transparent;
+  box-shadow: 0 0 10px rgba(230, 0, 0, 0.25);
 }
 
-/* Center circle */
+/* Center circle - RED filled */
 .mat-circle.mat-center {
   top: 50%;
   left: 50%;
-  width: 12%;
-  height: 12%;
+  width: 15%;
+  height: 15%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: radial-gradient(circle, rgba(230, 0, 0, 0.25) 0%, rgba(230, 0, 0, 0.15) 70%, transparent 100%);
+  border: 3px solid #e60000;
+  box-shadow: 0 0 20px rgba(230, 0, 0, 0.4);
+}
+
+/* Red accent lines across mat */
+.mat-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent 0%, rgba(230, 0, 0, 0.4) 30%, rgba(230, 0, 0, 0.4) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mat-line-h {
+  top: 50%;
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.mat-line-v {
+  left: 50%;
+  top: 5%;
+  bottom: 5%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent 0%, rgba(230, 0, 0, 0.4) 30%, rgba(230, 0, 0, 0.4) 70%, transparent 100%);
 }
 
 /* Club logo in center - visible between transitions */
@@ -663,16 +799,16 @@ section p {
   opacity: 0;
 }
 
-/* Navigation arrows - outside the mat */
+/* Navigation arrows - themed red/black */
 .wrestling-mat .slider-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
   color: #fff;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  width: 48px;
-  height: 48px;
+  border: 2px solid rgba(230, 0, 0, 0.5);
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -680,55 +816,58 @@ section p {
   cursor: pointer;
   transition: all 0.25s ease;
   z-index: 10;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(230, 0, 0, 0.2);
 }
 
 .wrestling-mat .slider-arrow:hover {
-  background: rgba(185, 28, 28, 0.9);
-  border-color: rgba(185, 28, 28, 0.6);
+  background: linear-gradient(135deg, #e60000 0%, #b30000 100%);
+  border-color: #e60000;
   transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 20px rgba(230, 0, 0, 0.5);
 }
 
 .wrestling-mat .slider-arrow.prev {
-  left: -60px;
+  left: -65px;
 }
 
 .wrestling-mat .slider-arrow.next {
-  right: -60px;
+  right: -65px;
 }
 
-/* Dot navigation - below the mat */
+/* Dot navigation - themed red/black/silver */
 .mat-hero .slider-dots {
   display: flex;
-  gap: 10px;
-  margin-top: 1.5rem;
+  gap: 12px;
+  margin-top: 1.8rem;
   z-index: 5;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 25px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  padding: 10px 20px;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+  border: 1px solid rgba(230, 0, 0, 0.3);
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(230, 0, 0, 0.1);
 }
 
 .mat-hero .slider-dots button {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid #cccccc;
   background: transparent;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .mat-hero .slider-dots button:hover {
-  border-color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+  background: rgba(204, 204, 204, 0.3);
+  box-shadow: 0 0 8px rgba(204, 204, 204, 0.4);
 }
 
 .mat-hero .slider-dots button.active {
-  background: #b91c1c;
-  border-color: #b91c1c;
-  box-shadow: 0 0 10px rgba(185, 28, 28, 0.6);
+  background: #e60000;
+  border-color: #e60000;
+  box-shadow: 0 0 12px rgba(230, 0, 0, 0.7);
 }
 
 /* Audio controls - Enhanced with pulse animation */
@@ -776,28 +915,49 @@ section p {
 
   /* Circular Mat mobile adjustments */
   .mat-hero {
-    min-height: auto;
+    min-height: 500px;
     padding: 1.5rem 0.5rem 2rem;
   }
 
+  /* Simplify arena environment on mobile */
+  .arena-crowd::before {
+    display: none;
+  }
+
+  .spotlight {
+    filter: blur(40px);
+    opacity: 0.3;
+  }
+
+  .spotlight-1 {
+    width: 300px;
+    height: 180px;
+  }
+
+  .spotlight-2,
+  .spotlight-3 {
+    width: 200px;
+    height: 120px;
+  }
+
   .wrestling-mat {
-    width: min(380px, 90vw);
-    height: min(380px, 90vw);
+    width: min(380px, 88vw);
+    height: min(380px, 88vw);
   }
 
   /* Arrows inside on mobile */
   .wrestling-mat .slider-arrow {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     font-size: 1rem;
   }
 
   .wrestling-mat .slider-arrow.prev {
-    left: -5px;
+    left: -8px;
   }
 
   .wrestling-mat .slider-arrow.next {
-    right: -5px;
+    right: -8px;
   }
 
   .mat-logo {
@@ -806,11 +966,23 @@ section p {
   }
 
   .mat-circle.mat-outer {
-    border-width: 5px;
+    border-width: 4px;
   }
 
   .mat-circle.mat-middle {
+    border-width: 2px;
+  }
+
+  .mat-circle.mat-inner {
     border-width: 3px;
+  }
+
+  .mat-circle.mat-center {
+    border-width: 2px;
+  }
+
+  .mat-line {
+    display: none;
   }
 
   .mat-slideshow .slide .caption {
@@ -820,14 +992,14 @@ section p {
   }
 
   .mat-hero .slider-dots {
-    margin-top: 1rem;
-    padding: 6px 12px;
-    gap: 8px;
+    margin-top: 1.2rem;
+    padding: 8px 14px;
+    gap: 10px;
   }
 
   .mat-hero .slider-dots button {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
   }
 
   .audio-controls {
@@ -845,45 +1017,57 @@ section p {
 /* Very small screens */
 @media (max-width: 480px) {
   .mat-hero {
+    min-height: 420px;
     padding: 1rem 0.25rem 1.5rem;
   }
 
+  /* Further simplify arena on small screens */
+  .gym-floor::before {
+    display: none;
+  }
+
   .wrestling-mat {
-    width: min(320px, 92vw);
-    height: min(320px, 92vw);
+    width: min(300px, 90vw);
+    height: min(300px, 90vw);
   }
 
   .wrestling-mat .slider-arrow {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     font-size: 0.9rem;
   }
 
   .wrestling-mat .slider-arrow.prev {
-    left: 2px;
+    left: 0px;
   }
 
   .wrestling-mat .slider-arrow.next {
-    right: 2px;
+    right: 0px;
   }
 
   .mat-logo {
-    width: 45%;
-    height: 45%;
+    width: 48%;
+    height: 48%;
   }
 
   .mat-circle.mat-outer {
-    border-width: 4px;
-    inset: 2%;
+    border-width: 3px;
+    inset: 3%;
   }
 
   .mat-circle.mat-middle {
     border-width: 2px;
-    inset: 10%;
+    inset: 12%;
   }
 
   .mat-circle.mat-inner {
     border-width: 2px;
+    inset: 30%;
+  }
+
+  .mat-circle.mat-center {
+    width: 18%;
+    height: 18%;
   }
 
   .mat-slideshow .slide .caption {
@@ -1583,13 +1767,22 @@ footer a:hover {
 
   /* Circular mat landscape fixes */
   .mat-hero {
-    min-height: auto;
+    min-height: 400px;
     padding: 1rem 0.5rem;
   }
 
+  /* Reduce arena complexity in landscape */
+  .arena-crowd::before {
+    display: none;
+  }
+
+  .spotlight {
+    opacity: 0.25;
+  }
+
   .wrestling-mat {
-    width: min(400px, 60vh);
-    height: min(400px, 60vh);
+    width: min(360px, 55vh);
+    height: min(360px, 55vh);
   }
 
   .wrestling-mat .slider-arrow.prev {
@@ -1598,6 +1791,10 @@ footer a:hover {
 
   .wrestling-mat .slider-arrow.next {
     right: -50px;
+  }
+
+  .mat-hero .slider-dots {
+    margin-top: 1rem;
   }
 
   /* Contact info landscape fixes */
