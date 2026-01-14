@@ -10,11 +10,10 @@
 
 html {
   overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
   height: 100%;
-  /* Prevent iOS overscroll bounce */
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -24,17 +23,15 @@ body {
   line-height: 1.8;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
   position: relative;
-  /* Prevent iOS overscroll bounce - no white space when scrolling too far */
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
 }
 
-/* HEADER - Enhanced with depth and animation */
+/* HEADER - Clean and compact */
 header {
   text-align: center;
-  padding: 3rem 1rem 2rem;
+  padding: 1.5rem 1rem 1rem;
   background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(20,0,0,0.95) 100%);
   border-bottom: 4px solid #e60000;
   box-shadow:
@@ -42,49 +39,27 @@ header {
     0 8px 40px rgba(230, 0, 0, 0.2),
     inset 0 -1px 0 rgba(230, 0, 0, 0.3);
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
 }
 
-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(230, 0, 0, 0.35) 0%, transparent 72%);
-  pointer-events: none;
-  animation: headerPulse 8s ease-in-out infinite;
-}
-
-@keyframes headerPulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
+.header-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 header img.logo {
-  width: 220px;
-  max-width: 90%;
-  display: block;
-  margin: 0 auto 1.5rem auto;
-  filter: drop-shadow(0 4px 12px rgba(230, 0, 0, 0.5));
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  mix-blend-mode: screen;
-  background: transparent;
-  z-index: 1;
+  width: 120px;
+  max-width: 120px;
+  filter: drop-shadow(0 2px 6px rgba(230, 0, 0, 0.4));
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 header img.logo:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 8px 20px rgba(230, 0, 0, 0.8));
+  filter: drop-shadow(0 4px 10px rgba(230, 0, 0, 0.6));
 }
 
 header h1 {
@@ -93,29 +68,11 @@ header h1 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 3px;
-  text-shadow:
-    0 0 20px rgba(230, 0, 0, 0.8),
-    0 0 40px rgba(230, 0, 0, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.8);
-  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  margin: 0;
   position: relative;
-  z-index: 1;
-  animation: titleGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes titleGlow {
-  0% {
-    text-shadow:
-      0 0 20px rgba(230, 0, 0, 0.8),
-      0 0 40px rgba(230, 0, 0, 0.5),
-      0 4px 8px rgba(0, 0, 0, 0.8);
-  }
-  100% {
-    text-shadow:
-      0 0 30px rgba(230, 0, 0, 1),
-      0 0 60px rgba(230, 0, 0, 0.7),
-      0 4px 8px rgba(0, 0, 0, 0.8);
-  }
+  flex-shrink: 1;
+  white-space: nowrap;
 }
 
 header p {
@@ -123,11 +80,9 @@ header p {
   color: #fff;
   font-weight: 500;
   letter-spacing: 1px;
-  text-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.9),
-    0 0 20px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   position: relative;
-  z-index: 1;
+  margin: 0;
 }
 
 /* NAVIGATION - Enhanced with depth */
@@ -1402,23 +1357,30 @@ footer a:hover {
   }
 
   header {
-    padding: 1rem 1rem;
+    padding: 1rem 0.5rem;
     width: 100%;
     box-sizing: border-box;
   }
 
+  .header-title-container {
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
+
   header img.logo {
-    max-width: min(60vw, 200px);
-    max-height: 80px;
+    width: 60px;
+    max-width: 60px;
   }
 
   header h1 {
-    font-size: 1.5rem;
-    letter-spacing: 1.5px;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    white-space: normal;
+    line-height: 1.2;
   }
 
   header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   nav {
