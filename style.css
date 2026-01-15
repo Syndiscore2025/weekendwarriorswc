@@ -432,91 +432,68 @@ section p {
   position: absolute;
   inset: 0;
   background:
-    /* Curved stadium bowl - dark arena seating */
-    radial-gradient(ellipse 180% 80% at 50% -10%, rgba(25, 25, 35, 1) 0%, rgba(8, 8, 12, 1) 60%, rgba(5, 5, 7, 1) 100%),
-    /* Subtle red arena glow from above */
-    radial-gradient(ellipse 100% 50% at 50% 0%, rgba(180, 0, 0, 0.15) 0%, transparent 70%);
+    /* Dark stadium bowl */
+    radial-gradient(ellipse 200% 90% at 50% -20%, #1a1a22 0%, #0a0a0e 50%, #050507 100%),
+    /* Red arena glow from rim lights */
+    radial-gradient(ellipse 120% 40% at 50% 5%, rgba(200, 0, 0, 0.2) 0%, transparent 60%);
 }
 
-/* Crowd silhouettes - multiple rows with varied head shapes */
+/* Crowd silhouettes - visible head/shoulder shapes */
 .arena-crowd::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 55%;
+  height: 45%;
   background-image:
-    /* Row 1 - back row (smaller, fainter) */
-    radial-gradient(ellipse 8px 10px at 50% 100%, rgba(35, 35, 45, 0.9) 0%, transparent 100%),
-    radial-gradient(ellipse 7px 9px at 50% 100%, rgba(40, 40, 50, 0.85) 0%, transparent 100%),
-    radial-gradient(ellipse 9px 11px at 50% 100%, rgba(38, 38, 48, 0.88) 0%, transparent 100%),
-    /* Row 2 - mid row */
-    radial-gradient(ellipse 10px 12px at 50% 100%, rgba(45, 45, 55, 0.95) 0%, transparent 100%),
-    radial-gradient(ellipse 9px 11px at 50% 100%, rgba(50, 50, 60, 0.9) 0%, transparent 100%),
-    radial-gradient(ellipse 11px 13px at 50% 100%, rgba(48, 48, 58, 0.92) 0%, transparent 100%),
-    /* Row 3 - front row (larger, more visible) */
-    radial-gradient(ellipse 12px 14px at 50% 100%, rgba(55, 55, 65, 1) 0%, transparent 100%),
-    radial-gradient(ellipse 11px 13px at 50% 100%, rgba(60, 60, 70, 0.95) 0%, transparent 100%),
-    radial-gradient(ellipse 13px 15px at 50% 100%, rgba(58, 58, 68, 0.97) 0%, transparent 100%);
+    /* Back row - smaller heads */
+    radial-gradient(ellipse 6px 8px at 50% 100%, #2a2a35 0%, #2a2a35 60%, transparent 100%),
+    radial-gradient(ellipse 7px 9px at 50% 100%, #282832 0%, #282832 60%, transparent 100%),
+    radial-gradient(ellipse 5px 7px at 50% 100%, #2c2c38 0%, #2c2c38 60%, transparent 100%),
+    /* Mid row - medium heads */
+    radial-gradient(ellipse 8px 10px at 50% 100%, #323240 0%, #323240 55%, transparent 100%),
+    radial-gradient(ellipse 9px 11px at 50% 100%, #2e2e3a 0%, #2e2e3a 55%, transparent 100%),
+    radial-gradient(ellipse 7px 9px at 50% 100%, #343445 0%, #343445 55%, transparent 100%),
+    /* Front row - larger, more defined */
+    radial-gradient(ellipse 10px 12px at 50% 100%, #3a3a4a 0%, #3a3a4a 50%, transparent 100%),
+    radial-gradient(ellipse 11px 14px at 50% 100%, #383848 0%, #383848 50%, transparent 100%),
+    radial-gradient(ellipse 9px 11px at 50% 100%, #3c3c4c 0%, #3c3c4c 50%, transparent 100%);
   background-size:
-    /* Row 1 spacing - irregular */
-    24px 18px, 28px 18px, 22px 18px,
-    /* Row 2 spacing */
-    26px 22px, 30px 22px, 24px 22px,
-    /* Row 3 spacing */
-    28px 26px, 32px 26px, 26px 26px;
+    20px 14px, 24px 14px, 18px 14px,
+    22px 18px, 26px 18px, 20px 18px,
+    24px 24px, 28px 24px, 22px 24px;
   background-position:
-    /* Row 1 positions */
-    0% 8%, 12px 8%, 6px 8%,
-    /* Row 2 positions */
-    4px 22%, 18px 22%, 10px 22%,
-    /* Row 3 positions */
-    2px 40%, 16px 40%, 8px 40%;
+    0px 5%, 10px 5%, 5px 5%,
+    3px 18%, 15px 18%, 8px 18%,
+    0px 38%, 14px 38%, 6px 38%;
   background-repeat: repeat-x;
-  opacity: 1;
   pointer-events: none;
-  mask-image: radial-gradient(ellipse 160% 100% at 50% 0%, black 0%, black 60%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 160% 100% at 50% 0%, black 0%, black 60%, transparent 100%);
 }
 
-/* Phone lights + camera flashes scattered in crowd */
+/* Phone/camera lights in crowd */
 .arena-crowd::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 50%;
+  height: 42%;
   background-image:
-    /* White phone screens */
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.7) 0px, rgba(255, 255, 255, 0.4) 1px, transparent 2px),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0px, rgba(255, 255, 255, 0.3) 1px, transparent 2px),
-    /* Red/warm phone glows */
-    radial-gradient(circle at 50% 50%, rgba(255, 100, 100, 0.4) 0px, transparent 2px),
-    /* Blue phone glows */
-    radial-gradient(circle at 50% 50%, rgba(100, 150, 255, 0.35) 0px, transparent 2px);
-  background-size:
-    89px 47px,
-    137px 63px,
-    193px 71px,
-    167px 59px;
-  background-position:
-    23px 15%,
-    67px 25%,
-    41px 12%,
-    103px 20%;
+    radial-gradient(circle 2px at 50% 50%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 50% 50%, rgba(255, 200, 200, 0.7) 0%, transparent 100%),
+    radial-gradient(circle 2px at 50% 50%, rgba(200, 220, 255, 0.6) 0%, transparent 100%);
+  background-size: 67px 35px, 103px 41px, 89px 47px;
+  background-position: 12px 8%, 47px 18%, 31px 28%;
   background-repeat: repeat;
-  opacity: 0.6;
+  opacity: 0.8;
   pointer-events: none;
-  animation: crowdFlicker 4s ease-in-out infinite alternate;
+  animation: phoneLights 3s ease-in-out infinite alternate;
 }
 
-@keyframes crowdFlicker {
-  0%, 100% { opacity: 0.5; }
-  25% { opacity: 0.65; }
-  50% { opacity: 0.55; }
-  75% { opacity: 0.7; }
+@keyframes phoneLights {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.9; }
 }
 
 /* Gym floor texture around mat */
