@@ -432,47 +432,61 @@ section p {
   position: absolute;
   inset: 0;
   background:
-    /* Crowd silhouette rows - top section */
+    /* Distant crowd rows */
     repeating-linear-gradient(
       180deg,
-      transparent 0px,
-      transparent 8px,
-      rgba(30, 30, 35, 0.4) 8px,
-      rgba(30, 30, 35, 0.4) 12px
+      rgba(255, 255, 255, 0.00) 0px,
+      rgba(255, 255, 255, 0.00) 10px,
+      rgba(40, 40, 50, 0.55) 10px,
+      rgba(40, 40, 50, 0.55) 15px
     ),
-    /* Curved stadium seating effect */
-    radial-gradient(ellipse 150% 60% at 50% 0%, #1a1a1f 0%, #0d0d10 50%, #050507 100%);
+    /* Curved stadium seating + subtle red ambience */
+    radial-gradient(ellipse 150% 65% at 50% 0%, rgba(35, 35, 45, 1) 0%, rgba(12, 12, 16, 1) 55%, rgba(5, 5, 7, 1) 100%),
+    radial-gradient(ellipse 90% 55% at 50% 18%, rgba(230, 0, 0, 0.12) 0%, transparent 65%);
   opacity: 0.9;
 }
 
-/* Individual crowd silhouettes - subtle head shapes */
+/* Individual crowd silhouettes - repeated head pattern */
 .arena-crowd::before {
   content: '';
   position: absolute;
-  top: 5%;
+  top: 2%;
+  left: -6%;
+  right: -6%;
+  height: 42%;
+  background-image:
+    radial-gradient(circle at 50% 62%, rgba(70, 70, 85, 0.65) 0 4px, transparent 5px);
+  background-size: 22px 16px;
+  background-repeat: repeat;
+  opacity: 0.55;
+  filter: blur(0.25px);
+  pointer-events: none;
+}
+
+/* Tiny “phone lights”/glints in the stands */
+.arena-crowd::after {
+  content: '';
+  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  height: 25%;
-  background:
-    radial-gradient(ellipse 3px 5px at 10% 50%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 15% 45%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 22% 52%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 30% 48%, rgba(40, 40, 45, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 38% 55%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 45% 42%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 55% 48%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 62% 52%, rgba(40, 40, 45, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 70% 45%, rgba(50, 50, 55, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 78% 55%, rgba(45, 45, 50, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 85% 48%, rgba(55, 55, 60, 0.5) 50%, transparent 50%),
-    radial-gradient(ellipse 3px 5px at 92% 52%, rgba(40, 40, 45, 0.5) 50%, transparent 50%);
+  height: 48%;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(230, 0, 0, 0.10) 0 1px, transparent 2px);
+  background-size: 110px 70px, 160px 90px;
+  background-repeat: repeat;
+  opacity: 0.45;
   pointer-events: none;
 }
 
 /* Gym floor texture around mat */
 .gym-floor {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 32%;
   background:
     /* Wood grain texture */
     repeating-linear-gradient(
@@ -491,6 +505,9 @@ section p {
     ),
     /* Floor base gradient */
     radial-gradient(ellipse 100% 80% at 50% 100%, #2a1f18 0%, #1a1310 40%, #0f0c0a 70%, #0a0a0a 100%);
+  /* Fade the top edge so the crowd reads above the floor */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 100%);
 }
 
 /* Court lines on gym floor */
@@ -550,7 +567,7 @@ section p {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 70% at 50% 60%, transparent 20%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.85) 100%);
+  background: radial-gradient(ellipse 90% 75% at 50% 55%, transparent 18%, rgba(0, 0, 0, 0.45) 62%, rgba(0, 0, 0, 0.8) 100%);
   pointer-events: none;
   z-index: 2;
 }
