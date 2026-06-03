@@ -111,51 +111,62 @@
       Your <span class="red">Coaches.</span>
     </h2>
 
-    <div class="coaches-grid" data-testid="coaches-grid">
-      <article class="coach-card" data-testid="coach-tony-decato">
-        <div class="coach-photo" style="background-image:url('https://images.unsplash.com/photo-1542468019-550cb643a5e3?auto=format&fit=crop&w=900&q=70');"></div>
-        <div class="coach-body">
-          <div class="coach-role">Head Coach</div>
-          <h3>Tony Decato</h3>
-          <p>
-            Founder and head coach of Weekend Warriors. Tony brings years of mat experience
-            and a relentless commitment to building strong, disciplined wrestlers who win on
-            and off the mat.
-          </p>
-          <div class="coach-meta">
-            <a href="tel:8603368969" data-testid="coach-tony-phone">860-336-8969</a>
-            <a href="mailto:WeekendWarriorsWC@yahoo.com" data-testid="coach-tony-email">Email</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="coach-card" data-testid="coach-placeholder-2">
-        <div class="coach-photo" style="background-image:url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=900&q=70');"></div>
-        <div class="coach-body">
-          <div class="coach-role">Assistant Coach</div>
-          <h3>Coach Name</h3>
-          <p>
-            Brief bio goes here. Highlight wrestling background, coaching philosophy, and
-            what they bring to the mat. Replace this card with real staff info.
-          </p>
-          <div class="coach-meta"><span class="coach-tag">Add bio</span></div>
-        </div>
-      </article>
-
-      <article class="coach-card" data-testid="coach-placeholder-3">
-        <div class="coach-photo" style="background-image:url('https://images.unsplash.com/photo-1736723212593-2183d03535df?auto=format&fit=crop&w=900&q=70');"></div>
-        <div class="coach-body">
-          <div class="coach-role">Assistant Coach</div>
-          <h3>Coach Name</h3>
-          <p>
-            Brief bio goes here. Highlight wrestling background, coaching philosophy, and
-            what they bring to the mat. Replace this card with real staff info.
-          </p>
-          <div class="coach-meta"><span class="coach-tag">Add bio</span></div>
-        </div>
-      </article>
+    <div class="coaches-grid" id="coaches-grid" data-testid="coaches-grid">
+      <!-- Coaches loaded dynamically from data/coaches.json (managed via admin panel) -->
+      <div class="coaches-empty" id="coaches-empty" style="display:none; grid-column: 1 / -1; text-align:center; padding: 2rem; color: var(--ww-text-mute);">
+        Coach bios coming soon.
+      </div>
     </div>
   </section>
+
+  <script>
+    // Load coaches from JSON (admin-managed)
+    (async function loadCoaches() {
+      const grid = document.getElementById('coaches-grid');
+      const empty = document.getElementById('coaches-empty');
+      const fallbackPhoto = 'https://images.unsplash.com/photo-1542468019-550cb643a5e3?auto=format&fit=crop&w=900&q=70';
+      try {
+        const res = await fetch('data/coaches.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to load coaches');
+        const coaches = await res.json();
+
+        if (!Array.isArray(coaches) || coaches.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+
+        // Sort by order field if present
+        coaches.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
+        grid.innerHTML = coaches.map((c, i) => {
+          const photo = (c.photo && c.photo.trim()) ? c.photo : fallbackPhoto;
+          const role  = (c.role || '').trim() || 'Coach';
+          const name  = (c.name || '').trim() || 'Coach';
+          const bio   = (c.bio  || '').trim();
+          const metaParts = [];
+          if (c.phone) metaParts.push(`<a href="tel:${c.phone.replace(/[^0-9]/g,'')}" data-testid="coach-${i}-phone">${c.phone}</a>`);
+          if (c.email) metaParts.push(`<a href="mailto:${c.email}" data-testid="coach-${i}-email">Email</a>`);
+          const meta = metaParts.length
+            ? `<div class="coach-meta">${metaParts.join('')}</div>`
+            : '';
+          return `
+            <article class="coach-card" data-testid="coach-${i}">
+              <div class="coach-photo" style="background-image:url('${photo}');"></div>
+              <div class="coach-body">
+                <div class="coach-role">${role}</div>
+                <h3>${name}</h3>
+                <p>${bio || ''}</p>
+                ${meta}
+              </div>
+            </article>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Coach load error:', e);
+        empty.style.display = 'block';
+      }
+    })();
+  </script>
 
   <footer data-testid="site-footer">
     <div class="powered-by-syndiscore">

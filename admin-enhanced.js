@@ -182,6 +182,7 @@ async function loadAllData() {
     loadWebsiteTab(),
     loadRegistrationsTab(),
     loadTeamTab(),
+    loadCoachesTab(),
     loadTournamentTab(),
     loadAttendanceTab(),
     loadWeightTab(),
@@ -4068,6 +4069,293 @@ async function saveSettings() {
     await loadSettingsData();
   }
 }
+
+// ============================================================================
+// COACHES TAB - Manage coach photos + bios shown on About page
+// ============================================================================
+let editingCoachId = null;
+
+function escapeHtmlCoach(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function loadCoachesTab() {
+  const container = $('tab-coaches');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="content-card">
+      <h2 style="display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.3rem;">🥇</span>
+        <span>Coaches</span>
+      </h2>
+      <p class="note">
+        Add or update the coach cards shown on the <strong>About</strong> page (photo, name, role, bio, optional contact info).<br>
+        Photos should be JPG/PNG, ideally landscape orientation. Max 10 MB. Click <em>Edit</em> on any row to update, or <em>Save Coach</em> to add a new one.
+      </p>
+
+      <div class="stack" style="margin-top:1rem;">
+        <div class="row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-field">
+            <label>Name *</label>
+            <input id="coach-name" type="text" placeholder="e.g., Tony Decato" />
+          </div>
+          <div class="form-field">
+            <label>Role / Title *</label>
+            <input id="coach-role" type="text" placeholder="e.g., Head Coach" />
+          </div>
+        </div>
+        <div class="row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-field">
+            <label>Phone (optional)</label>
+            <input id="coach-phone" type="tel" placeholder="e.g., 860-336-8969" />
+          </div>
+          <div class="form-field">
+            <label>Email (optional)</label>
+            <input id="coach-email" type="email" placeholder="e.g., coach@example.com" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Bio *</label>
+          <textarea id="coach-bio" rows="4" placeholder="2-4 sentences about wrestling background, accomplishments, coaching philosophy..."></textarea>
+        </div>
+        <div class="row" style="grid-template-columns: 2fr 1fr auto; gap: 1rem; align-items: center;">
+          <div class="form-field">
+            <label>Photo (upload JPG/PNG)</label>
+            <input id="coach-photo-file" type="file" accept="image/*" />
+          </div>
+          <div class="form-field">
+            <label>Display Order</label>
+            <input id="coach-order" type="number" min="1" value="1" />
+          </div>
+          <button id="add-coach" class="success" style="height:38px; margin-top:18px;">Save Coach</button>
+        </div>
+        <div id="coach-upload-status" class="muted"></div>
+        <button id="cancel-coach-edit" class="small-btn" style="display:none; margin-top:0.25rem; align-self:flex-start;">Cancel Edit</button>
+
+        <div class="table-container">
+          <table class="admin-list">
+            <thead>
+              <tr>
+                <th style="width:14%;">Photo</th>
+                <th style="width:14%;">Name</th>
+                <th style="width:12%;">Role</th>
+                <th style="width:36%;">Bio</th>
+                <th style="width:14%;">Contact</th>
+                <th style="width:5%;">Order</th>
+                <th class="right" style="width:5%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="coaches-list"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Wire up handlers
+  $('add-coach').addEventListener('click', handleAddCoach);
+  $('cancel-coach-edit').addEventListener('click', resetCoachForm);
+
+  await loadCoachesList();
+}
+
+async function loadCoachesList() {
+  const tbody = $('coaches-list');
+  if (!tbody) return;
+  try {
+    const res = await fetch(cacheBust('data/coaches.json'));
+    let coaches = [];
+    if (res.ok) coaches = await res.json();
+    if (!Array.isArray(coaches)) coaches = [];
+
+    coaches.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
+    if (coaches.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:#aaa;">No coaches yet. Fill out the form above and click <strong>Save Coach</strong> to add one.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = coaches.map(c => {
+      const photo = c.photo
+        ? `<img src="${escapeHtmlCoach(c.photo)}?_=${Date.now()}" alt="${escapeHtmlCoach(c.name || 'coach')}" style="max-width:120px; max-height:80px; object-fit:cover; border-radius:4px; border:1px solid #444;" onerror="this.outerHTML='&lt;span style=\\'color:#777;font-style:italic;font-size:0.85rem;\\'&gt;Photo missing&lt;/span&gt;'" />`
+        : `<span style="color:#777; font-style:italic; font-size:0.85rem;">No photo</span>`;
+      const contactParts = [];
+      if (c.phone) contactParts.push(`<div style="font-size:0.85rem;">${escapeHtmlCoach(c.phone)}</div>`);
+      if (c.email) contactParts.push(`<div style="font-size:0.85rem; word-break:break-all;">${escapeHtmlCoach(c.email)}</div>`);
+      return `
+        <tr>
+          <td>${photo}</td>
+          <td><strong>${escapeHtmlCoach(c.name || '')}</strong></td>
+          <td>${escapeHtmlCoach(c.role || '')}</td>
+          <td style="font-size:0.9rem;">${escapeHtmlCoach(c.bio || '')}</td>
+          <td>${contactParts.join('') || '<span style="color:#777;">-</span>'}</td>
+          <td style="text-align:center;">${c.order ?? ''}</td>
+          <td class="right" style="white-space:nowrap;">
+            <button class="small-btn" onclick="editCoach(${c.id})" style="margin-right:0.25rem;">Edit</button>
+            <button class="small-btn danger" onclick="deleteCoach(${c.id})">Delete</button>
+          </td>
+        </tr>`;
+    }).join('');
+  } catch (e) {
+    console.error('Error loading coaches:', e);
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#e60000; padding:1rem;">Error loading coaches: ${escapeHtmlCoach(e.message)}</td></tr>`;
+  }
+}
+
+function resetCoachForm() {
+  $('coach-name').value = '';
+  $('coach-role').value = '';
+  $('coach-bio').value = '';
+  $('coach-phone').value = '';
+  $('coach-email').value = '';
+  $('coach-photo-file').value = '';
+  $('coach-order').value = '1';
+  editingCoachId = null;
+  $('add-coach').textContent = 'Save Coach';
+  $('cancel-coach-edit').style.display = 'none';
+  const status = $('coach-upload-status');
+  if (status) { status.textContent = ''; status.style.color = ''; }
+}
+
+async function handleAddCoach() {
+  const name  = $('coach-name').value.trim();
+  const role  = $('coach-role').value.trim();
+  const bio   = $('coach-bio').value.trim();
+  const phone = $('coach-phone').value.trim();
+  const email = $('coach-email').value.trim();
+  const order = parseInt($('coach-order').value, 10) || 1;
+  const photoFile = $('coach-photo-file').files[0];
+  const status = $('coach-upload-status');
+
+  if (!name || !role || !bio) {
+    status.textContent = '❌ Name, Role, and Bio are all required.';
+    status.style.color = '#e60000';
+    return;
+  }
+
+  status.textContent = 'Saving coach...';
+  status.style.color = '#4db8ff';
+
+  try {
+    const res = await fetch(cacheBust('data/coaches.json'));
+    let coaches = [];
+    if (res.ok) coaches = await res.json();
+    if (!Array.isArray(coaches)) coaches = [];
+
+    // Upload photo if a new one was selected
+    let photoUrl = '';
+    if (photoFile) {
+      status.textContent = 'Uploading photo...';
+      const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const safeName = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+      const fileName = `coach-${safeName}-${Date.now()}.${ext}`;
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(photoFile);
+      });
+      const uploadRes = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: `media/${fileName}`, content: base64 })
+      });
+      const uploadResult = await uploadRes.json();
+      if (!uploadResult.success) throw new Error('Photo upload failed: ' + (uploadResult.error || 'Unknown error'));
+      photoUrl = `media/${fileName}`;
+    }
+
+    if (editingCoachId != null) {
+      const idx = coaches.findIndex(c => c.id === editingCoachId);
+      if (idx >= 0) {
+        const existing = coaches[idx];
+        coaches[idx] = {
+          ...existing,
+          name, role, bio, phone, email, order,
+          photo: photoUrl || existing.photo || ''
+        };
+      }
+    } else {
+      const nextId = coaches.reduce((m, c) => Math.max(m, c.id || 0), 0) + 1;
+      coaches.push({ id: nextId, name, role, bio, phone, email, order, photo: photoUrl });
+    }
+
+    status.textContent = 'Publishing to GitHub...';
+    const saveRes = await saveData('data/coaches.json', JSON.stringify(coaches, null, 2));
+    const saveResult = await saveRes.json();
+    if (!saveResult.success) throw new Error(saveResult.error || 'Save failed');
+
+    status.textContent = `✅ Coach ${editingCoachId != null ? 'updated' : 'added'} successfully!`;
+    status.style.color = '#28a745';
+
+    resetCoachForm();
+    await loadCoachesList();
+  } catch (err) {
+    console.error('Coach save error:', err);
+    status.textContent = '❌ Error: ' + err.message;
+    status.style.color = '#e60000';
+  }
+}
+
+window.editCoach = async function(id) {
+  try {
+    const res = await fetch(cacheBust('data/coaches.json'));
+    const coaches = await res.json();
+    const c = (coaches || []).find(x => x.id === id);
+    if (!c) return alert('Coach not found');
+
+    $('coach-name').value  = c.name  || '';
+    $('coach-role').value  = c.role  || '';
+    $('coach-bio').value   = c.bio   || '';
+    $('coach-phone').value = c.phone || '';
+    $('coach-email').value = c.email || '';
+    $('coach-order').value = c.order || 1;
+    $('coach-photo-file').value = '';
+    editingCoachId = id;
+    $('add-coach').textContent = 'Update Coach';
+    $('cancel-coach-edit').style.display = 'inline-block';
+
+    const status = $('coach-upload-status');
+    status.textContent = `Editing "${c.name}" - leave photo upload empty to keep existing photo.`;
+    status.style.color = '#4db8ff';
+
+    $('coach-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('coach-name').focus();
+  } catch (e) {
+    alert('Error loading coach: ' + e.message);
+  }
+};
+
+window.deleteCoach = async function(id) {
+  if (!confirm('Delete this coach? This cannot be undone.')) return;
+  const status = $('coach-upload-status');
+  try {
+    status.textContent = 'Deleting...';
+    status.style.color = '#4db8ff';
+
+    const res = await fetch(cacheBust('data/coaches.json'));
+    let coaches = [];
+    if (res.ok) coaches = await res.json();
+    coaches = (coaches || []).filter(c => c.id !== id);
+
+    const saveRes = await saveData('data/coaches.json', JSON.stringify(coaches, null, 2));
+    const saveResult = await saveRes.json();
+    if (!saveResult.success) throw new Error(saveResult.error || 'Save failed');
+
+    status.textContent = '✅ Coach deleted.';
+    status.style.color = '#28a745';
+
+    if (editingCoachId === id) resetCoachForm();
+    await loadCoachesList();
+  } catch (e) {
+    console.error('Coach delete error:', e);
+    status.textContent = '❌ Error deleting: ' + e.message;
+    status.style.color = '#e60000';
+  }
+};
 
 // ============================================================================
 // INITIALIZATION
