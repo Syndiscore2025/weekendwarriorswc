@@ -261,12 +261,6 @@ p strong, strong { color: #fff; }
   color: var(--ww-red);
   margin-bottom: 0.9rem;
 }
-.eyebrow::before {
-  content: "";
-  width: 28px;
-  height: 2px;
-  background: var(--ww-red);
-}
 
 /* =========================== CONTENT CARD =========================== */
 .content-card {
@@ -938,14 +932,6 @@ footer {
   border-top: 1px solid var(--ww-line);
   text-align: center;
   position: relative;
-}
-footer::before {
-  content: "";
-  position: absolute;
-  top: -1px; left: 50%;
-  width: 80px; height: 2px;
-  background: var(--ww-red);
-  transform: translateX(-50%);
 }
 .powered-by-syndiscore {
   font-family: var(--ww-font-body);
