@@ -1,0 +1,108 @@
+{
+  "theme": "DARK",
+  "archetype": "2 (Performance Pro)",
+  "vibe": "Gritty Mat-Room, industrial, bold typography, fight-night promo poster",
+  "design_tokens": {
+    "colors": {
+      "primary": "#E51400",
+      "primary_hover": "#B31000",
+      "background": "#0A0A0A",
+      "surface": "#141414",
+      "surface_elevated": "#1A1A1A",
+      "text_primary": "#FFFFFF",
+      "text_secondary": "#A1A1AA",
+      "border": "#27272A",
+      "error": "#FF3B30",
+      "focus_ring": "#E51400"
+    },
+    "typography": {
+      "google_fonts_url": "https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap",
+      "headings": {
+        "family": "'Anton', sans-serif",
+        "transform": "uppercase",
+        "letter_spacing": "1px",
+        "h1": "clamp(3rem, 8vw, 6rem)",
+        "h2": "clamp(2rem, 5vw, 4rem)",
+        "h3": "clamp(1.5rem, 3vw, 2.5rem)"
+      },
+      "body": {
+        "family": "'Barlow', sans-serif",
+        "size": "1rem",
+        "line_height": "1.6"
+      }
+    },
+    "spacing": {
+      "xs": "0.5rem",
+      "sm": "1rem",
+      "md": "2rem",
+      "lg": "4rem",
+      "xl": "8rem"
+    },
+    "radii": {
+      "none": "0",
+      "sm": "2px",
+      "md": "4px",
+      "button": "0px"
+    },
+    "shadows": {
+      "ambient": "0 10px 40px rgba(0, 0, 0, 0.5)",
+      "hard": "4px 4px 0px #E51400"
+    },
+    "textures": {
+      "noise_css": "background-image: url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E\");"
+    }
+  },
+  "layout_blueprints": {
+    "global": {
+      "body": "Background color #0A0A0A, color #FFFFFF. Add subtle SVG noise overlay for grit.",
+      "header": "Solid dark background or heavy glassmorphism with a sharp red 2px bottom border. Use flexbox for spacing. Navigation links in 'Barlow' bold, uppercase, tracking-wide. Hover state: text color changes to #E51400.",
+      "announcement_banner": "Full width, dark red background (#B31000) with white text. Font: Barlow 500. Angled clip-path bottom edge optional.",
+      "footer": "Heavy padding (4rem 0). Dark surface #141414. 'Powered by syndiscore.ai' in Barlow text-secondary. Top border 1px solid #27272A.",
+      "audio_toggle": "Fixed bottom right. Angled box (clip-path) or sharp square instead of a circle. Solid #E51400 background."
+    },
+    "index": {
+      "hero_slideshow": "Remove perfect circle mask. Use a jagged brush-stroke SVG mask or sharp angled polygon (e.g. clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%)) to make the slideshow feel like a hardcore fight poster. Add a dark vignette overlay (box-shadow inset or gradient) so text pops. Text inside: 'Anton' massive H1, white.",
+      "welcome_blurb": "Asymmetric bento layout. Large Anton heading left, Barlow text right. Red vertical accent line (4px width) next to the paragraph."
+    },
+    "about": {
+      "mission_statement": "Massive typography focus. H1 'OUR MISSION' in Anton, red text stroke with transparent fill, or pure white. High contrast.",
+      "core_values": "Bento grid (tetris style). Not centered equal cards. Mix spans (e.g., Discipline takes 2 cols, Respect 1 col). Cards have sharp corners, 1px solid #27272A border, hover state gives a hard 4px red shadow (4px 4px 0px #E51400) and transforms -4px Y."
+    },
+    "schedule": {
+      "tables": "Border-collapse, width 100%. Headers: background #141414, font Anton, uppercase. Rows: background #0A0A0A, border-bottom 1px solid #27272A. Hover row: background #1A1A1A, border-left 4px solid #E51400. High contrast, raw data feel."
+    },
+    "contact": {
+      "layout": "CSS Grid, 1fr 1fr on desktop. Left side: Form. Right side: Contact Info with huge typography for phone/email.",
+      "form": "Inputs: background #141414, border 1px solid #27272A, color #FFF, padding 1rem, sharp corners. Focus: border-color #E51400, outline none. Button: Solid #E51400, text white, uppercase Anton, hover: background #B31000."
+    },
+    "winter_signups": {
+      "form_retheme": "Strip the 'ice/blue' CSS. Apply the Gritty Mat-Room form styles (dark inputs, sharp corners, red focus rings, heavy red CTAs). Wrap in a container with a dark textured background."
+    }
+  },
+  "motion_and_interaction": {
+    "hover_states": "Buttons translate up (-2px) and gain a hard offset shadow (4px 4px 0px #E51400). Nav links underline sweep from left to right.",
+    "page_load": "Fade in with a slight upward translation (staggered for bento grid cards).",
+    "slideshow_transition": "Fast, hard cuts or fast crossfades. Avoid slow, soft romantic fades."
+  },
+  "media_and_images": {
+    "placeholder_images": {
+      "hero": [
+        "https://images.unsplash.com/photo-1542468019-550cb643a5e3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwyfHx3cmVzdGxpbmclMjBtYXR8ZW58MHx8fHwxNzgwNDg4NTczfDA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1736723212593-2183d03535df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwzfHx3cmVzdGxpbmclMjBtYXR8ZW58MHx8fHwxNzgwNDg4NTczfDA&ixlib=rb-4.1.0&q=85"
+      ],
+      "about": [
+        "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwyfHxhdGhsZXRlJTIwdHJhaW5pbmd8ZW58MHx8fGJsYWNrX2FuZF93aGl0ZXwxNzgwNDg4NTczfDA&ixlib=rb-4.1.0&q=85"
+      ]
+    },
+    "image_treatment": "All photos should have increased contrast and a slight desaturation or dark vignette to maintain the hardcore, industrial gym aesthetic. Ensure text over images has a heavy text-shadow or a dark gradient overlay underneath to pass APCA contrast checks."
+  },
+  "testing_attributes": "All interactive elements (buttons, links, form inputs) must include data-testid attributes (e.g., data-testid='submit-contact-form', data-testid='nav-schedule-link').",
+  "instructions_to_main_agent": [
+    "Use pure HTML, CSS, and Vanilla JS only. Do not use React or Tailwind.",
+    "All CSS should ideally reside in a shared style.css, with page-specific overrides in <style> blocks if necessary.",
+    "Do not touch any admin pages.",
+    "Ensure all JSON-driven data logic (schedule tables) remains intact, only change the CSS classes or HTML structure to match the new styles.",
+    "Retain the background music toggle logic globally, but style the button to match the gritty theme.",
+    "Replace all Montserrat and glowy red borders with the Anton/Barlow typography and sharp, industrial borders/hard-shadows defined above."
+  ]
+}
