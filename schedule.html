@@ -3,115 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schedule - Weekend Warriors Wrestling Club</title>
+  <title>Schedule — Weekend Warriors Wrestling Club</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="global-music.js" defer></script>
-  <style>
-    /* Force no horizontal scroll on schedule page and show all fields */
-    .table-container { overflow-x: hidden !important; }
-    table.admin-list { width: 100% !important; table-layout: fixed !important; }
-    table.admin-list th, table.admin-list td { white-space: normal !important; word-break: break-word !important; }
-
-    @media (max-width: 768px) {
-      /* Stack into cards on phones so every field is visible without scrolling */
-      table.admin-list thead { display: none !important; }
-      table.admin-list,
-      table.admin-list tbody,
-      table.admin-list tr,
-      table.admin-list td { display: block !important; width: 100% !important; }
-
-      table.admin-list tr {
-        border: 1px solid rgba(230, 0, 0, 0.3);
-        border-radius: 8px;
-        margin: 0 0 0.75rem 0;
-        padding: 0.5rem 0.75rem;
-        background: rgba(26, 26, 26, 0.85);
-      }
-
-      table.admin-list td {
-        border: none !important;
-        padding: 0.4rem 0 !important;
-        display: flex !important;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 0.75rem;
-      }
-
-      table.admin-list td::before {
-        content: attr(data-label);
-        flex: 0 0 46%;
-        max-width: 46%;
-        color: #e60000;
-        font-weight: 700;
-        letter-spacing: 0.3px;
-        text-transform: uppercase;
-      }
-
-      .tournament-table colgroup { display: none !important; }
-    }
-  </style>
-
 </head>
-<body>
-  <!-- Announcement Banner - Top of Page -->
-  <div class="announcement-banner">
+<body data-testid="page-schedule">
+  <div class="announcement-banner" data-testid="announcement-banner">
     Registration for the 2025-2026 Winter Season is now closed. Please visit us in February for more information.
   </div>
 
-  <!-- Audio elements for global music player -->
   <audio id="bg-audio-1"></audio>
   <audio id="bg-audio-2"></audio>
-
-  <!-- Audio toggle button - starts as PLAY button -->
-  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music">
-    <!-- Play icon - shown by default -->
-    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;">
-      <path d="M8 5v14l11-7z"/>
-    </svg>
-    <!-- Muted speaker icon - shown when playing -->
-    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;">
-      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-    </svg>
-    <!-- Playing speaker icon - shown when unmuted -->
-    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-    </svg>
+  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music" data-testid="audio-toggle">
+    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
   </div>
 
-  <header>
+  <header data-testid="site-header">
     <div class="header-title-container">
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-left">
-      <h1>Weekend Warriors Wrestling Club</h1>
+      <h1>Weekend Warriors <span class="accent">Wrestling Club</span></h1>
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-right">
     </div>
-    <p>Building Strength, Discipline, and Champions</p>
+    <p>Strength · Discipline · Champions</p>
   </header>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="schedule.html" class="active" aria-current="page">Schedule</a>
-    <a href="contact.html">Contact</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
+  <nav data-testid="primary-nav">
+    <a href="index.html" data-testid="nav-home">Home</a>
+    <a href="about.html" data-testid="nav-about">About</a>
+    <a href="schedule.html" class="active" aria-current="page" data-testid="nav-schedule">Schedule</a>
+    <a href="contact.html" data-testid="nav-contact">Contact</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
+      <span>USA WRESTLING</span>
+      <span>Membership</span>
     </a>
   </nav>
 
-  <section>
-    <div class="content-card tournament-card">
-      <h2>UPCOMING PRACTICE DATES</h2>
+  <section data-testid="schedule-section">
+    <div class="mission-block">
+      <div>
+        <div class="eyebrow">When We Train, Where We Battle</div>
+        <h2 class="display-headline">
+          The<br>
+          <span class="red">Schedule.</span>
+        </h2>
+      </div>
+      <div class="body-col">
+        <p>
+          Practice dates and upcoming tournaments — all in one place. Click "Register"
+          on any tournament to lock in your spot.
+        </p>
+      </div>
+    </div>
+
+    <div class="content-card tournament-card" data-testid="practices-card">
+      <h2>Upcoming Practice Dates</h2>
       <div class="table-container">
-        <table class="admin-list">
+        <table class="admin-list" data-testid="practices-table">
           <thead>
             <tr>
-              <th>DATE</th>
-              <th>DAY</th>
-              <th>TIME</th>
-              <th>GROUP</th>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Time</th>
+              <th>Group</th>
             </tr>
           </thead>
           <tbody id="upcoming-practices">
@@ -121,20 +79,20 @@
       </div>
     </div>
 
-    <div class="content-card tournament-card">
-      <h2>UPCOMING TOURNAMENTS</h2>
+    <div class="content-card tournament-card" data-testid="tournaments-card">
+      <h2>Upcoming Tournaments</h2>
       <div class="table-container">
-        <table class="admin-list tournament-table">
+        <table class="admin-list tournament-table" data-testid="tournaments-table">
           <thead>
             <tr>
-              <th>DATE</th>
-              <th>EVENT</th>
-              <th>LOCATION</th>
-              <th style="line-height: 1.3;">8/10U<br>WEIGH-IN</th>
-              <th style="line-height: 1.3;">8/10U<br>START</th>
-              <th style="line-height: 1.3;">12U/MS<br>WEIGH-IN</th>
-              <th style="line-height: 1.3;">12U/MS<br>START</th>
-              <th>REGISTER</th>
+              <th>Date</th>
+              <th>Event</th>
+              <th>Location</th>
+              <th style="line-height: 1.3;">8/10U<br>Weigh-In</th>
+              <th style="line-height: 1.3;">8/10U<br>Start</th>
+              <th style="line-height: 1.3;">12U/MS<br>Weigh-In</th>
+              <th style="line-height: 1.3;">12U/MS<br>Start</th>
+              <th>Register</th>
             </tr>
           </thead>
           <tbody id="tournament-rows">
@@ -143,12 +101,12 @@
         </table>
       </div>
     </div>
+  </section>
 
   <script>
-    // Cache-busting function to ensure fresh data
     const cacheBust = (url) => {
-      const separator = url.includes('?') ? '&' : '?';
-      return `${url}${separator}_=${Date.now()}`;
+      const sep = url.includes('?') ? '&' : '?';
+      return `${url}${sep}_=${Date.now()}`;
     };
 
     async function run() {
@@ -156,41 +114,32 @@
         const upcomingTbody = document.getElementById('upcoming-practices');
         const tTbody = document.getElementById('tournament-rows');
 
-        // Load calendar events and generate upcoming practice dates
         const calendarRes = await fetch(cacheBust('data/calendar-events.json'));
         const calendarEvents = await calendarRes.json();
 
-        // Load one-off practices
         let oneOffPractices = [];
         try {
           const oneOffRes = await fetch(cacheBust('data/one-off-practices.json'));
           oneOffPractices = await oneOffRes.json();
-        } catch (e) {
-          console.log('No one-off practices found');
-        }
+        } catch (e) { console.log('No one-off practices found'); }
 
         if (Array.isArray(calendarEvents) && calendarEvents.length) {
           const upcomingPractices = [];
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-
-          // Calculate end of next week (7 days from today)
           const endOfWeek = new Date(today);
           endOfWeek.setDate(endOfWeek.getDate() + 7);
 
-          // Add recurring practices
           calendarEvents.forEach(event => {
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const targetDay = days.indexOf(event.day);
 
-            // Determine start date for this event
             let startDate = new Date(today);
             if (event.start_date) {
               startDate = new Date(event.start_date);
               startDate.setHours(0, 0, 0, 0);
             }
 
-            // Generate practices for the next 4 weeks to ensure we catch all in the next 7 days
             for (let week = 0; week < 4; week++) {
               const date = new Date(startDate);
               const currentDay = date.getDay();
@@ -198,7 +147,6 @@
               if (daysUntilTarget < 0) daysUntilTarget += 7;
               date.setDate(date.getDate() + daysUntilTarget + (week * 7));
 
-              // Only include if within the next 7 days and after/on start date
               if (date >= today && date < endOfWeek && date >= startDate) {
                 upcomingPractices.push({
                   date: date,
@@ -212,12 +160,9 @@
             }
           });
 
-          // Add one-off practices
           oneOffPractices.forEach(practice => {
             const practiceDate = new Date(practice.date);
             practiceDate.setHours(0, 0, 0, 0);
-
-            // Only include if within the next 7 days
             if (practiceDate >= today && practiceDate < endOfWeek) {
               const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
               upcomingPractices.push({
@@ -231,25 +176,25 @@
             }
           });
 
-          // Sort by date
           upcomingPractices.sort((a, b) => a.date - b.date);
 
-          upcomingTbody.innerHTML = upcomingPractices.map(p => `
-            <tr>
-              <td data-label="DATE">${p.dateStr}</td>
-              <td data-label="DAY">${p.day}</td>
-              <td data-label="TIME">${p.time}</td>
-              <td data-label="GROUP">${p.group}</td>
-            </tr>
-          `).join('');
+          if (upcomingPractices.length === 0) {
+            upcomingTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--ww-text-mute);">No upcoming practices in the next 7 days.</td></tr>`;
+          } else {
+            upcomingTbody.innerHTML = upcomingPractices.map(p => `
+              <tr>
+                <td data-label="Date">${p.dateStr}</td>
+                <td data-label="Day">${p.day}</td>
+                <td data-label="Time">${p.time}</td>
+                <td data-label="Group">${p.group}</td>
+              </tr>
+            `).join('');
+          }
         }
 
-        // Helper to convert 24-hour format to 12-hour if needed
         const ensureAMPM = (time) => {
           if (!time || time === '-') return '-';
-          // If already has AM/PM, return as-is
           if (time.includes('AM') || time.includes('PM')) return time;
-          // Convert 24-hour format (HH:MM) to 12-hour format
           const [hours, minutes] = time.split(':');
           const hour = parseInt(hours);
           const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -257,7 +202,6 @@
           return `${hour12}:${minutes} ${ampm}`;
         };
 
-        // Load tournaments from JSON
         const tournamentsRes = await fetch(cacheBust('data/tournaments.json'));
         const tournaments = await tournamentsRes.json();
         if (Array.isArray(tournaments) && tournaments.length) {
@@ -267,38 +211,34 @@
             const startES = ensureAMPM(r.startES || '-');
             const weighinMS = ensureAMPM(r.weighinMS || '-');
             const startMS = ensureAMPM(r.startMS || '-');
-            const regLink = r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer" class="register-link">Register</a>` : '-';
+            const regLink = r.url ? `<a href="${r.url}" target="_blank" rel="noopener noreferrer" class="register-link" data-testid="register-link">Register</a>` : '-';
 
             return `<tr>
-              <td data-label="DATE">${d}</td>
-              <td data-label="EVENT">${r.event}</td>
-              <td data-label="LOCATION">${r.location}</td>
-              <td data-label="8/10U WEIGH-IN">${weighinES}</td>
-              <td data-label="8/10U START">${startES}</td>
-              <td data-label="12U/MS WEIGH-IN">${weighinMS}</td>
-              <td data-label="12U/MS START">${startMS}</td>
-              <td data-label="REGISTER">${regLink}</td>
+              <td data-label="Date">${d}</td>
+              <td data-label="Event">${r.event}</td>
+              <td data-label="Location">${r.location}</td>
+              <td data-label="8/10U Weigh-In">${weighinES}</td>
+              <td data-label="8/10U Start">${startES}</td>
+              <td data-label="12U/MS Weigh-In">${weighinMS}</td>
+              <td data-label="12U/MS Start">${startMS}</td>
+              <td data-label="Register">${regLink}</td>
             </tr>`;
           }).join('');
+        } else {
+          tTbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:var(--ww-text-mute);">No upcoming tournaments scheduled.</td></tr>`;
         }
       } catch (e) {
         console.error('Error loading data:', e);
       }
     }
-
     run();
   </script>
-    </div>
-  </section>
 
-  <footer>
+  <footer data-testid="site-footer">
     <div class="powered-by-syndiscore">
       Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
     </div>
-    <div style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
-      <a href="admin.html" style="color: #666; text-decoration: none;">Admin</a>
-    </div>
+    <a href="admin.html" data-testid="admin-link">Admin</a>
   </footer>
 </body>
 </html>
-

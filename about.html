@@ -3,84 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - Weekend Warriors Wrestling Club</title>
+  <title>About — Weekend Warriors Wrestling Club</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="global-music.js" defer></script>
 </head>
-<body>
-  <!-- Announcement Banner - Top of Page -->
-  <div class="announcement-banner">
+<body data-testid="page-about">
+  <div class="announcement-banner" data-testid="announcement-banner">
     Registration for the 2025-2026 Winter Season is now closed. Please visit us in February for more information.
   </div>
 
-  <!-- Audio elements for global music player -->
   <audio id="bg-audio-1"></audio>
   <audio id="bg-audio-2"></audio>
-
-  <!-- Audio toggle button - starts as PLAY button -->
-  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music">
-    <!-- Play icon - shown by default -->
-    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;">
-      <path d="M8 5v14l11-7z"/>
-    </svg>
-    <!-- Muted speaker icon - shown when playing -->
-    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;">
-      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-    </svg>
-    <!-- Playing speaker icon - shown when unmuted -->
-    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-    </svg>
+  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music" data-testid="audio-toggle">
+    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
   </div>
 
-  <header>
+  <header data-testid="site-header">
     <div class="header-title-container">
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-left">
-      <h1>Weekend Warriors Wrestling Club</h1>
+      <h1>Weekend Warriors <span class="accent">Wrestling Club</span></h1>
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-right">
     </div>
-    <p>Building Strength, Discipline, and Champions</p>
+    <p>Strength · Discipline · Champions</p>
   </header>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html" class="active" aria-current="page">About</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="contact.html">Contact</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
+  <nav data-testid="primary-nav">
+    <a href="index.html" data-testid="nav-home">Home</a>
+    <a href="about.html" class="active" aria-current="page" data-testid="nav-about">About</a>
+    <a href="schedule.html" data-testid="nav-schedule">Schedule</a>
+    <a href="contact.html" data-testid="nav-contact">Contact</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
+      <span>USA WRESTLING</span>
+      <span>Membership</span>
     </a>
   </nav>
 
-  <section>
-    <div class="content-card">
-      <h2>About Us</h2>
-      <p>
-        Weekend Warriors Wrestling Club is more than just a sports program—it's a family.
-        We believe that wrestling teaches life lessons that extend far beyond the mat.
-        Through dedication, perseverance, and teamwork, our athletes learn what it means
-        to be a true warrior in all aspects of life.
-      </p>
-      <p style="margin-top: 1.5rem;">
-        Our mission is to empower young athletes by teaching them the fundamentals of wrestling
-        while instilling core values of respect, integrity, and sportsmanship. We strive to
-        create an environment where every wrestler can reach their full potential, both on and
-        off the mat.
-      </p>
+  <section data-testid="about-section">
+    <div class="mission-block">
+      <div>
+        <div class="eyebrow">Who We Are</div>
+        <h2 class="display-headline">
+          Our<br>
+          <span class="outlined">Mission.</span>
+        </h2>
+      </div>
+      <div class="body-col">
+        <p>
+          Weekend Warriors Wrestling Club is more than just a sports program — it's a family.
+          We believe that wrestling teaches life lessons that extend far beyond the mat.
+          Through dedication, perseverance, and teamwork, our athletes learn what it means
+          to be a true warrior in all aspects of life.
+        </p>
+        <p>
+          Our mission is to empower young athletes by teaching them the fundamentals of
+          wrestling while instilling core values of respect, integrity, and sportsmanship.
+          We strive to create an environment where every wrestler can reach their full
+          potential — both on and off the mat.
+        </p>
+      </div>
     </div>
 
-    <div class="content-card">
-      <h2>Core Values & Philosophy</h2>
-      <p style="text-align: left; max-width: 700px; margin: 0 auto 1.5rem;">
-        <strong style="color: #e60000;">Discipline:</strong> We teach our athletes the importance of commitment and self-control.<br><br>
-        <strong style="color: #e60000;">Respect:</strong> Every wrestler learns to respect their coaches, teammates, and opponents.<br><br>
-        <strong style="color: #e60000;">Excellence:</strong> We push our athletes to be the best version of themselves.<br><br>
-        <strong style="color: #e60000;">Teamwork:</strong> While wrestling is an individual sport, we succeed together as a team.
-      </p>
+    <div class="eyebrow" style="margin-top:2rem;">Core Values</div>
+    <h2 class="display-headline" style="font-size:clamp(2rem,5vw,3.6rem); margin-bottom:1.5rem;">
+      The <span class="red">Code</span> We Live By.
+    </h2>
+
+    <div class="values-bento" data-testid="values-bento">
+      <div class="value-card span-3" data-testid="value-discipline">
+        <span class="num">01</span>
+        <h3>Discipline</h3>
+        <p>We teach our athletes the importance of commitment, consistency, and self-control — show up, do the work, repeat.</p>
+      </div>
+      <div class="value-card span-3" data-testid="value-respect">
+        <span class="num">02</span>
+        <h3>Respect</h3>
+        <p>Every wrestler learns to respect their coaches, teammates, and opponents. Honor on the mat, honor off it.</p>
+      </div>
+      <div class="value-card span-2" data-testid="value-excellence">
+        <span class="num">03</span>
+        <h3>Excellence</h3>
+        <p>We push every athlete to be the best version of themselves — no shortcuts.</p>
+      </div>
+      <div class="value-card span-4" data-testid="value-teamwork">
+        <span class="num">04</span>
+        <h3>Teamwork</h3>
+        <p>While wrestling is an individual sport, we succeed together as a team. Iron sharpens iron — and on this mat, every win is shared and every battle is fought together.</p>
+      </div>
+    </div>
+
+    <div class="content-card" style="margin-top:2.5rem;" data-testid="coaching-card">
+      <h2>The Coaching Floor</h2>
       <p>
         Our experienced coaching staff is dedicated to developing well-rounded athletes.
         We focus on proper technique, conditioning, and mental toughness. Every practice
@@ -90,14 +107,11 @@
     </div>
   </section>
 
-  <footer>
+  <footer data-testid="site-footer">
     <div class="powered-by-syndiscore">
       Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
     </div>
-    <div style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
-      <a href="admin.html" style="color: #666; text-decoration: none;">Admin</a>
-    </div>
+    <a href="admin.html" data-testid="admin-link">Admin</a>
   </footer>
 </body>
 </html>
-

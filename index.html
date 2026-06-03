@@ -3,105 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekend Warriors Wrestling Club - Home</title>
+  <title>Weekend Warriors Wrestling Club — Home</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="global-music.js" defer></script>
 </head>
-<body>
-  <!-- Announcement Banner - Top of Page -->
-  <div class="announcement-banner">
+<body data-testid="page-home">
+  <!-- Announcement Banner -->
+  <div class="announcement-banner" data-testid="announcement-banner">
     Registration for the 2025-2026 Winter Season is now closed. Please visit us in February for more information.
   </div>
 
-  <header>
+  <header data-testid="site-header">
     <div class="header-title-container">
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-left">
-      <h1>Weekend Warriors Wrestling Club</h1>
+      <h1>Weekend Warriors <span class="accent">Wrestling Club</span></h1>
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-right">
     </div>
-    <p>Building Strength, Discipline, and Champions</p>
+    <p>Strength · Discipline · Champions</p>
   </header>
 
-  <nav>
-    <a href="index.html" class="active" aria-current="page">Home</a>
-    <a href="about.html">About</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="contact.html">Contact</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
+  <nav data-testid="primary-nav">
+    <a href="index.html" class="active" aria-current="page" data-testid="nav-home">Home</a>
+    <a href="about.html" data-testid="nav-about">About</a>
+    <a href="schedule.html" data-testid="nav-schedule">Schedule</a>
+    <a href="contact.html" data-testid="nav-contact">Contact</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
+      <span>USA WRESTLING</span>
+      <span>Membership</span>
     </a>
   </nav>
 
-  <!-- Wrestling Mat Hero Section - Arena Environment -->
-  <section class="mat-hero">
-    <!-- Arena environment layers -->
-    <div class="arena-environment">
-      <!-- Stadium seating silhouettes -->
-      <div class="arena-crowd"></div>
-      <!-- Gym floor extending around mat -->
-      <div class="gym-floor"></div>
-      <!-- Overhead lighting effects -->
-      <div class="arena-lights">
-        <div class="spotlight spotlight-1"></div>
-        <div class="spotlight spotlight-2"></div>
-        <div class="spotlight spotlight-3"></div>
-      </div>
-    </div>
-
-    <!-- Circular Wrestling Mat - Black with Red accents -->
-    <div class="wrestling-mat">
-      <!-- Outer red outline circle only -->
-      <div class="mat-circle mat-outer"></div>
-
-      <!-- Club logo - centered -->
-      <div class="mat-logo">
-        <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo">
-      </div>
-
-      <!-- Photo slideshow - clips to circular mat -->
-      <div class="mat-slideshow" aria-label="Showcase">
-        <div class="slides" id="slides-container">
-          <!-- Slides loaded from JSON -->
+  <!-- HERO POSTER -->
+  <section class="mat-hero" data-testid="hero-section">
+    <div class="hero-grid">
+      <!-- Title block -->
+      <div class="hero-title">
+        <div class="eyebrow">Est. Connecticut · Youth Wrestling</div>
+        <h2>
+          <span class="red">Grind.</span><br>
+          <span>Sweat.</span><br>
+          <span class="outlined">Conquer.</span>
+        </h2>
+        <p>Where young athletes are forged into warriors — through technique, conditioning, and the relentless pursuit of greatness on the mat.</p>
+        <div class="hero-cta-row">
+          <a href="contact.html" class="btn" data-testid="hero-cta-join">Step On The Mat</a>
+          <a href="schedule.html" class="btn-ghost" data-testid="hero-cta-schedule">View Schedule</a>
         </div>
       </div>
 
-      <!-- Navigation arrows -->
-      <button class="slider-arrow prev" aria-label="Previous slide">&#10094;</button>
-      <button class="slider-arrow next" aria-label="Next slide">&#10095;</button>
+      <!-- Slideshow poster -->
+      <div class="wrestling-mat" data-testid="hero-slideshow">
+        <div class="mat-logo">
+          <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo">
+        </div>
+
+        <div class="mat-slideshow" aria-label="Showcase">
+          <div class="slides" id="slides-container">
+            <!-- Slides loaded from JSON -->
+          </div>
+        </div>
+
+        <button class="slider-arrow prev" aria-label="Previous slide" data-testid="slide-prev">&#10094;</button>
+        <button class="slider-arrow next" aria-label="Next slide" data-testid="slide-next">&#10095;</button>
+      </div>
     </div>
 
-    <!-- Dot navigation below mat -->
     <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
   </section>
 
-  <!-- Background audio - dual audio elements for crossfade -->
+  <!-- Stats strip -->
+  <div class="stats-strip" data-testid="stats-strip">
+    <div class="stat">
+      <span class="num">15+</span>
+      <span class="lbl">Years on the Mat</span>
+    </div>
+    <div class="stat">
+      <span class="num">200+</span>
+      <span class="lbl">Wrestlers Trained</span>
+    </div>
+    <div class="stat">
+      <span class="num">50+</span>
+      <span class="lbl">Tournament Podiums</span>
+    </div>
+    <div class="stat">
+      <span class="num">1</span>
+      <span class="lbl">Wrestling Family</span>
+    </div>
+  </div>
+
+  <!-- Audio elements -->
   <audio id="bg-audio-1"></audio>
   <audio id="bg-audio-2"></audio>
-  <!-- Audio toggle button - starts as PLAY button -->
-  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music">
-    <!-- Play icon - shown by default -->
+  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music" data-testid="audio-toggle">
     <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;">
       <path d="M8 5v14l11-7z"/>
     </svg>
-    <!-- Muted speaker icon - shown when playing -->
     <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;">
       <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
     </svg>
-    <!-- Playing speaker icon - shown when unmuted -->
     <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;">
       <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
     </svg>
   </div>
 
   <script>
-    // Wrestling Mat Slideshow - Circular mat with logo reveal between slides
-    const matHero = document.querySelector('.mat-hero');
+    // Wrestling Mat Slideshow (logic unchanged, visual is now a poster card)
     const wrestlingMat = document.querySelector('.wrestling-mat');
     const matSlideshow = document.querySelector('.mat-slideshow');
+    const matLogo = document.querySelector('.mat-logo');
     const slidesContainer = document.getElementById('slides-container');
     const dotsWrap = document.querySelector('.mat-hero .slider-dots');
     const prevBtn = document.querySelector('.wrestling-mat .prev');
@@ -109,25 +121,20 @@
 
     let slides = [];
     let index = 0;
-
-    // Timer and state management
     let autoTimerId = null;
     let settingsPollId = null;
-    let sliderInterval = 5000;        // Time each slide is shown (ms)
-    let matRevealDuration = 1500;     // Time mat/logo is visible between slides (ms)
+    let sliderInterval = 5000;
+    let matRevealDuration = 1100;
     let initialized = false;
-    let isTransitioning = false;      // Prevent overlapping transitions
+    let isTransitioning = false;
 
     async function loadSlides() {
       try {
-        // Load settings
         const settingsRes = await fetch('data/settings.json', { cache: 'no-store' });
         const settingsData = await settingsRes.json();
         const sec = parseFloat(settingsData?.sliderInterval);
-        const nextInterval = Math.max(2000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
-        sliderInterval = nextInterval;
+        sliderInterval = Math.max(2000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
 
-        // Load slides from JSON
         const slidesRes = await fetch('data/slides.json', { cache: 'no-store' });
         const slidesData = await slidesRes.json();
 
@@ -154,14 +161,10 @@
               caption.textContent = slide.caption;
               div.appendChild(caption);
             }
-
             slidesContainer.appendChild(div);
           });
         }
-
-      } catch (e) {
-        console.error('Error loading data:', e);
-      }
+      } catch (e) { console.error('Error loading data:', e); }
 
       initSlider();
       startSettingsWatcher();
@@ -169,19 +172,10 @@
 
     function startTimer() {
       stopTimer();
-      // Total cycle = slide display + mat reveal
       autoTimerId = setInterval(() => transitionToNext(), sliderInterval + matRevealDuration);
     }
-
-    function stopTimer() {
-      if (autoTimerId) clearInterval(autoTimerId);
-      autoTimerId = null;
-    }
-
-    function restartTimer() {
-      stopTimer();
-      startTimer();
-    }
+    function stopTimer() { if (autoTimerId) clearInterval(autoTimerId); autoTimerId = null; }
+    function restartTimer() { stopTimer(); startTimer(); }
 
     async function refreshSettingsIfChanged() {
       try {
@@ -189,13 +183,9 @@
         const data = await res.json();
         const sec = parseFloat(data?.sliderInterval);
         const newMs = Math.max(2000, Math.floor((isNaN(sec) ? 5 : sec) * 1000));
-        if (newMs !== sliderInterval) {
-          sliderInterval = newMs;
-          restartTimer();
-        }
+        if (newMs !== sliderInterval) { sliderInterval = newMs; restartTimer(); }
       } catch (_) {}
     }
-
     function startSettingsWatcher() {
       if (settingsPollId) clearInterval(settingsPollId);
       settingsPollId = setInterval(refreshSettingsIfChanged, 15000);
@@ -205,52 +195,29 @@
       if (!wrestlingMat || initialized) return;
       slides = Array.from(matSlideshow.querySelectorAll('.slide'));
       if (slides.length === 0) return;
-
       initialized = true;
 
-      // Create dot navigation
       dotsWrap.innerHTML = '';
       slides.forEach((slide, i) => {
         const b = document.createElement('button');
         b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-        b.addEventListener('click', () => {
-          if (!isTransitioning) {
-            transitionTo(i);
-            restartTimer();
-          }
-        });
+        b.addEventListener('click', () => { if (!isTransitioning) { transitionTo(i); restartTimer(); } });
         dotsWrap.appendChild(b);
-
         const video = slide.querySelector('video');
         if (video && i === 0) video.play().catch(() => {});
       });
 
-      // Arrow navigation
-      prevBtn.addEventListener('click', () => {
-        if (!isTransitioning) {
-          transitionTo(index - 1);
-          restartTimer();
-        }
-      });
-      nextBtn.addEventListener('click', () => {
-        if (!isTransitioning) {
-          transitionTo(index + 1);
-          restartTimer();
-        }
-      });
+      prevBtn.addEventListener('click', () => { if (!isTransitioning) { transitionTo(index - 1); restartTimer(); } });
+      nextBtn.addEventListener('click', () => { if (!isTransitioning) { transitionTo(index + 1); restartTimer(); } });
 
       updateDots();
       startTimer();
 
-      // Visibility handling
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
           refreshSettingsIfChanged().finally(restartTimer);
-        } else {
-          stopTimer();
-        }
+        } else { stopTimer(); }
       });
-
       window.addEventListener('pageshow', (e) => {
         if (e.persisted || document.visibilityState === 'visible') {
           refreshSettingsIfChanged().finally(restartTimer);
@@ -263,20 +230,14 @@
       Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === index));
     }
 
-    // Transition with mat reveal effect
     function transitionTo(newIndex) {
       if (isTransitioning || slides.length === 0) return;
-
       const targetIndex = (newIndex + slides.length) % slides.length;
       if (targetIndex === index) return;
-
       isTransitioning = true;
 
-      // Check for reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
       if (prefersReducedMotion) {
-        // Instant transition for reduced motion
         slides[index].classList.remove('is-active');
         pauseSlideVideo(index);
         index = targetIndex;
@@ -287,62 +248,60 @@
         return;
       }
 
-      // Step 1: Fade out current slide (reveals mat + logo)
       matSlideshow.classList.add('mat-reveal');
+      if (matLogo) matLogo.style.opacity = '1';
       slides[index].classList.remove('is-active');
       pauseSlideVideo(index);
 
-      // Step 2: After mat reveal pause, show next slide
       setTimeout(() => {
         index = targetIndex;
         slides[index].classList.add('is-active');
         playSlideVideo(index);
         updateDots();
 
-        // Step 3: Fade in the new slide
         setTimeout(() => {
           matSlideshow.classList.remove('mat-reveal');
+          if (matLogo) matLogo.style.opacity = '0';
           isTransitioning = false;
-        }, 100);
+        }, 120);
       }, matRevealDuration);
     }
-
-    function transitionToNext() {
-      transitionTo(index + 1);
-    }
-
-    function playSlideVideo(i) {
-      const video = slides[i]?.querySelector('video');
-      if (video) video.play().catch(() => {});
-    }
-
-    function pauseSlideVideo(i) {
-      const video = slides[i]?.querySelector('video');
-      if (video) video.pause();
-    }
+    function transitionToNext() { transitionTo(index + 1); }
+    function playSlideVideo(i) { const v = slides[i]?.querySelector('video'); if (v) v.play().catch(()=>{}); }
+    function pauseSlideVideo(i) { const v = slides[i]?.querySelector('video'); if (v) v.pause(); }
 
     loadSlides();
   </script>
 
-
-  <section class="content-card">
-    <h2>Welcome to Weekend Warriors</h2>
-    <p>
-      We are dedicated to developing young athletes through the sport of wrestling.
-      Our program focuses on building physical strength, mental discipline, and the
-      character of true champions. Join us and become part of a community that values
-      hard work, respect, and excellence.
-    </p>
+  <section data-testid="welcome-section">
+    <div class="mission-block">
+      <div>
+        <div class="eyebrow">Welcome</div>
+        <h2 class="display-headline">
+          Built for<br>
+          <span class="red">Warriors.</span>
+        </h2>
+      </div>
+      <div class="body-col">
+        <p>
+          Weekend Warriors Wrestling Club is dedicated to developing young athletes
+          through the sport of wrestling. Our program focuses on building physical
+          strength, mental discipline, and the character of true champions.
+        </p>
+        <p>
+          Join us and become part of a community that values hard work, respect,
+          and excellence — every single rep, every single match.
+        </p>
+        <a href="about.html" class="btn-ghost" data-testid="welcome-cta-about">Our Story →</a>
+      </div>
+    </div>
   </section>
 
-  <footer>
+  <footer data-testid="site-footer">
     <div class="powered-by-syndiscore">
       Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
     </div>
-    <div style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
-      <a href="admin.html" style="color: #666; text-decoration: none;">Admin</a>
-    </div>
+    <a href="admin.html" data-testid="admin-link">Admin</a>
   </footer>
 </body>
 </html>
-

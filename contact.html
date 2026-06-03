@@ -3,97 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact - Weekend Warriors Wrestling Club</title>
+  <title>Contact — Weekend Warriors Wrestling Club</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="global-music.js" defer></script>
 </head>
-<body>
-  <!-- Announcement Banner - Top of Page -->
-  <div class="announcement-banner">
+<body data-testid="page-contact">
+  <div class="announcement-banner" data-testid="announcement-banner">
     Registration for the 2025-2026 Winter Season is now closed. Please visit us in February for more information.
   </div>
 
-  <!-- Audio elements for global music player -->
   <audio id="bg-audio-1"></audio>
   <audio id="bg-audio-2"></audio>
-
-  <!-- Audio toggle button - starts as PLAY button -->
-  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music">
-    <!-- Play icon - shown by default -->
-    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;">
-      <path d="M8 5v14l11-7z"/>
-    </svg>
-    <!-- Muted speaker icon - shown when playing -->
-    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;">
-      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-    </svg>
-    <!-- Playing speaker icon - shown when unmuted -->
-    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;">
-      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-    </svg>
+  <div id="audio-toggle" class="audio-controls" style="display: none;" title="Click to play music" data-testid="audio-toggle">
+    <svg id="audio-icon-play" viewBox="0 0 24 24" style="display: block;"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="audio-icon-muted" viewBox="0 0 24 24" style="display: none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    <svg id="audio-icon-playing" viewBox="0 0 24 24" style="display: none;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
   </div>
 
-  <header>
+  <header data-testid="site-header">
     <div class="header-title-container">
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-left">
-      <h1>Weekend Warriors Wrestling Club</h1>
+      <h1>Weekend Warriors <span class="accent">Wrestling Club</span></h1>
       <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo logo-right">
     </div>
-    <p>Building Strength, Discipline, and Champions</p>
+    <p>Strength · Discipline · Champions</p>
   </header>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="contact.html" class="active" aria-current="page">Contact</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
-      <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
+  <nav data-testid="primary-nav">
+    <a href="index.html" data-testid="nav-home">Home</a>
+    <a href="about.html" data-testid="nav-about">About</a>
+    <a href="schedule.html" data-testid="nav-schedule">Schedule</a>
+    <a href="contact.html" class="active" aria-current="page" data-testid="nav-contact">Contact</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
+      <span>USA WRESTLING</span>
+      <span>Membership</span>
     </a>
   </nav>
 
-  <section>
-    <h2>Get In Touch</h2>
-    <p style="margin-bottom: 1.5rem;">
-      Have questions about our program? Want to sign up your child?
-      We'd love to hear from you!
-    </p>
-
-    <div id="contact-success" style="display: none; text-align: center; padding: 1.5rem; background: rgba(40, 167, 69, 0.2); border: 2px solid #28a745; border-radius: 8px; margin: 0 auto 1.5rem; max-width: 100%;">
-      <h3 style="color: #28a745; margin-bottom: 0.5rem;">✅ Message Sent Successfully!</h3>
-      <p style="color: #ddd;">Thank you for reaching out. We'll get back to you soon!</p>
+  <section data-testid="contact-section">
+    <div class="mission-block">
+      <div>
+        <div class="eyebrow">Reach Out</div>
+        <h2 class="display-headline">
+          Get In<br>
+          <span class="red">Touch.</span>
+        </h2>
+      </div>
+      <div class="body-col">
+        <p>
+          Have questions about our program? Want to sign your young warrior up?
+          Drop us a line — we'd love to hear from you.
+        </p>
+      </div>
     </div>
 
-    <div class="contact-container">
-      <form id="contact-form">
-        <input type="text" id="contact-name" name="name" placeholder="Your Name" required>
-        <input type="email" id="contact-email" name="email" placeholder="Your Email" required>
-        <textarea id="contact-message" name="message" rows="6" placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
+    <div id="contact-success" class="contact-form-success" style="display: none;" data-testid="contact-success">
+      <h3>Message Sent.</h3>
+      <p>Thank you for reaching out — we'll get back to you soon.</p>
+    </div>
+
+    <div class="contact-container" data-testid="contact-container">
+      <form id="contact-form" data-testid="contact-form">
+        <label for="contact-name">Name</label>
+        <input type="text" id="contact-name" name="name" placeholder="Your Name" required data-testid="contact-input-name">
+        <label for="contact-email">Email</label>
+        <input type="email" id="contact-email" name="email" placeholder="you@example.com" required data-testid="contact-input-email">
+        <label for="contact-message">Message</label>
+        <textarea id="contact-message" name="message" rows="6" placeholder="Tell us about your wrestler, your question, or anything else..." required data-testid="contact-input-message"></textarea>
+        <button type="submit" data-testid="contact-submit-btn">Send Message</button>
       </form>
 
-      <div class="contact-info">
+      <div class="contact-info" data-testid="contact-info">
         <h2>Contact Information</h2>
         <p style="margin-top: 1rem;">
-          <strong style="color: #e60000;">Name:</strong> Tony Decato<br><br>
-          <strong style="color: #e60000;">Phone:</strong> 860-336-8969<br><br>
-          <strong style="color: #e60000;">Email:</strong> <span class="email-nowrap">WeekendWarriorsWC@yahoo.com</span>
+          <strong>Name</strong><br>Tony Decato<br><br>
+          <strong>Phone</strong><br><a href="tel:8603368969" style="color:#fff; border-bottom:1px solid var(--ww-line-2);" data-testid="contact-phone">860-336-8969</a><br><br>
+          <strong>Email</strong><br><a href="mailto:WeekendWarriorsWC@yahoo.com" class="email-nowrap" style="border-bottom:1px solid var(--ww-line-2);" data-testid="contact-email-link">WeekendWarriorsWC@yahoo.com</a>
         </p>
       </div>
     </div>
   </section>
 
-  <footer>
+  <footer data-testid="site-footer">
     <div class="powered-by-syndiscore">
       Powered by <a href="https://syndiscore.ai" target="_blank" rel="noopener noreferrer">syndiscore.ai</a>
     </div>
-    <div style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
-      <a href="admin.html" style="color: #666; text-decoration: none;">Admin</a>
-    </div>
+    <a href="admin.html" data-testid="admin-link">Admin</a>
   </footer>
 
   <script>
@@ -119,23 +117,11 @@
       };
 
       try {
-        // Load existing messages
-        console.log('📥 Loading current messages...');
         const res = await fetch('data/contact-messages.json');
-
-        if (!res.ok) {
-          throw new Error(`Failed to load messages: ${res.status} ${res.statusText}`);
-        }
-
+        if (!res.ok) throw new Error(`Failed to load messages: ${res.status} ${res.statusText}`);
         const messages = await res.json();
-        console.log('✅ Current messages loaded:', messages.length);
-
-        // Add new message
         messages.push(messageData);
-        console.log('➕ Added new message, total:', messages.length);
 
-        // Save to API
-        console.log('💾 Saving to API...');
         const saveRes = await fetch(`${API_URL}/save`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -145,42 +131,23 @@
           })
         });
 
-        console.log('📡 API Response status:', saveRes.status);
-
         if (!saveRes.ok) {
           const errorText = await saveRes.text();
-          console.error('❌ API Error Response:', errorText);
           throw new Error(`API returned ${saveRes.status}: ${errorText}`);
         }
 
         const result = await saveRes.json();
-        console.log('✅ API Response:', result);
-
         if (result.success) {
-          console.log('🎉 Message sent successfully!');
-
-          // Show success message
           contactForm.style.display = 'none';
           successMsg.style.display = 'block';
-
-          // Reset form
           contactForm.reset();
-
-          // Scroll to success message
           successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           throw new Error(result.error || 'Failed to send message');
         }
       } catch (error) {
-        console.error('❌ Error sending message:', error);
-        console.error('Error details:', {
-          message: error.message,
-          stack: error.stack,
-          name: error.name
-        });
-
+        console.error('Error sending message:', error);
         let errorMessage = 'Failed to send message. ';
-
         if (error.message.includes('Failed to fetch')) {
           errorMessage += 'Cannot connect to server. Please check your internet connection or try again later.';
         } else if (error.message.includes('Failed to load messages')) {
@@ -188,7 +155,6 @@
         } else {
           errorMessage += 'Please try again or contact us directly at WeekendWarriorsWC@yahoo.com';
         }
-
         alert(errorMessage);
       } finally {
         submitBtn.textContent = originalText;
@@ -198,4 +164,3 @@
   </script>
 </body>
 </html>
-
