@@ -195,6 +195,42 @@ nav a.active {
 }
 nav a.active::after { transform: scaleX(1); }
 
+/* Winter Registration CTA pill */
+nav a.winter-reg-btn {
+  margin-left: 0.6rem;
+  background: var(--ww-red);
+  border: 1px solid var(--ww-red);
+  color: #fff !important;
+  padding: 0.55rem 1rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  line-height: 1.05;
+  letter-spacing: 0.08em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+nav a.winter-reg-btn:hover {
+  background: var(--ww-red-hot);
+  border-color: var(--ww-red-hot);
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 #000;
+}
+nav a.winter-reg-btn::after { display: none; }
+nav a.winter-reg-btn span:first-child {
+  color: #ffe8e8;
+  font-family: var(--ww-font-body);
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2em;
+}
+nav a.winter-reg-btn span:last-child {
+  color: #fff;
+  font-family: var(--ww-font-display);
+  font-size: 0.95rem !important;
+  letter-spacing: 0.08em;
+}
+
 /* USA Membership pill - keep distinct but on-theme */
 nav a.usa-membership-btn {
   margin-left: 0.6rem;
@@ -897,6 +933,9 @@ table.admin-list tbody tr:hover {
   nav a.usa-membership-btn { margin-left: 0.2rem; padding: 0.45rem 0.7rem; }
   nav a.usa-membership-btn span:first-child { font-size: 0.65rem !important; }
   nav a.usa-membership-btn span:last-child { font-size: 0.6rem !important; }
+  nav a.winter-reg-btn { margin-left: 0.2rem; padding: 0.45rem 0.7rem; }
+  nav a.winter-reg-btn span:first-child { font-size: 0.55rem !important; }
+  nav a.winter-reg-btn span:last-child { font-size: 0.78rem !important; }
 }
 
 /* =========================== AUDIO TOGGLE =========================== */
