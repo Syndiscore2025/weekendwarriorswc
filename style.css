@@ -469,6 +469,7 @@ label {
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  text-align: center;
   text-shadow: 0 4px 18px rgba(0,0,0,0.7);
 }
 
