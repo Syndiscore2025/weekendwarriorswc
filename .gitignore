@@ -32,3 +32,9 @@ logs/
 *.sqlite
 *.db
 
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
