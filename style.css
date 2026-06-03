@@ -1,6 +1,6 @@
 /* =====================================================================
-   WEEKEND WARRIORS WRESTLING CLUB — Gritty Mat-Room Theme
-   Stack: Anton (display) + Barlow (body) — Red / Black / White
+   WEEKEND WARRIORS WRESTLING CLUB - Gritty Mat-Room Theme
+   Stack: Anton (display) + Barlow (body) - Red / Black / White
    ===================================================================== */
 
 :root {
@@ -195,7 +195,7 @@ nav a.active {
 }
 nav a.active::after { transform: scaleX(1); }
 
-/* USA Membership pill — keep distinct but on-theme */
+/* USA Membership pill - keep distinct but on-theme */
 nav a.usa-membership-btn {
   margin-left: 0.6rem;
   background: linear-gradient(180deg, #11264f 0%, #061328 100%);
@@ -239,7 +239,7 @@ h1, h2, h3, h4 {
   font-weight: 400;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  line-height: 0.95;
+  line-height: 1.05;
   color: #fff;
 }
 h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
@@ -404,7 +404,7 @@ label {
   .contact-container { grid-template-columns: 1fr; }
 }
 
-/* =========================== HERO — POSTER MAT =========================== */
+/* =========================== HERO - POSTER MAT =========================== */
 .mat-hero {
   position: relative;
   max-width: 1240px;
@@ -430,42 +430,19 @@ label {
   width: 100%;
   aspect-ratio: 16 / 9;
   background: #000;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 48px), calc(100% - 48px) 100%, 0 100%);
   overflow: hidden;
   border: 1px solid var(--ww-line);
 }
 .mat-circle { display: none !important; }
 
-.mat-logo {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-.mat-logo img {
-  width: clamp(110px, 18vw, 220px);
-  height: auto;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.65));
-}
-.mat-slideshow.mat-reveal ~ .mat-logo,
-.mat-hero .mat-slideshow.mat-reveal + .mat-logo { opacity: 1; }
-/* keep simple: show logo when slideshow is in reveal state */
-.mat-slideshow.mat-reveal ~ * .mat-logo { opacity: 1; }
-
-.wrestling-mat:has(.mat-slideshow.mat-reveal) .mat-logo { opacity: 1; }
+/* Logo between slides - REMOVED per user feedback */
+.mat-logo { display: none !important; }
 
 .mat-slideshow {
   position: absolute;
   inset: 0;
   z-index: 2;
-  transition: opacity 0.4s ease;
 }
-.mat-slideshow.mat-reveal { opacity: 0; }
 .mat-slideshow .slides { position: absolute; inset: 0; }
 .mat-slideshow .slide {
   position: absolute;
@@ -473,7 +450,7 @@ label {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.7s ease;
 }
 .mat-slideshow .slide.is-active { opacity: 1; }
 .mat-slideshow .slide video {
@@ -501,26 +478,32 @@ label {
   text-shadow: 0 4px 18px rgba(0,0,0,0.7);
 }
 
+/* Minimalist slider arrows: just a chevron, no box */
 .slider-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px; height: 48px;
-  background: rgba(10,10,10,0.65);
-  border: 1px solid var(--ww-line-2);
+  width: 44px; height: 44px;
+  background: transparent;
+  border: none;
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  line-height: 1;
   z-index: 5;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  opacity: 0.5;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  transition: opacity 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  padding: 0;
 }
 .slider-arrow:hover {
-  background: var(--ww-red);
-  border-color: var(--ww-red);
-  transform: translateY(-50%) scale(1.05);
+  opacity: 1;
+  color: var(--ww-red);
+  transform: translateY(-50%) scale(1.15);
 }
-.slider-arrow.prev { left: 1rem; }
-.slider-arrow.next { right: 1rem; }
+.wrestling-mat:hover .slider-arrow { opacity: 0.9; }
+.slider-arrow.prev { left: 0.75rem; }
+.slider-arrow.next { right: 0.75rem; }
 
 .slider-dots {
   display: flex;
@@ -554,10 +537,14 @@ label {
 .hero-title h2 {
   font-family: var(--ww-font-display);
   font-size: clamp(2.4rem, 6.8vw, 5.2rem);
-  line-height: 0.9;
+  line-height: 1.05;
   color: #fff;
   text-transform: uppercase;
   margin: 0.6rem 0 1rem;
+}
+.hero-title h2 span {
+  display: inline-block;
+  padding-bottom: 0.18em;
 }
 .hero-title h2 .red { color: var(--ww-red); }
 .hero-title h2 .outlined {
@@ -639,7 +626,7 @@ label {
   .stats-strip .stat:nth-child(-n+2) { border-bottom: 1px solid var(--ww-line); }
 }
 
-/* =========================== ABOUT — BENTO =========================== */
+/* =========================== ABOUT - BENTO =========================== */
 .mission-block {
   display: grid;
   grid-template-columns: 1fr 1.3fr;
@@ -650,9 +637,13 @@ label {
 .mission-block .display-headline {
   font-family: var(--ww-font-display);
   font-size: clamp(3rem, 9vw, 7rem);
-  line-height: 0.88;
+  line-height: 1.02;
   text-transform: uppercase;
   color: #fff;
+}
+.mission-block .display-headline span {
+  display: inline-block;
+  padding-bottom: 0.16em;
 }
 .mission-block .display-headline .outlined {
   -webkit-text-stroke: 2px var(--ww-red);
@@ -718,6 +709,104 @@ label {
   .values-bento { grid-template-columns: 1fr; }
   .value-card.span-3, .value-card.span-2, .value-card.span-4 { grid-column: span 1; }
 }
+
+/* =========================== ABOUT - COACHES =========================== */
+.coaches-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+.coach-card {
+  position: relative;
+  background: var(--ww-surface);
+  border: 1px solid var(--ww-line);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.coach-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: var(--ww-shadow-hard);
+  border-color: var(--ww-line-2);
+}
+.coach-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-size: cover;
+  background-position: center;
+  background-color: #000;
+  filter: contrast(1.05) saturate(0.85);
+  position: relative;
+}
+.coach-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.7) 100%);
+}
+.coach-body {
+  padding: 1.4rem 1.4rem 1.6rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.coach-role {
+  font-family: var(--ww-font-body);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ww-red);
+  margin-bottom: 0.35rem;
+}
+.coach-card h3 {
+  font-family: var(--ww-font-display);
+  color: #fff;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  line-height: 1.05;
+}
+.coach-card p {
+  color: var(--ww-text-mute);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+.coach-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--ww-line);
+}
+.coach-meta a {
+  font-family: var(--ww-font-body);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  border-bottom: 1px solid var(--ww-line-2);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.coach-meta a:hover { color: var(--ww-red); border-color: var(--ww-red); }
+.coach-tag {
+  font-family: var(--ww-font-body);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ww-text-faint);
+  border: 1px dashed var(--ww-line-2);
+  padding: 0.2rem 0.55rem;
+}
+@media (max-width: 900px) { .coaches-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .coaches-grid { grid-template-columns: 1fr; } }
 
 /* =========================== TOURNAMENT / SCHEDULE TABLES =========================== */
 .tournament-card { padding-top: clamp(1.5rem, 3vw, 2.25rem); }
@@ -903,7 +992,7 @@ footer a[href="admin.html"] {
   * { animation: none !important; transition: none !important; }
 }
 
-/* =========================== ADMIN PAGES — LEAVE LARGELY UNTOUCHED =========================== */
+/* =========================== ADMIN PAGES - LEAVE LARGELY UNTOUCHED =========================== */
 /* The admin pages have their own inline styles. We just give base typography
    here so they don't break, but don't impose mat-room aesthetic. */
 .admin-page { font-family: var(--ww-font-body); }

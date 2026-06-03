@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekend Warriors Wrestling Club — Home</title>
+  <title>Weekend Warriors Wrestling Club - Home</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@
           <span>Sweat.</span><br>
           <span class="outlined">Conquer.</span>
         </h2>
-        <p>Where young athletes are forged into warriors — through technique, conditioning, and the relentless pursuit of greatness on the mat.</p>
+        <p>Where young athletes are forged into warriors - through technique, conditioning, and the relentless pursuit of greatness on the mat.</p>
         <div class="hero-cta-row">
           <a href="contact.html" class="btn" data-testid="hero-cta-join">Step On The Mat</a>
           <a href="schedule.html" class="btn-ghost" data-testid="hero-cta-schedule">View Schedule</a>
@@ -56,10 +56,6 @@
 
       <!-- Slideshow poster -->
       <div class="wrestling-mat" data-testid="hero-slideshow">
-        <div class="mat-logo">
-          <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo">
-        </div>
-
         <div class="mat-slideshow" aria-label="Showcase">
           <div class="slides" id="slides-container">
             <!-- Slides loaded from JSON -->
@@ -110,10 +106,9 @@
   </div>
 
   <script>
-    // Wrestling Mat Slideshow (logic unchanged, visual is now a poster card)
+    // Wrestling Mat Slideshow - direct crossfade (no logo reveal)
     const wrestlingMat = document.querySelector('.wrestling-mat');
     const matSlideshow = document.querySelector('.mat-slideshow');
-    const matLogo = document.querySelector('.mat-logo');
     const slidesContainer = document.getElementById('slides-container');
     const dotsWrap = document.querySelector('.mat-hero .slider-dots');
     const prevBtn = document.querySelector('.wrestling-mat .prev');
@@ -124,7 +119,6 @@
     let autoTimerId = null;
     let settingsPollId = null;
     let sliderInterval = 5000;
-    let matRevealDuration = 1100;
     let initialized = false;
     let isTransitioning = false;
 
@@ -172,7 +166,7 @@
 
     function startTimer() {
       stopTimer();
-      autoTimerId = setInterval(() => transitionToNext(), sliderInterval + matRevealDuration);
+      autoTimerId = setInterval(() => transitionToNext(), sliderInterval);
     }
     function stopTimer() { if (autoTimerId) clearInterval(autoTimerId); autoTimerId = null; }
     function restartTimer() { stopTimer(); startTimer(); }
@@ -236,35 +230,16 @@
       if (targetIndex === index) return;
       isTransitioning = true;
 
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        slides[index].classList.remove('is-active');
-        pauseSlideVideo(index);
-        index = targetIndex;
-        slides[index].classList.add('is-active');
-        playSlideVideo(index);
-        updateDots();
-        isTransitioning = false;
-        return;
-      }
-
-      matSlideshow.classList.add('mat-reveal');
-      if (matLogo) matLogo.style.opacity = '1';
+      // Direct crossfade - old slide fades out as new slide fades in.
       slides[index].classList.remove('is-active');
       pauseSlideVideo(index);
+      index = targetIndex;
+      slides[index].classList.add('is-active');
+      playSlideVideo(index);
+      updateDots();
 
-      setTimeout(() => {
-        index = targetIndex;
-        slides[index].classList.add('is-active');
-        playSlideVideo(index);
-        updateDots();
-
-        setTimeout(() => {
-          matSlideshow.classList.remove('mat-reveal');
-          if (matLogo) matLogo.style.opacity = '0';
-          isTransitioning = false;
-        }, 120);
-      }, matRevealDuration);
+      // Match CSS transition duration (0.7s)
+      setTimeout(() => { isTransitioning = false; }, 700);
     }
     function transitionToNext() { transitionTo(index + 1); }
     function playSlideVideo(i) { const v = slides[i]?.querySelector('video'); if (v) v.play().catch(()=>{}); }
@@ -290,7 +265,7 @@
         </p>
         <p>
           Join us and become part of a community that values hard work, respect,
-          and excellence — every single rep, every single match.
+          and excellence - every single rep, every single match.
         </p>
         <a href="about.html" class="btn-ghost" data-testid="welcome-cta-about">Our Story →</a>
       </div>

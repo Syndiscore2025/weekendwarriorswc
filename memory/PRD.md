@@ -21,14 +21,21 @@ Stack (preserved): Static HTML + CSS + vanilla JS, Node Express API for admin da
 Saved in `/app/design_guidelines.json` (Anton/Barlow Google Fonts, obsidian/red palette, sharp corners, hard offset shadows, SVG noise grain). Driven by `design_agent_full_stack`.
 
 ## What's Been Implemented (Jan 2026)
-- ✅ New `style.css` — gritty mat-room CSS variables, typography ramp, sticky nav with underline sweep, sharp-cornered cards with hard offset shadow on hover, dark forms with red focus rail, schedule tables with hover red rail + register pill, polygon-clipped audio toggle, footer with red top accent, entrance animations, mobile breakpoints + responsive table card-stack.
-- ✅ `index.html` — Asymmetric hero (massive "GRIND. SWEAT. CONQUER." with outlined word + slideshow in angled poster clip) + stats strip + "Built for Warriors." welcome block.
-- ✅ `about.html` — Mission display headline + bento value cards (Discipline/Respect 3-col, Excellence 2-col, Teamwork 4-col) with watermark numbers behind text + coaching card.
-- ✅ `schedule.html` — Display "THE SCHEDULE." + redesigned practice/tournament tables with Anton red headers and register pill buttons.
-- ✅ `contact.html` — "GET IN TOUCH." + grid layout with bold contact info card and dark sharp form.
-- ✅ `winter-signups.html` — Stripped ice/blue theme; recolored logo cross-animation in red glow, restyled program cards / add-on list / signup form / waiver / modal / success message to match.
+- ✅ New `style.css` - gritty mat-room CSS variables, typography ramp, sticky nav with underline sweep, sharp-cornered cards with hard offset shadow on hover, dark forms with red focus rail, schedule tables with hover red rail + register pill, polygon-clipped audio toggle, footer with red top accent, entrance animations, mobile breakpoints + responsive table card-stack.
+- ✅ `index.html` - Asymmetric hero (massive "GRIND. SWEAT. CONQUER." with outlined word + slideshow in clean rectangle) + stats strip + "Built for Warriors." welcome block.
+- ✅ `about.html` - Mission display headline + bento value cards + coaching card + **Coaches grid (Head Coach Tony Decato + 2 placeholder slots)**.
+- ✅ `schedule.html` - Display "THE SCHEDULE." + redesigned practice/tournament tables with Anton red headers and register pill buttons.
+- ✅ `contact.html` - "GET IN TOUCH." + grid layout with bold contact info card and dark sharp form.
+- ✅ `winter-signups.html` - Stripped ice/blue theme; recolored logo cross-animation in red glow, restyled program cards / add-on list / signup form / waiver / modal / success message to match.
 - ✅ All interactive elements have `data-testid` attributes.
-- ✅ Slideshow JS, contact form submit JS, schedule data loader JS, audio music toggle JS — all preserved untouched (only visual styles changed).
+- ✅ Slideshow JS, contact form submit JS, schedule data loader JS, audio music toggle JS - all preserved untouched.
+
+## Iteration 2 - User Feedback (Jan 2026)
+- ✅ **Heading line-heights loosened** across the site (1.05 - 1.10 with span padding-bottom) so big Anton display words no longer overlap each other ("OUR / MISSION.", "GRIND. / SWEAT. / CONQUER.", "BUILT FOR / WARRIORS.", "GET IN / TOUCH.", "THE / SCHEDULE.", "YOUR / COACHES.").
+- ✅ **All em dashes removed** from public pages and CSS - replaced with hyphens.
+- ✅ **Slideshow redesigned**: removed angled clip-path box (now clean rectangle with subtle 1px border), arrows are minimalist semi-transparent chevrons (no background boxes, no border outlines), brighter on hover only.
+- ✅ **Logo reveal between slides removed**: `.mat-logo` deleted from index.html, transition logic simplified to direct crossfade between slides.
+- ✅ **Coaches section added to About**: 3-card grid with Head Coach Tony Decato (real info from contact page) + 2 clearly-marked placeholder cards (test IDs `coach-placeholder-2`, `coach-placeholder-3`) ready to be swapped with real staff names/photos/bios.
 
 ## Files Touched
 - `/app/style.css` (full rewrite)
