@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Winter Session 26-27 Sign Ups - Weekend Warriors X Wethersfield Wrestling</title>
+  <title>2026 Summer Session Sign Ups - Weekend Warriors Wrestling Club</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -129,6 +129,26 @@
       0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.5); }
       60%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.35); filter: drop-shadow(0 0 32px rgba(229,20,0,0.9)); }
       100% { opacity: 1;   transform: translate(-50%, -50%) scale(1.25); filter: drop-shadow(0 0 24px rgba(229,20,0,0.7)); }
+    }
+
+    /* Flyer image */
+    .flyer-container {
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      padding: 0;
+      position: relative;
+    }
+    .flyer-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--ww-line);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+      transition: transform 0.4s cubic-bezier(.16,.84,.32,1), box-shadow 0.4s ease;
+    }
+    .flyer-image:hover {
+      transform: translateY(-4px) scale(1.005);
+      box-shadow: 0 24px 50px rgba(229,20,0,0.25), 0 4px 12px rgba(0,0,0,0.5);
     }
 
     /* Partnership title block */
@@ -504,8 +524,8 @@
 
   <header>
     <img src="IMG_6531.png" alt="Weekend Warriors Wrestling Club Logo" class="logo">
-    <h1>Winter Session 26-27 Sign Ups</h1>
-    <p>Weekend Warriors Wrestling Club X Wethersfield Youth Wrestling Club Partnership</p>
+    <h1>2026 Summer Session Sign Ups</h1>
+    <p>Wethersfield Weekend Warriors WC · Become a Warrior</p>
   </header>
 
   <nav>
@@ -513,7 +533,7 @@
     <a href="about.html">About</a>
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
-    <a href="winter-signups.html" class="winter-reg-btn active" aria-current="page">Winter Registration</a>
+    <a href="winter-signups.html" class="winter-reg-btn active" aria-current="page">2026 Summer Session</a>
     <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
       <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
@@ -540,52 +560,66 @@
     </div>
 
     <div class="partnership-title">
-      <h2><span>❄️</span> Winter 2026-2027 Partnership <span>❄️</span></h2>
-      <p>Weekend Warriors Wrestling Club × Wethersfield Youth Wrestling Club</p>
+      <h2>2026 Summer Session</h2>
+      <p>Youth Wrestling · Beginners Welcome · Grow in the Offseason</p>
+    </div>
+
+    <!-- Official Flyer -->
+    <div class="flyer-container" data-testid="summer-flyer">
+      <img src="media/summer-2026-flyer.png" alt="Weekend Warriors WC 2026 Summer Session Flyer" class="flyer-image" />
     </div>
 
     <!-- Program Information -->
     <div class="program-info-container">
       <div class="program-header">
-        <h2>Late November 2026 to Early March 2027</h2>
+        <h2>July 6<sup>th</sup> - August 26<sup>th</sup>, 2026</h2>
         <p class="grades">Grades 4<sup>th</sup>-8<sup>th</sup></p>
         <p class="location">@ Wethersfield High School Wrestling Room</p>
       </div>
 
-      <div class="program-options">
-        <!-- Non-Competitive Program -->
+      <div class="program-options" style="grid-template-columns: 1fr;">
         <div class="program-card">
-          <h3>WWWC NON-COMPETITIVE BEGINNER BASICS AND FUNDAMENTAL SKILLS TRAINING:</h3>
-          <p class="price-highlight">$120 Includes Team T-Shirt and USA Wrestling Card</p>
+          <h3>Weekend Warriors WC Summer Session</h3>
+          <p class="price-highlight">$125 - Includes Team T-Shirt</p>
           <div class="schedule-info">
             <p><strong>PRACTICE SCHEDULE</strong></p>
-            <p>To be announced</p>
-          </div>
-        </div>
-
-        <!-- Competition Team -->
-        <div class="program-card">
-          <h3>WETHERSFIELD WEEKEND WARRIORS COMPETITION TEAM:</h3>
-          <p class="price-highlight">$150 Includes Team Performance T Shirt and USA Wrestling Card</p>
-          <div class="schedule-info">
-            <p><strong>PRACTICE SCHEDULE</strong></p>
-            <p>To be announced</p>
-            <p><strong>SUNDAY TOURNAMENTS</strong></p>
+            <p>Mondays &amp; Wednesdays · 3:30 - 5:00 PM</p>
+            <p style="margin-top: 0.85rem;"><strong>LOCATION</strong></p>
+            <p>Wethersfield High School Wrestling Room</p>
+            <p style="margin-top: 0.85rem;"><strong>GREAT FOR</strong></p>
+            <p>Beginners and experienced wrestlers looking to stay sharp through the offseason.</p>
           </div>
         </div>
       </div>
 
       <div class="important-note">
-        <p>***USA WRESTLING CARD IS REQUIRED***</p>
+        <p>***USA WRESTLING CARD IS REQUIRED*** ($50 ADDITIONAL IF NOT AVAILABLE)</p>
+      </div>
+
+      <div class="important-note" style="background: rgba(229,20,0,0.05); border-color: var(--ww-line-2); margin-top: 0.5rem;">
+        <p style="color: #fff; font-size: 0.95rem; letter-spacing: 0.04em;">Open to Wethersfield residents only at this time</p>
       </div>
 
       <div class="add-ons">
         <h3>ADD ons:</h3>
         <ul>
-          <li>Extra Team T Shirt <span class="addon-price">$20</span></li>
-          <li>Extra Team Performance T-Shirt <span class="addon-price">$25</span></li>
-          <li>Team Hooded Sweat Shirt <span class="addon-price">$40</span></li>
-          <li>Competition Singlet <span class="addon-price">$65</span></li>
+          <li>Extra Team T-Shirt <span class="addon-price">$20</span></li>
+          <li>Team Hooded Sweatshirt <span class="addon-price">$40</span></li>
+          <li>USA Wrestling Card (if not already active) <span class="addon-price">$50</span></li>
+        </ul>
+      </div>
+
+      <div class="add-ons" style="margin-top: 1.25rem;">
+        <h3>To Register Contact:</h3>
+        <ul style="grid-template-columns: 1fr 1fr;">
+          <li>
+            <span>Tony DeCato</span>
+            <a href="tel:8603368969" class="addon-price" style="text-decoration:none;">860-336-8969</a>
+          </li>
+          <li>
+            <span>Email</span>
+            <a href="mailto:WeekendWarriorsWC@yahoo.com" class="addon-price" style="text-decoration:none; word-break:break-all; font-size:0.95rem;">WeekendWarriorsWC@yahoo.com</a>
+          </li>
         </ul>
       </div>
     </div>

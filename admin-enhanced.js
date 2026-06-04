@@ -916,8 +916,8 @@ async function loadRegistrationsTab() {
   const container = $('tab-registrations');
   container.innerHTML = `
     <div class="content-card">
-      <h2>25-26 Winter Season Sign-Ups</h2>
-      <p class="note">Partnership with Wethersfield Youth Wrestling Club - View all registrations</p>
+      <h2>2026 Summer Session Sign-Ups</h2>
+      <p class="note">July 6 - August 26, 2026 · Mondays & Wednesdays 3:30-5 PM @ Wethersfield High School Wrestling Room · View all registrations</p>
       <div class="table-container">
         <table class="admin-list">
           <thead>
