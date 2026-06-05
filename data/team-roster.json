@@ -1,21 +1,5 @@
 [
   {
-    "parent_name": "Toni LaCava",
-    "wrestler_name": "Jordan",
-    "wrestler_dob": "2011-10-10",
-    "wrestler_grade": "8th",
-    "wrestler_weight": "160",
-    "phone": "8602443029",
-    "email": "tlacava90@gmail.com",
-    "address": "296 Wolcott Hill Rd",
-    "town": "WETHERSFIELD",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-28T17:43:30.268Z",
-    "submitted_at": "2025-11-28T17:43:30.268Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
-  },
-  {
     "parent_name": "Katie Lam",
     "wrestler_name": "Alexander Vo",
     "wrestler_dob": "2017-06-29",
@@ -29,6 +13,22 @@
     "waiver_acknowledged_at": "2025-11-14T16:21:23.260Z",
     "submitted_at": "2025-11-14T16:21:23.260Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Brianna Herold",
+    "wrestler_name": "William Flynn",
+    "wrestler_dob": "2015-05-26",
+    "wrestler_grade": "5th",
+    "wrestler_weight": "66",
+    "phone": "8608747709",
+    "email": "briannamherold@gmail.com",
+    "address": "227 Griswold Road",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-23T00:22:53.400Z",
+    "submitted_at": "2025-11-23T00:22:53.400Z",
+    "on_team": false,
+    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Dillon Somma",
