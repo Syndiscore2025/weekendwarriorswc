@@ -4,5 +4,11 @@
     "time": "5:00 PM - 6:30 PM",
     "group": "All Groups",
     "start_date": "2025-12-04"
+  },
+  {
+    "day": "Monday",
+    "time": "3:30 PM - 5:00 PM",
+    "group": "Summer",
+    "start_date": "2026-07-06"
   }
 ]
