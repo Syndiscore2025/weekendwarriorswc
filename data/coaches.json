@@ -8,5 +8,15 @@
     "phone": "860-336-8969",
     "email": "WeekendWarriorsWC@yahoo.com",
     "order": 1
+  },
+  {
+    "id": 2,
+    "name": "Alison Figueroa",
+    "role": "Assistant Coach",
+    "bio": "Alison FInished third in her conference last season for Wethersfield High School and is a top ranked girls wrestler heading into the 2026-2027 season",
+    "phone": "",
+    "email": "",
+    "order": 2,
+    "photo": "media/coach-alison-figueroa-1780659498064.png"
   }
 ]
