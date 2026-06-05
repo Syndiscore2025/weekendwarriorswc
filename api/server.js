@@ -436,6 +436,38 @@ app.post('/upload', async (req, res) => {
   }
 });
 
+// Generic load endpoint - reads fresh from GitHub (source of truth)
+// The deployed static site lags behind commits by a few minutes, so the admin
+// panel reads through this endpoint to stay instantly consistent with writes.
+app.get('/load', async (req, res) => {
+  try {
+    const file = req.query.file;
+
+    if (!file) {
+      return res.status(400).json({ success: false, error: 'Missing file' });
+    }
+
+    const { data } = await octokit.repos.getContent({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      path: file,
+      ref: REPO_BRANCH,
+      headers: { 'If-None-Match': '' },
+    });
+
+    const content = Buffer.from(data.content, 'base64').toString('utf-8');
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.type('application/json').send(content);
+  } catch (error) {
+    if (error.status === 404) {
+      return res.status(404).json({ success: false, error: 'File not found' });
+    }
+    console.error('Load error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });

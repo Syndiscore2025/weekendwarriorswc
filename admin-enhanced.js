@@ -74,11 +74,20 @@ async function saveData(file, content, retries = 2) {
   }
 }
 
-// Helper function to load JSON data with retry logic
+// Helper function to load JSON data with retry logic.
+// Reads through the API's /load endpoint, which pulls fresh from GitHub (the
+// source of truth). This avoids the stale-read race where the deployed static
+// site hasn't rebuilt yet after a save, making changes appear to "revert".
 async function loadJSON(file, retries = 2) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(cacheBust(`data/${file}`));
+      const res = await fetch(`${API_URL}/load?file=data/${file}&_=${Date.now()}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+      if (res.status === 404) return null;
       if (!res.ok) throw new Error(`Failed to load ${file}`);
       return await res.json();
     } catch (e) {
@@ -111,10 +120,9 @@ function init() {
     if (authError) authError.textContent = '';
 
     try {
-      const res = await fetch('data/admin-password.json');
-      const data = await res.json();
+      const data = await loadJSON('admin-password.json');
 
-      if (password === data.password) {
+      if (data && password === data.password) {
         sessionStorage.setItem('admin-auth', 'true');
         showDashboard();
       } else {
@@ -4224,9 +4232,7 @@ async function loadCoachesList() {
   const tbody = $('coaches-list');
   if (!tbody) return;
   try {
-    const res = await fetch(cacheBust('data/coaches.json'));
-    let coaches = [];
-    if (res.ok) coaches = await res.json();
+    let coaches = await loadJSON('coaches.json') || [];
     if (!Array.isArray(coaches)) coaches = [];
 
     coaches.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
@@ -4298,9 +4304,7 @@ async function handleAddCoach() {
   status.style.color = '#4db8ff';
 
   try {
-    const res = await fetch(cacheBust('data/coaches.json'));
-    let coaches = [];
-    if (res.ok) coaches = await res.json();
+    let coaches = await loadJSON('coaches.json') || [];
     if (!Array.isArray(coaches)) coaches = [];
 
     // Upload photo if a new one was selected
@@ -4360,8 +4364,7 @@ async function handleAddCoach() {
 
 window.editCoach = async function(id) {
   try {
-    const res = await fetch(cacheBust('data/coaches.json'));
-    const coaches = await res.json();
+    const coaches = await loadJSON('coaches.json') || [];
     const c = (coaches || []).find(x => x.id === id);
     if (!c) return alert('Coach not found');
 
@@ -4394,9 +4397,7 @@ window.deleteCoach = async function(id) {
     status.textContent = 'Deleting...';
     status.style.color = '#4db8ff';
 
-    const res = await fetch(cacheBust('data/coaches.json'));
-    let coaches = [];
-    if (res.ok) coaches = await res.json();
+    let coaches = await loadJSON('coaches.json') || [];
     coaches = (coaches || []).filter(c => c.id !== id);
 
     const saveRes = await saveData('data/coaches.json', JSON.stringify(coaches, null, 2));
