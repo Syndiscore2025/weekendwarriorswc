@@ -14,7 +14,8 @@
     /* Hide snowflakes container completely */
     #snowflakes-container, .snowflake { display: none !important; }
 
-    body { background: var(--ww-bg) !important; }
+    body { background: var(--ww-bg) !important; overflow-x: hidden; }
+    html { overflow-x: hidden; }
     body::before { display: block; } /* keep base noise */
 
     /* Header overrides - single-logo centered layout for this page */
@@ -304,6 +305,62 @@
       letter-spacing: 0.04em;
     }
 
+    /* Contact block (replaces add-ons style for contact info) */
+    .contact-block {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.4rem;
+      background: var(--ww-bg);
+      border: 1px solid var(--ww-line);
+      border-left: 3px solid var(--ww-red);
+    }
+    .contact-block h3 {
+      font-family: var(--ww-font-display);
+      color: #fff;
+      font-size: 1.05rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .contact-block-items {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.5rem;
+    }
+    .contact-block-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+    .contact-block-label {
+      font-family: var(--ww-font-body);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ww-text-mute);
+    }
+    .contact-block-value {
+      font-family: var(--ww-font-body);
+      font-weight: 600;
+      color: #fff;
+      font-size: 1rem;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    .contact-block-value:hover {
+      color: var(--ww-red);
+      border-bottom-color: var(--ww-red);
+    }
+    .contact-block-email { font-size: 0.95rem; }
+    @media (max-width: 600px) {
+      .contact-block-items { grid-template-columns: 1fr; }
+      .contact-block-email { font-size: 0.9rem; }
+    }
+
     /* Sign up form */
     .signup-form-container {
       max-width: 900px;
@@ -544,20 +601,15 @@
   <div id="snowflakes-container"></div>
 
   <section style="position: relative; z-index: 2;">
-    <!-- Logo Animation -->
+    <!-- Logo Animation commented out per user request -->
+    <!--
     <div class="logo-animation-container">
-      <div class="logo-wrapper" id="wwwc-logo">
-        <img src="IMG_6531.png" alt="Weekend Warriors Logo">
-      </div>
-      <div class="logo-wrapper" id="wywc-logo">
-        <img src="IMG_6549-Picsart-BackgroundRemover.jpeg" alt="Wethersfield Wrestling Logo">
-      </div>
-      <!-- Explosion flash effect -->
+      <div class="logo-wrapper" id="wwwc-logo"><img src="IMG_6531.png" alt="Weekend Warriors Logo"></div>
+      <div class="logo-wrapper" id="wywc-logo"><img src="IMG_6549-Picsart-BackgroundRemover.jpeg" alt="Wethersfield Wrestling Logo"></div>
       <div class="explosion-flash"></div>
-      <div class="logo-wrapper" id="combined-logo">
-        <img src="IMG_6550-Picsart-BackgroundRemover.jpeg" alt="Eagle Warrior Combined Logo">
-      </div>
+      <div class="logo-wrapper" id="combined-logo"><img src="IMG_6550-Picsart-BackgroundRemover.jpeg" alt="Eagle Warrior Combined Logo"></div>
     </div>
+    -->
 
     <div class="partnership-title">
       <h2>2026 Summer Session</h2>
@@ -572,8 +624,8 @@
     <!-- Program Information -->
     <div class="program-info-container">
       <div class="program-header">
-        <h2>July 6<sup>th</sup> - August 26<sup>th</sup>, 2026</h2>
-        <p class="grades">Grades 4<sup>th</sup>-8<sup>th</sup></p>
+        <h2>July 6 - August 26, 2026</h2>
+        <p class="grades">Grades 4-8</p>
         <p class="location">@ Wethersfield High School Wrestling Room</p>
       </div>
 
@@ -600,27 +652,18 @@
         <p style="color: #fff; font-size: 0.95rem; letter-spacing: 0.04em;">Open to Wethersfield residents only at this time</p>
       </div>
 
-      <div class="add-ons">
-        <h3>ADD ons:</h3>
-        <ul>
-          <li>Extra Team T-Shirt <span class="addon-price">$20</span></li>
-          <li>Team Hooded Sweatshirt <span class="addon-price">$40</span></li>
-          <li>USA Wrestling Card (if not already active) <span class="addon-price">$50</span></li>
-        </ul>
-      </div>
-
-      <div class="add-ons" style="margin-top: 1.25rem;">
-        <h3>To Register Contact:</h3>
-        <ul style="grid-template-columns: 1fr 1fr;">
-          <li>
-            <span>Tony DeCato</span>
-            <a href="tel:8603368969" class="addon-price" style="text-decoration:none;">860-336-8969</a>
-          </li>
-          <li>
-            <span>Email</span>
-            <a href="mailto:WeekendWarriorsWC@yahoo.com" class="addon-price" style="text-decoration:none; word-break:break-all; font-size:0.95rem;">WeekendWarriorsWC@yahoo.com</a>
-          </li>
-        </ul>
+      <div class="contact-block">
+        <h3>To Register, Contact:</h3>
+        <div class="contact-block-items">
+          <div class="contact-block-item">
+            <span class="contact-block-label">Tony DeCato</span>
+            <a href="tel:8603368969" class="contact-block-value">860-336-8969</a>
+          </div>
+          <div class="contact-block-item">
+            <span class="contact-block-label">Email</span>
+            <a href="mailto:WeekendWarriorsWC@yahoo.com" class="contact-block-value contact-block-email">WeekendWarriorsWC@yahoo.com</a>
+          </div>
+        </div>
       </div>
     </div>
 
