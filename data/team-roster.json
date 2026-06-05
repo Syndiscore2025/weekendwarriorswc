@@ -1,18 +1,1 @@
-[
-  {
-    "parent_name": "Amy Stoto",
-    "wrestler_name": "Joseph Stoto",
-    "wrestler_dob": "2013-02-19",
-    "wrestler_grade": "7th",
-    "wrestler_weight": "96",
-    "phone": "8605504347",
-    "email": "amy.stoto@gmail.com",
-    "address": "87 Park Ave",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-16T21:12:34.449Z",
-    "submitted_at": "2025-11-16T21:12:34.449Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
-  }
-]
+[]
