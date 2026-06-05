@@ -142,7 +142,7 @@
               video.playsInline = true;
               div.appendChild(video);
             } else {
-              div.style.backgroundImage = `url('${slide.url}')`;
+              div.style.setProperty('--slide-img', `url('${slide.url}')`);
             }
 
             if (slide.caption) {

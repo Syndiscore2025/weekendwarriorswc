@@ -456,6 +456,53 @@ async function loadSlides() {
   });
 }
 
+// Resize an uploaded image to a square so the WHOLE photo fits inside the
+// circular slideshow (no awkward cropping of heads/feet). Empty space is
+// filled with a blurred version of the same image for a clean look.
+function processSlideImage(file, size = 1080) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // Blurred "cover" background fill
+        const coverScale = Math.max(size / img.width, size / img.height);
+        const bgW = img.width * coverScale;
+        const bgH = img.height * coverScale;
+        ctx.filter = 'blur(24px)';
+        ctx.drawImage(img, (size - bgW) / 2, (size - bgH) / 2, bgW, bgH);
+        ctx.filter = 'none';
+
+        // Dark overlay so the blurred background stays subtle
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.45)';
+        ctx.fillRect(0, 0, size, size);
+
+        // Full image "contain" on top, centered - nothing gets cropped
+        const fitScale = Math.min(size / img.width, size / img.height);
+        const fgW = img.width * fitScale;
+        const fgH = img.height * fitScale;
+        ctx.drawImage(img, (size - fgW) / 2, (size - fgH) / 2, fgW, fgH);
+
+        URL.revokeObjectURL(objectUrl);
+        resolve(canvas.toDataURL('image/jpeg', 0.9).split(',')[1]);
+      } catch (e) {
+        URL.revokeObjectURL(objectUrl);
+        reject(e);
+      }
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Could not load image for resizing'));
+    };
+    img.src = objectUrl;
+  });
+}
+
 async function handleAddSlide() {
   const files = $('slide-file').files;
   const caption = $('slide-caption').value.trim();
@@ -473,18 +520,29 @@ async function handleAddSlide() {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const fileName = `slide-${Date.now()}-${i}-${file.name}`;
-      const url = `media/${fileName}`;
       const type = file.type.startsWith('video') ? 'video' : 'image';
+      const baseName = file.name.replace(/\.[^/.]+$/, '');
+      const fileName = type === 'image'
+        ? `slide-${Date.now()}-${i}-${baseName}.jpg`
+        : `slide-${Date.now()}-${i}-${file.name}`;
+      const url = `media/${fileName}`;
+
+      status.textContent = `Processing ${i + 1}/${files.length}: ${file.name}...`;
+
+      let base64;
+      if (type === 'image') {
+        // Auto-resize images so the full photo fits the circular frame
+        base64 = await processSlideImage(file, 1080);
+      } else {
+        base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
 
       status.textContent = `Uploading ${i + 1}/${files.length}: ${file.name}...`;
-
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
 
       await fetch(`${API_URL}/upload`, {
         method: 'POST',
