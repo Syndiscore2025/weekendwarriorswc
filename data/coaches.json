@@ -18,5 +18,15 @@
     "email": "",
     "order": 2,
     "photo": "media/coach-alison-figueroa-1780659498064.png"
+  },
+  {
+    "id": 3,
+    "name": "Yanuel Santos",
+    "role": "Assistant Coach",
+    "bio": "Yanuel, a recent grad of Wethersfield High School was a multi-tournament placer during his time with the team. Winning over 25 matches as a senior and has enrolled to continue his wrestling career at Springfield Technical Community Colllege in the fall of 2026. Yanuel has been an assistant coach with the youth program since 2024",
+    "phone": "",
+    "email": "",
+    "order": 3,
+    "photo": "media/coach-yanuel-santos-1780659748779.png"
   }
 ]
