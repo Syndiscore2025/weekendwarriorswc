@@ -16,6 +16,21 @@
     "team_group": "Competiton Group"
   },
   {
+    "parent_name": "Katie Lam",
+    "wrestler_name": "Alexander Vo",
+    "wrestler_dob": "2017-06-29",
+    "wrestler_grade": "4th",
+    "wrestler_weight": "65",
+    "phone": "8609225970",
+    "email": "katielam91@gmail.com",
+    "address": "35 Ridge Crest Cir",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-14T16:21:23.260Z",
+    "submitted_at": "2025-11-14T16:21:23.260Z",
+    "on_team": false
+  },
+  {
     "parent_name": "Brianna Herold",
     "wrestler_name": "William Flynn",
     "wrestler_dob": "2015-05-26",
@@ -44,22 +59,6 @@
     "waiver_acknowledged": true,
     "waiver_acknowledged_at": "2025-12-02T00:21:01.982Z",
     "submitted_at": "2025-12-02T00:21:01.982Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
-  },
-  {
-    "parent_name": "David Sena",
-    "wrestler_name": "ZACHARY Sena",
-    "wrestler_dob": "2015-02-19",
-    "wrestler_grade": "5th",
-    "wrestler_weight": "150",
-    "phone": "8604246860",
-    "email": "dsena4@yahoo.com",
-    "address": "20 Meadow View dr.",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-30T17:31:37.988Z",
-    "submitted_at": "2025-11-30T17:31:37.990Z",
     "on_team": false,
     "team_group": "Competiton Group"
   },
