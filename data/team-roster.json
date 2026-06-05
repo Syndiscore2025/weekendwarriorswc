@@ -79,22 +79,6 @@
     "team_group": "Competiton Group"
   },
   {
-    "parent_name": "Shannon Seeley",
-    "wrestler_name": "Kane Seeley",
-    "wrestler_dob": "2014-08-01",
-    "wrestler_grade": "6th",
-    "wrestler_weight": "100",
-    "phone": "8607346593",
-    "email": "mrsseeley143@gmail.com",
-    "address": "118 two brook rd",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-12-10T00:10:09.734Z",
-    "submitted_at": "2025-12-10T00:10:09.734Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
-  },
-  {
     "parent_name": "Matthew Campbell",
     "wrestler_name": "Bryce campbell",
     "wrestler_dob": "2013-11-05",
