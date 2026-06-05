@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "parent_name": "Michael Horak",
+    "wrestler_name": "Brayden Horak",
+    "wrestler_dob": "0001-01-01",
+    "wrestler_grade": "8th",
+    "wrestler_weight": "399",
+    "phone": "5959599599595945",
+    "email": "syndiscore@gmail.com",
+    "address": "101 Oxford Street",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-06-05T11:21:54.459Z",
+    "submitted_at": "2026-06-05T11:21:54.459Z",
+    "on_team": false
+  }
+]
