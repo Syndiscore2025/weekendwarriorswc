@@ -1,5 +1,21 @@
 [
   {
+    "parent_name": "Peter Giammarco",
+    "wrestler_name": "Michael Giammarco",
+    "wrestler_dob": "2014-11-26",
+    "wrestler_grade": "5th",
+    "wrestler_weight": "86",
+    "phone": "8603066000",
+    "email": "p.n.giammarco@gmail.com",
+    "address": "120 Surrey Drive",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-14T12:31:56.991Z",
+    "submitted_at": "2025-11-14T12:31:56.994Z",
+    "on_team": false,
+    "team_group": "Competiton Group"
+  },
+  {
     "parent_name": "Toni LaCava",
     "wrestler_name": "Jordan",
     "wrestler_dob": "2011-10-10",
@@ -29,22 +45,6 @@
     "waiver_acknowledged_at": "2025-11-14T16:21:23.260Z",
     "submitted_at": "2025-11-14T16:21:23.260Z",
     "on_team": false
-  },
-  {
-    "parent_name": "Brianna Herold",
-    "wrestler_name": "William Flynn",
-    "wrestler_dob": "2015-05-26",
-    "wrestler_grade": "5th",
-    "wrestler_weight": "66",
-    "phone": "8608747709",
-    "email": "briannamherold@gmail.com",
-    "address": "227 Griswold Road",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-23T00:22:53.400Z",
-    "submitted_at": "2025-11-23T00:22:53.400Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
   },
   {
     "parent_name": "Dillon Somma",
