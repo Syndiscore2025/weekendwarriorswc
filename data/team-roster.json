@@ -1,21 +1,5 @@
 [
   {
-    "parent_name": "Peter Giammarco",
-    "wrestler_name": "Michael Giammarco",
-    "wrestler_dob": "2014-11-26",
-    "wrestler_grade": "5th",
-    "wrestler_weight": "86",
-    "phone": "8603066000",
-    "email": "p.n.giammarco@gmail.com",
-    "address": "120 Surrey Drive",
-    "town": "Wethersfield",
-    "waiver_acknowledged": true,
-    "waiver_acknowledged_at": "2025-11-14T12:31:56.991Z",
-    "submitted_at": "2025-11-14T12:31:56.994Z",
-    "on_team": false,
-    "team_group": "Competiton Group"
-  },
-  {
     "parent_name": "Toni LaCava",
     "wrestler_name": "Jordan",
     "wrestler_dob": "2011-10-10",
@@ -77,6 +61,21 @@
     "submitted_at": "2025-11-30T17:31:37.990Z",
     "on_team": false,
     "team_group": "Competiton Group"
+  },
+  {
+    "parent_name": "Krista torres",
+    "wrestler_name": "Xavier peltz",
+    "wrestler_dob": "2013-02-12",
+    "wrestler_grade": "7th",
+    "wrestler_weight": "85",
+    "phone": "8608366709",
+    "email": "torresbae85@gmail.com",
+    "address": "28 chamberlain rd",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2025-11-16T23:43:14.682Z",
+    "submitted_at": "2025-11-16T23:43:14.682Z",
+    "on_team": false
   },
   {
     "parent_name": "Amy Stoto",
