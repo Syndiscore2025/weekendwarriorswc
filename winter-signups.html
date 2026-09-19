@@ -513,18 +513,30 @@
       box-shadow: none !important;
     }
 
-    /* Success */
+    /* Success popup overlay */
     .success-message {
       display: none;
-      max-width: 700px;
-      margin: 2rem auto 0;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .success-message.show { display: flex; }
+    .success-box {
+      max-width: 520px;
+      width: 100%;
       background: var(--ww-surface);
       border: 1px solid #10B981;
-      border-left: 4px solid #10B981;
-      padding: 2rem;
+      border-top: 4px solid #10B981;
+      padding: 2.5rem 2rem;
       text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
     }
-    .success-message .checkmark { font-size: 2.5rem; }
+    .success-message .checkmark { font-size: 3rem; }
     .success-message h3 {
       font-family: var(--ww-font-display);
       color: #10B981;
@@ -534,6 +546,26 @@
       margin: 0.5rem 0 1rem;
     }
     .success-message p { color: var(--ww-text-mute); margin-bottom: 0.5rem; }
+    .success-home-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.95rem 2.2rem;
+      background: var(--ww-red);
+      color: #fff;
+      border: none;
+      font-family: var(--ww-font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .success-home-btn:hover {
+      background: var(--ww-red-hot);
+      transform: translate(-3px,-3px);
+      box-shadow: 6px 6px 0 #000;
+    }
 
     /* USA membership button on this page - reuse global nav style */
     .usa-membership-btn {
@@ -853,11 +885,13 @@
     </div>
 
       <div class="success-message" id="success-message">
-        <span class="checkmark">✅</span>
-        <h3>Thank You for Registering!</h3>
-        <p>Your registration has been submitted successfully.</p>
-        <p>Someone from our team will be reaching out to you soon with more information.</p>
-        <p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.8;">Redirecting to homepage in <span id="countdown">5</span> seconds...</p>
+        <div class="success-box">
+          <span class="checkmark">✅</span>
+          <h3>Registration Successful!</h3>
+          <p>Your registration has been submitted successfully.</p>
+          <p>Someone from our team will be reaching out to you soon with more information.</p>
+          <a href="index.html" class="success-home-btn">Return to Home Page</a>
+        </div>
       </div>
     </div>
   </section>
@@ -945,6 +979,13 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // Enforce waiver agreement before allowing registration
+      const waiverBox = document.getElementById('waiver-checkbox');
+      if (!waiverBox || !waiverBox.checked) {
+        alert('⚠️ Please read and agree to the liability waiver before submitting your registration.');
+        return;
+      }
+
       const submitBtn = form.querySelector('.submit-btn');
       const originalBtnText = submitBtn.textContent;
       submitBtn.textContent = 'Submitting...';
@@ -1009,31 +1050,14 @@
         if (result.success) {
           console.log('🎉 Registration successful!');
 
-          // Show success message
-          successMessage.classList.add('show');
+          // Reset form and show success popup with return-to-home button
           form.reset();
-
-          // Scroll to success message
-          successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          // Countdown timer
-          let countdown = 5;
-          const countdownElement = document.getElementById('countdown');
-
-          const countdownInterval = setInterval(() => {
-            countdown--;
-            if (countdownElement) {
-              countdownElement.textContent = countdown;
-            }
-            if (countdown <= 0) {
-              clearInterval(countdownInterval);
-            }
-          }, 1000);
-
-          // Redirect to main site after 5 seconds
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 5000);
+          submitBtn.textContent = originalBtnText;
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+          submitBtn.style.cursor = 'not-allowed';
+          successMessage.classList.add('show');
+          document.body.style.overflow = 'hidden';
         } else {
           console.error('❌ Save failed:', result.error);
           alert('❌ Error submitting registration: ' + (result.error || 'Unknown error'));
