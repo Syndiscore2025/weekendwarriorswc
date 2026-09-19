@@ -13,5 +13,20 @@
     "waiver_acknowledged_at": "2026-09-19T11:41:55.886Z",
     "submitted_at": "2026-09-19T11:41:55.887Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Michael Horak",
+    "wrestler_name": "Brayden Horak TEST2",
+    "wrestler_dob": "2012-03-05",
+    "wrestler_grade": "8th",
+    "wrestler_weight": "400",
+    "phone": "8609229875",
+    "email": "syndiscore@gmail.com",
+    "address": "101 Oxford Street",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-09-19T11:50:34.109Z",
+    "submitted_at": "2026-09-19T11:50:34.109Z",
+    "on_team": false
   }
 ]
