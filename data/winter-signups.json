@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "parent_name": "Chantelle",
+    "wrestler_name": "Penelope Soto",
+    "wrestler_dob": "2015-04-02",
+    "wrestler_grade": "6th",
+    "wrestler_weight": "110",
+    "phone": "8609444874",
+    "email": "cvillanueva0801@gmail.com",
+    "address": "12 Mitchell Ct",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-09-24T13:09:33.151Z",
+    "submitted_at": "2026-09-24T13:09:33.151Z",
+    "on_team": false
+  }
+]
