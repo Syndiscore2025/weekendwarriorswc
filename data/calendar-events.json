@@ -4,5 +4,11 @@
     "time": "5:00 PM AM - 6:30 PM AM",
     "group": "Wethersfield",
     "start_date": "11/29/26"
+  },
+  {
+    "day": "Wednesday",
+    "time": "5:00 PM AM - 6:30 PM AM",
+    "group": "Wethersfield 3rd-8th",
+    "start_date": "12/1/26"
   }
 ]
