@@ -13,5 +13,20 @@
     "waiver_acknowledged_at": "2026-09-24T13:09:33.151Z",
     "submitted_at": "2026-09-24T13:09:33.151Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Jason Rosa",
+    "wrestler_name": "Justin Rosa",
+    "wrestler_dob": "2016-07-28",
+    "wrestler_grade": "5th",
+    "wrestler_weight": "115",
+    "phone": "(203)  525-8555",
+    "email": "jtrosa@gmail.com",
+    "address": "2 Webber Rd",
+    "town": "Rocky Hill",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-14T12:38:06.576Z",
+    "submitted_at": "2026-10-14T12:38:06.580Z",
+    "on_team": false
   }
 ]
