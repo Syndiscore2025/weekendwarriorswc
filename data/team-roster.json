@@ -13,5 +13,20 @@
     "waiver_acknowledged_at": "2026-09-24T13:09:33.151Z",
     "submitted_at": "2026-09-24T13:09:33.151Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Antonio Garcia",
+    "wrestler_name": "Aiden Garcia",
+    "wrestler_dob": "2017-02-23",
+    "wrestler_grade": "4th",
+    "wrestler_weight": "88",
+    "phone": "8609518892",
+    "email": "tonegarcia1250@gmail.com",
+    "address": "118 Stillwold Dr",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-15T01:21:39.136Z",
+    "submitted_at": "2026-10-15T01:21:39.136Z",
+    "on_team": false
   }
 ]
