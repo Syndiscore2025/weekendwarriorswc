@@ -43,5 +43,20 @@
     "waiver_acknowledged_at": "2026-10-15T01:21:39.136Z",
     "submitted_at": "2026-10-15T01:21:39.136Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Khang Vo",
+    "wrestler_name": "Alexander Vo",
+    "wrestler_dob": "2019-06-29",
+    "wrestler_grade": "4th",
+    "wrestler_weight": "69",
+    "phone": "8607266898",
+    "email": "katielam91@gmail.com",
+    "address": "35 Ridge Crest Cir",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-16T18:51:49.538Z",
+    "submitted_at": "2026-10-16T18:51:49.538Z",
+    "on_team": false
   }
 ]
