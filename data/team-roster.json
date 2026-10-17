@@ -58,5 +58,20 @@
     "waiver_acknowledged_at": "2026-10-16T18:51:49.538Z",
     "submitted_at": "2026-10-16T18:51:49.538Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Tony Stoto",
+    "wrestler_name": "Joseph Stoto",
+    "wrestler_dob": "2013-02-19",
+    "wrestler_grade": "8th",
+    "wrestler_weight": "120",
+    "phone": "8605504348",
+    "email": "stoto.tony@gmail.com",
+    "address": "87 Park Ave",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-15T21:18:58.808Z",
+    "submitted_at": "2026-10-15T21:18:58.808Z",
+    "on_team": false
   }
 ]
