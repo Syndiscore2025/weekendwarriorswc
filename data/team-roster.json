@@ -73,5 +73,20 @@
     "waiver_acknowledged_at": "2026-10-15T21:18:58.808Z",
     "submitted_at": "2026-10-15T21:18:58.808Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Peter Giammarco",
+    "wrestler_name": "Mike Giammarco",
+    "wrestler_dob": "2014-11-26",
+    "wrestler_grade": "6th",
+    "wrestler_weight": "90",
+    "phone": "8603066000",
+    "email": "P.N.Giammarco@gmail.com",
+    "address": "120 Surrey Drive",
+    "town": "Wethersfield, CT",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-22T20:42:40.815Z",
+    "submitted_at": "2026-10-22T20:42:40.824Z",
+    "on_team": false
   }
 ]
