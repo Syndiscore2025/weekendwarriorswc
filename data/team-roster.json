@@ -88,5 +88,20 @@
     "waiver_acknowledged_at": "2026-10-22T20:42:40.815Z",
     "submitted_at": "2026-10-22T20:42:40.824Z",
     "on_team": false
+  },
+  {
+    "parent_name": "Michael Gatto",
+    "wrestler_name": "Liam Gatto",
+    "wrestler_dob": "2014-06-13",
+    "wrestler_grade": "7th",
+    "wrestler_weight": "97",
+    "phone": "6318066924",
+    "email": "mpgatto@hotmail.com",
+    "address": "137 Cloverdale Circle",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-24T20:50:37.449Z",
+    "submitted_at": "2026-10-24T20:50:37.449Z",
+    "on_team": false
   }
 ]
