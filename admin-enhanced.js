@@ -159,8 +159,29 @@ function init() {
     const signOutBtn = $('sign-out');
     if (signOutBtn) signOutBtn.style.display = 'block';
     initializeTabs();
+    WWRegAdmin.getHiddenAdminSections('admin_enhanced_hidden_tabs').then(applyHiddenTabs);
     loadAllData();
   }
+}
+
+// Hide dashboard tabs the admin turned off (Settings always stays visible)
+function applyHiddenTabs(hiddenTabs) {
+  const tabBtns = Array.from(document.querySelectorAll('.tab-btn'));
+  tabBtns.forEach(btn => {
+    const hidden = btn.dataset.tab !== 'settings' && hiddenTabs.includes(btn.dataset.tab);
+    btn.style.display = hidden ? 'none' : '';
+  });
+  const activeBtn = tabBtns.find(btn => btn.classList.contains('active'));
+  if (activeBtn && activeBtn.style.display === 'none') {
+    const firstVisible = tabBtns.find(btn => btn.style.display !== 'none');
+    if (firstVisible) firstVisible.click();
+  }
+}
+
+function getDashboardTabs() {
+  return Array.from(document.querySelectorAll('.tab-btn'))
+    .filter(btn => btn.dataset.tab !== 'settings')
+    .map(btn => ({ key: btn.dataset.tab, label: btn.textContent.trim() }));
 }
 
 // Tab Management
@@ -976,162 +997,10 @@ async function deleteTournament(index) {
 }
 
 // ============================================================================
-// REGISTRATIONS TAB - Winter Sign-ups
+// REGISTRATIONS TAB - Season manager + one sign-up table per town/season
 // ============================================================================
 async function loadRegistrationsTab() {
-  const container = $('tab-registrations');
-  container.innerHTML = `
-    <div class="content-card">
-      <h2>2026 Summer Session Sign-Ups</h2>
-      <p class="note">July 6 - August 26, 2026 · Mondays & Wednesdays 3:30-5 PM @ Wethersfield High School Wrestling Room · View all registrations</p>
-      <div class="table-container">
-        <table class="admin-list">
-          <thead>
-            <tr>
-              <th>Parent Name</th>
-              <th>Wrestler Name</th>
-              <th>DOB</th>
-              <th>Grade</th>
-              <th>Weight</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Town</th>
-              <th>Submitted</th>
-              <th class="right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="winter-signups-list"></tbody>
-        </table>
-      </div>
-    </div>
-  `;
-
-  await loadWinterSignups();
-}
-
-async function loadWinterSignups() {
-  const data = await loadJSON('winter-signups.json');
-  if (!data) return;
-
-  // Load team roster once to check who's already on the team
-  const roster = await loadJSON('team-roster.json') || [];
-
-  const tbody = $('winter-signups-list');
-  tbody.innerHTML = '';
-
-  data.forEach((signup, i) => {
-    const tr = document.createElement('tr');
-    const submittedDate = new Date(signup.submitted_at).toLocaleDateString();
-
-    // Check if wrestler is already on team roster
-    const onTeam = roster.some(member =>
-      member.wrestler_name === signup.wrestler_name &&
-      member.wrestler_dob === signup.wrestler_dob
-    );
-
-    tr.innerHTML = `
-      <td>${signup.parent_name}</td>
-      <td>${signup.wrestler_name}</td>
-      <td>${signup.wrestler_dob}</td>
-      <td>${signup.wrestler_grade}</td>
-      <td>${signup.wrestler_weight || '-'}</td>
-      <td>${signup.phone}</td>
-      <td>${signup.email}</td>
-      <td>${signup.town || '-'}</td>
-      <td>${submittedDate}</td>
-      <td class='right'>
-        ${!onTeam ? `<button class='success' style="margin-right: 0.5rem;" data-index='${i}'>Add to Team</button>` : '<span style="color: #28a745; font-weight: 600;">✓ On Team</span>'}
-        <button class='danger' data-index='${i}'>Delete</button>
-      </td>
-    `;
-
-    const addBtn = tr.querySelector('.success');
-    if (addBtn) {
-      addBtn.addEventListener('click', () => addToTeam(i));
-    }
-
-    tr.querySelector('.danger').addEventListener('click', () => deleteSignup(i));
-    tbody.appendChild(tr);
-  });
-}
-
-async function addToTeam(index) {
-  const tbody = $('winter-signups-list');
-  const rows = tbody?.querySelectorAll('tr') || [];
-
-  const signups = await loadJSON('winter-signups.json');
-  const signup = signups[index];
-
-  // Add to team roster
-  const roster = await loadJSON('team-roster.json') || [];
-
-  // Check if already on team
-  const alreadyOnTeam = roster.some(member =>
-    member.wrestler_name === signup.wrestler_name &&
-    member.wrestler_dob === signup.wrestler_dob
-  );
-
-  if (alreadyOnTeam) {
-    alert('This wrestler is already on the team roster.');
-    return;
-  }
-
-  roster.push(signup);
-
-  const saveRes = await saveData('data/team-roster.json', JSON.stringify(roster, null, 2));
-  const result = await saveRes.json();
-
-  if (result.success) {
-    alert('✅ Added to team roster!');
-    // Immediately update the button to show "On Team" status
-    if (rows[index]) {
-      const actionCell = rows[index].querySelector('td.right');
-      if (actionCell) {
-        const deleteBtn = actionCell.querySelector('button.danger');
-        actionCell.innerHTML = `<span style="color: #28a745; font-weight: 600;">✓ On Team</span> ${deleteBtn.outerHTML}`;
-        actionCell.querySelector('button.danger').onclick = () => deleteSignup(index);
-      }
-    }
-  }
-}
-
-async function deleteSignup(index) {
-  if (!confirm('Delete this registration?')) return;
-
-  const tbody = $('winter-signups-list');
-  const rows = tbody.querySelectorAll('tr');
-  if (rows[index]) {
-    rows[index].style.opacity = '0.5';
-    rows[index].style.pointerEvents = 'none';
-  }
-
-  try {
-    const signups = await loadJSON('winter-signups.json');
-    signups.splice(index, 1);
-
-    const saveRes = await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
-    const result = await saveRes.json();
-
-    if (result.success) {
-      if (rows[index]) rows[index].remove();
-      tbody.querySelectorAll('tr').forEach((tr, i) => {
-        const btns = tr.querySelectorAll('button');
-        btns.forEach(btn => {
-          if (btn.classList.contains('success')) btn.onclick = () => addToTeam(i);
-          if (btn.classList.contains('danger')) btn.onclick = () => deleteSignup(i);
-        });
-      });
-      alert('✅ Registration deleted successfully!');
-    } else {
-      throw new Error('Save failed');
-    }
-  } catch (err) {
-    if (rows[index]) {
-      rows[index].style.opacity = '1';
-      rows[index].style.pointerEvents = 'auto';
-    }
-    alert('❌ Error deleting registration: ' + err.message);
-  }
+  await WWRegAdmin.renderRegistrations($('tab-registrations'), { teamMode: 'roster' });
 }
 
 // ============================================================================
@@ -3979,6 +3848,8 @@ async function saveSkillAssessment() {
 async function loadSettingsTab() {
   const container = $('tab-settings');
   container.innerHTML = `
+    <div id="sections-manager"></div>
+
     <div class="content-card">
       <h2>Admin Settings</h2>
       <p class="note">Configure system-wide settings including Stripe payment integration</p>
@@ -4060,6 +3931,11 @@ async function loadSettingsTab() {
 
   await loadSettingsData();
   attachSettingsEventListeners();
+  await WWRegAdmin.renderSectionsManager($('sections-manager'), {
+    adminKey: 'admin_enhanced_hidden_tabs',
+    adminSections: getDashboardTabs(),
+    onApply: applyHiddenTabs
+  });
 }
 
 function attachSettingsEventListeners() {

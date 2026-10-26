@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="site-config.js"></script>
   <script src="global-music.js" defer></script>
   <style>
     /* ===== Winter Sign-Ups - Gritty Mat-Room Override ===== */
@@ -53,7 +54,8 @@
     /* Page-specific content uses standard nav/footer */
     nav { background: rgba(10,10,10,0.92); border-color: var(--ww-line); }
     nav a { color: var(--ww-text-mute); }
-    nav a:hover, nav a.active { color: #fff; background: transparent; border: none; }
+    nav a:not(.winter-reg-btn):not(.usa-membership-btn):hover,
+    nav a:not(.winter-reg-btn):not(.usa-membership-btn).active { color: #fff; background: transparent; border: none; }
 
     /* Registration closed banner */
     .registration-closed-banner {
@@ -613,17 +615,18 @@
 
   <header>
     <img src="IMG_6531.png" alt="Wethersfield Weekend Warriors Logo" class="logo">
-    <h1>2026-27 Winter Season Sign Ups</h1>
+    <h1 id="reg-page-title">2026-27 Winter Season Sign Ups</h1>
     <p>Wethersfield Weekend Warriors · Become a Warrior</p>
   </header>
 
   <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="contact.html">Contact</a>
-    <a href="winter-signups.html" class="winter-reg-btn active" aria-current="page">2026-27 Winter Season</a>
-    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer">
+    <a href="index.html" data-testid="nav-home">Home</a>
+    <a href="about.html" data-testid="nav-about">About</a>
+    <a href="schedule.html" data-testid="nav-schedule">Schedule</a>
+    <a href="contact.html" data-testid="nav-contact">Contact</a>
+    <a href="winter-signups.html?program=wethersfield-winter-2026-27" class="winter-reg-btn" style="--reg-color: #1F5FD1;" data-reg-nav data-testid="nav-reg-wethersfield-winter-2026-27">Wethersfield Winter Registration</a>
+    <a href="winter-signups.html?program=winsted-winter-2026-27" class="winter-reg-btn" style="--reg-color: #E51400;" data-reg-nav data-testid="nav-reg-winsted-winter-2026-27">Winsted Winter Registration</a>
+    <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
       <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">USA WRESTLING</span>
       <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px;">Membership</span>
     </a>
@@ -644,44 +647,57 @@
     -->
 
     <div class="partnership-title">
-      <p>Youth Wrestling · Beginners Welcome · Grades 3-8</p>
+      <p id="reg-tagline">Youth Wrestling · Beginners Welcome · Grades 3-8</p>
+    </div>
+
+    <div class="flyer-container" id="reg-flyer" style="display: none;">
+      <img class="flyer-image" id="reg-flyer-img" alt="Registration flyer">
+    </div>
+
+    <!-- Registration closed (shown when the requested registration is not open) -->
+    <div class="program-info-container" id="reg-closed" style="display: none;">
+      <div class="program-header">
+        <h2>Registration Closed</h2>
+        <p class="location">This registration is not currently open.</p>
+      </div>
+      <div id="reg-closed-links" style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;"></div>
     </div>
 
     <!-- Program Information -->
-    <div class="program-info-container">
+    <div class="program-info-container" id="reg-program-info">
       <div class="program-header">
-        <h2>November 29, 2026 - March 7, 2027</h2>
-        <p class="grades">Grades 3-8</p>
-        <p class="location">@ Wethersfield Wrestling Room</p>
+        <h2 id="reg-dates-head">November 29, 2026 - March 7, 2027</h2>
+        <p class="grades" id="reg-grades-head">Grades 3-8</p>
+        <p class="location" id="reg-location-head">@ Wethersfield Wrestling Room</p>
       </div>
 
       <div class="program-options" style="grid-template-columns: 1fr;">
         <div class="program-card">
-          <h3>Wethersfield Weekend Warriors Winter Season</h3>
-          <p class="price-highlight">$200 - Includes Team Performance T-Shirt &amp; USA Wrestling Card</p>
+          <h3 id="reg-card-title">Wethersfield Weekend Warriors Winter Season</h3>
+          <p class="price-highlight" id="reg-price-line">$200 - Includes Team Performance T-Shirt &amp; USA Wrestling Card</p>
           <div class="schedule-info">
             <p><strong>SEASON</strong></p>
-            <p>November 29, 2026 - March 7, 2027</p>
+            <p id="reg-season">November 29, 2026 - March 7, 2027</p>
             <p style="margin-top: 0.85rem;"><strong>PRACTICE SCHEDULE</strong></p>
-            <p>Mondays &amp; Wednesdays · 5:00 - 6:30 PM</p>
+            <p id="reg-schedule">Mondays &amp; Wednesdays · 5:00 - 6:30 PM</p>
             <p style="margin-top: 0.85rem;"><strong>LOCATION</strong></p>
-            <p>Wethersfield Wrestling Room</p>
+            <p id="reg-location">Wethersfield Wrestling Room</p>
             <p style="margin-top: 0.85rem;"><strong>GREAT FOR</strong></p>
-            <p>Beginners and experienced wrestlers in grades 3-8.</p>
+            <p id="reg-great-for">Beginners and experienced wrestlers in grades 3-8.</p>
           </div>
         </div>
       </div>
 
       <div class="important-note">
-        <p>***$200 FEE PAID THE FIRST DAY OF PRACTICE***</p>
+        <p id="reg-fee-note">***$200 FEE PAID THE FIRST DAY OF PRACTICE***</p>
       </div>
 
       <div class="important-note" style="background: rgba(229,20,0,0.05); border-color: var(--ww-line-2); margin-top: 0.5rem;">
         <p style="color: #fff; font-size: 0.95rem; letter-spacing: 0.04em;">Fee includes a team performance t-shirt and USA Wrestling card</p>
       </div>
 
-      <div class="important-note" style="background: rgba(229,20,0,0.05); border-color: var(--ww-line-2); margin-top: 0.5rem;">
-        <p style="color: #fff; font-size: 0.95rem; letter-spacing: 0.04em;">Open to Wethersfield residents only at this time</p>
+      <div class="important-note" id="reg-eligibility-box" style="background: rgba(229,20,0,0.05); border-color: var(--ww-line-2); margin-top: 0.5rem;">
+        <p id="reg-eligibility" style="color: #fff; font-size: 0.95rem; letter-spacing: 0.04em;">Open to Wethersfield residents only at this time</p>
       </div>
 
       <div class="contact-block">
@@ -920,6 +936,132 @@
 
     createSnowflakes();
 
+    // Registration program (town/season) - configured from the admin dashboard in data/registrations.json
+    const DEFAULT_TOWN = 'Wethersfield';
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el && value) el.textContent = value;
+    }
+
+    function replaceTownText(root, town, abbr) {
+      if (!root) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        if (node.nodeValue.includes(DEFAULT_TOWN) || node.nodeValue.includes('WYWC')) {
+          node.nodeValue = node.nodeValue.split(DEFAULT_TOWN).join(town).split('WYWC').join(abbr);
+        }
+      }
+      root.querySelectorAll('[placeholder], [alt]').forEach(el => {
+        ['placeholder', 'alt'].forEach(attr => {
+          const val = el.getAttribute(attr);
+          if (val && val.includes(DEFAULT_TOWN)) el.setAttribute(attr, val.split(DEFAULT_TOWN).join(town));
+        });
+      });
+    }
+
+    function gradeLabel(n) {
+      if (n === 0) return 'K';
+      const suffix = n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th';
+      return `${n}${suffix}`;
+    }
+
+    function buildGradeOptions(grades) {
+      const match = /^\s*(K|\d{1,2})\s*-\s*(\d{1,2})\s*$/i.exec(grades || '');
+      if (!match) return;
+      const start = match[1].toUpperCase() === 'K' ? 0 : parseInt(match[1], 10);
+      const end = parseInt(match[2], 10);
+      if (end < start) return;
+      const select = document.getElementById('wrestler-grade');
+      select.innerHTML = '<option value="">Select Grade</option>';
+      for (let n = start; n <= end; n++) {
+        const label = gradeLabel(n);
+        const option = document.createElement('option');
+        option.value = label;
+        option.textContent = n === 0 ? 'Kindergarten' : `${label} Grade`;
+        select.appendChild(option);
+      }
+    }
+
+    function applyProgram(program) {
+      const town = program.town || DEFAULT_TOWN;
+      const abbr = `${town.charAt(0).toUpperCase()}YWC`;
+      const seasonShort = (program.season_name || '').replace(/^\d{4}(-\d{2,4})?\s+/, '');
+
+      replaceTownText(document.querySelector('header'), town, abbr);
+      replaceTownText(document.querySelector('section'), town, abbr);
+
+      if (program.season_name) {
+        document.title = `${program.season_name} Sign Ups - ${town} Weekend Warriors`;
+        setText('reg-page-title', `${program.season_name} Sign Ups`);
+      }
+      if (program.grades) {
+        setText('reg-tagline', `Youth Wrestling · Beginners Welcome · Grades ${program.grades}`);
+        setText('reg-grades-head', `Grades ${program.grades}`);
+        setText('reg-great-for', `Beginners and experienced wrestlers in grades ${program.grades}.`);
+        buildGradeOptions(program.grades);
+      }
+      setText('reg-dates-head', program.dates);
+      setText('reg-season', program.dates);
+      if (program.location) {
+        setText('reg-location-head', `@ ${program.location}`);
+        setText('reg-location', program.location);
+      }
+      setText('reg-card-title', `${town} Weekend Warriors ${seasonShort}`.trim());
+      setText('reg-schedule', program.practice_schedule);
+      if (program.price) {
+        setText('reg-price-line', `${program.price} - Includes Team Performance T-Shirt & USA Wrestling Card`);
+        setText('reg-fee-note', program.price_note || `***${program.price} FEE PAID THE FIRST DAY OF PRACTICE***`);
+      }
+      if (program.eligibility_note) {
+        setText('reg-eligibility', program.eligibility_note);
+      } else {
+        document.getElementById('reg-eligibility-box').style.display = 'none';
+      }
+      if (program.zip_placeholder) {
+        document.getElementById('zipcode').placeholder = `e.g., ${program.zip_placeholder}`;
+      }
+      if (program.flyer_image) {
+        document.getElementById('reg-flyer-img').src = program.flyer_image;
+        document.getElementById('reg-flyer-img').alt = `${town} ${program.season_name || ''} flyer`.trim();
+        document.getElementById('reg-flyer').style.display = '';
+      }
+    }
+
+    function showRegistrationClosed(registrations) {
+      document.querySelector('.partnership-title').style.display = 'none';
+      document.getElementById('reg-program-info').style.display = 'none';
+      document.querySelector('.signup-form-container').style.display = 'none';
+      document.getElementById('reg-closed').style.display = '';
+
+      const links = document.getElementById('reg-closed-links');
+      WWSiteConfig.openPrograms(registrations).forEach(program => {
+        const link = document.createElement('a');
+        link.href = WWSiteConfig.programUrl(program);
+        link.textContent = program.nav_label || `${program.town} Registration`;
+        link.className = 'success-home-btn';
+        link.style.background = program.nav_color || '';
+        links.appendChild(link);
+      });
+    }
+
+    // Resolves the program this page is registering for (null if config unavailable)
+    async function getActiveProgram() {
+      const { registrations } = await WWSiteConfig.ready;
+      if (!registrations) return { registrations: null, program: null };
+      return { registrations, program: WWSiteConfig.resolveProgram(registrations) };
+    }
+
+    getActiveProgram().then(({ registrations, program }) => {
+      if (!registrations) return;
+      if (!program || program.status !== 'open') {
+        showRegistrationClosed(registrations);
+        return;
+      }
+      applyProgram(program);
+    });
+
     // Modal functionality
     const modal = document.getElementById('waiver-modal');
     const readWaiverBtn = document.getElementById('read-waiver-btn');
@@ -986,12 +1128,25 @@
         return;
       }
 
+      const { registrations, program } = await getActiveProgram();
+      if (!registrations) {
+        alert('❌ Unable to load registration details. Please refresh the page and try again.');
+        return;
+      }
+      if (!program || program.status !== 'open') {
+        alert('⚠️ This registration is not currently open.');
+        return;
+      }
+      const dataFile = program.data_file;
+
       const submitBtn = form.querySelector('.submit-btn');
       const originalBtnText = submitBtn.textContent;
       submitBtn.textContent = 'Submitting...';
       submitBtn.disabled = true;
 
       const formData = {
+        program_id: program.id,
+        program_name: `${program.town} ${program.season_name || ''}`.trim(),
         parent_name: document.getElementById('parent-name').value.trim(),
         wrestler_name: document.getElementById('wrestler-name').value.trim(),
         wrestler_dob: document.getElementById('wrestler-dob').value,
@@ -1010,15 +1165,20 @@
       console.log('📝 Submitting registration:', formData);
 
       try {
-        // Load current signups
+        // Load current signups (fresh from the API; a brand-new season file may not exist yet)
         console.log('📥 Loading current signups...');
-        const res = await fetch('data/winter-signups.json');
+        let res;
+        try {
+          res = await fetch(`${API_URL}/load?file=${encodeURIComponent(dataFile)}&_=${Date.now()}`, { cache: 'no-store' });
+        } catch (loadError) {
+          res = await fetch(`${dataFile}?_=${Date.now()}`, { cache: 'no-store' });
+        }
 
-        if (!res.ok) {
+        if (!res.ok && res.status !== 404) {
           throw new Error(`Failed to load signups: ${res.status} ${res.statusText}`);
         }
 
-        const signups = await res.json();
+        const signups = res.status === 404 ? [] : await res.json();
         console.log('✅ Current signups loaded:', signups.length);
 
         // Add new signup
@@ -1031,7 +1191,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            file: 'data/winter-signups.json',
+            file: dataFile,
             content: JSON.stringify(signups, null, 2)
           })
         });

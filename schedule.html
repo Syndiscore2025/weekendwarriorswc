@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="site-config.js"></script>
   <script src="global-music.js" defer></script>
 </head>
 <body data-testid="page-schedule">
@@ -33,7 +34,8 @@
     <a href="about.html" data-testid="nav-about">About</a>
     <a href="schedule.html" class="active" aria-current="page" data-testid="nav-schedule">Schedule</a>
     <a href="contact.html" data-testid="nav-contact">Contact</a>
-    <a href="winter-signups.html" class="winter-reg-btn" data-testid="nav-winter-registration">2026-27 Winter Season</a>
+    <a href="winter-signups.html?program=wethersfield-winter-2026-27" class="winter-reg-btn" style="--reg-color: #1F5FD1;" data-reg-nav data-testid="nav-reg-wethersfield-winter-2026-27">Wethersfield Winter Registration</a>
+    <a href="winter-signups.html?program=winsted-winter-2026-27" class="winter-reg-btn" style="--reg-color: #E51400;" data-reg-nav data-testid="nav-reg-winsted-winter-2026-27">Winsted Winter Registration</a>
     <a href="https://www.usawmembership.com/login" class="usa-membership-btn" target="_blank" rel="noopener noreferrer" data-testid="nav-usa-membership">
       <span>USA WRESTLING</span>
       <span>Membership</span>

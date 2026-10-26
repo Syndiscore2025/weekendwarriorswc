@@ -1,0 +1,41 @@
+{
+  "programs": [
+    {
+      "id": "wethersfield-winter-2026-27",
+      "town": "Wethersfield",
+      "season_name": "2026-27 Winter Season",
+      "nav_label": "Wethersfield Winter Registration",
+      "nav_color": "#1F5FD1",
+      "dates": "November 29, 2026 - March 7, 2027",
+      "practice_schedule": "Mondays & Wednesdays · 5:00 - 6:30 PM",
+      "location": "Wethersfield Wrestling Room",
+      "grades": "3-8",
+      "price": "$200",
+      "price_note": "***$200 FEE PAID THE FIRST DAY OF PRACTICE***",
+      "eligibility_note": "Open to Wethersfield residents only at this time",
+      "zip_placeholder": "06109",
+      "status": "open",
+      "data_file": "data/winter-signups.json",
+      "created_at": "2026-09-19T00:00:00.000Z"
+    },
+    {
+      "id": "winsted-winter-2026-27",
+      "town": "Winsted",
+      "season_name": "2026-27 Winter Season",
+      "nav_label": "Winsted Winter Registration",
+      "nav_color": "#E51400",
+      "dates": "December 1, 2026 - March 7, 2027",
+      "practice_schedule": "Tuesdays & Thursdays · 6:30 - 8:00 PM",
+      "location": "Gilbert High School Wrestling Room",
+      "grades": "3-8",
+      "price": "$200 Resident / $220 Non-Resident",
+      "price_note": "***$200 RESIDENT / $220 NON-RESIDENT FEE PAID THE FIRST DAY OF PRACTICE***",
+      "eligibility_note": "Open to Winsted residents and non-residents",
+      "zip_placeholder": "06098",
+      "flyer_image": "media/winsted-winter-2026-flyer.png",
+      "status": "open",
+      "data_file": "data/winsted-winter-signups.json",
+      "created_at": "2026-10-26T00:00:00.000Z"
+    }
+  ]
+}

@@ -140,6 +140,11 @@ async function sendEmailNotification(subject, htmlContent, textContent, recipien
   }
 }
 
+// Active registration sign-up files (e.g. data/winter-signups.json, data/signups-<id>.json); archives excluded
+function isRegistrationSignupFile(file) {
+  return /^data\/[^/]*signups[^/]*\.json$/.test(file) && !file.includes('archive');
+}
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -335,18 +340,22 @@ View all messages in the admin dashboard: https://www.weekendwarriorswc.com/admi
       }
     }
 
-    if (file === 'data/winter-signups.json') {
+    if (isRegistrationSignupFile(file)) {
       try {
         const signups = JSON.parse(content);
         if (signups.length > 0) {
           const latestSignup = signups[signups.length - 1];
+          const programName = latestSignup.program_name || '';
 
-          const subject = '🤼 New Wrestler Registration - Weekend Warriors WC';
+          const subject = programName
+            ? `🤼 New Wrestler Registration (${programName}) - Weekend Warriors WC`
+            : '🤼 New Wrestler Registration - Weekend Warriors WC';
           const htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #4db8ff; border-bottom: 3px solid #4db8ff; padding-bottom: 10px;">
                 New Wrestler Registration
               </h2>
+              ${programName ? `<p><strong>Registration:</strong> ${programName}</p>` : ''}
               <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #333;">Wrestler Information</h3>
                 <p><strong>Name:</strong> ${latestSignup.wrestler_name}</p>
@@ -377,7 +386,7 @@ View all messages in the admin dashboard: https://www.weekendwarriorswc.com/admi
           `;
           const textContent = `
 New Wrestler Registration
-
+${programName ? `Registration: ${programName}\n` : ''}
 WRESTLER INFORMATION
 Name: ${latestSignup.wrestler_name}
 Date of Birth: ${latestSignup.wrestler_dob}

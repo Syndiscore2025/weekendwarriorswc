@@ -475,10 +475,8 @@
     <a href="about.html">About</a>
     <a href="schedule.html">Schedule</a>
     <a href="contact.html">Contact</a>
-    <a href="winter-signups.html" class="winter-nav">
-      <span style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px;">26-27 WINTER SEASON</span>
-      <span style="font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">SIGN-UPS</span>
-    </a>
+    <a href="winter-signups.html?program=wethersfield-winter-2026-27" class="winter-reg-btn" style="--reg-color: #1F5FD1;" data-reg-nav>Wethersfield Winter Registration</a>
+    <a href="winter-signups.html?program=winsted-winter-2026-27" class="winter-reg-btn" style="--reg-color: #E51400;" data-reg-nav>Winsted Winter Registration</a>
     <a href="admin.html" class="active" aria-current="page">Admin</a>
   </nav>
 
@@ -506,7 +504,7 @@
     </div>
 
     <div id="dash" class="hidden">
-      <div class="content-card">
+      <div class="content-card" data-admin-section="slideshow">
         <h2>Homepage Slideshow</h2>
         <div class="stack">
           <div class="note">Upload images (JPG, PNG) or videos (MP4, WebM). Max 50MB per file. Videos will auto-play muted.</div>
@@ -542,7 +540,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="music">
         <h2>🎵 Advanced Music Playlist Manager</h2>
         <div class="stack">
           <!-- Global Music Control -->
@@ -576,7 +574,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="recurring-practices">
         <h2>Recurring Practices</h2>
         <p style="margin-bottom: 1rem; color: #ccc; font-size: 0.9rem;">
           Create recurring practice events that will display on the schedule page. Set a start date to begin practices on a specific date.
@@ -617,7 +615,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="one-off-practices">
         <h2>One-Off Practices</h2>
         <p style="margin-bottom: 1rem; color: #ccc; font-size: 0.9rem;">
           Add special practices on specific dates that don't repeat.
@@ -647,7 +645,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="tournaments">
         <h2>Upcoming Tournaments</h2>
         <div class="stack">
           <div class="tournament-form">
@@ -706,34 +704,9 @@
         </div>
       </div>
 
-      <div class="content-card">
-        <h2 style="display: flex; align-items: center; gap: 0.5rem;">
-          <span style="font-size: 1.3rem;">❄️</span>
-          <span>26-27 Winter Season Sign-Ups</span>
-        </h2>
-        <p class="note">Wethersfield Weekend Warriors - View all registrations</p>
-        <div class="table-container">
-          <table class="admin-list">
-            <thead>
-              <tr>
-                <th style="width: 12%;">Parent Name</th>
-                <th style="width: 12%;">Wrestler Name</th>
-                <th style="width: 8%;">DOB</th>
-                <th style="width: 6%;">Grade</th>
-                <th style="width: 6%;">Weight</th>
-                <th style="width: 10%;">Phone</th>
-                <th style="width: 14%;">Email</th>
-                <th style="width: 10%;">Town</th>
-                <th style="width: 12%;">Submitted</th>
-                <th class="right" style="width: 10%;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="winter-signups-list"></tbody>
-          </table>
-        </div>
-      </div>
+      <div id="registrations-manager" data-admin-section="registrations"></div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="team-roster">
         <h2 style="display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.3rem;">🤼</span>
           <span>Team Roster</span>
@@ -779,7 +752,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="coaches">
         <h2 style="display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.3rem;">🥇</span>
           <span>Coaches</span>
@@ -843,7 +816,7 @@
         </div>
       </div>
 
-      <div class="content-card">
+      <div class="content-card" data-admin-section="contact-messages">
         <h2 style="display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.3rem;">📧</span>
           <span>Contact Messages</span>
@@ -865,6 +838,8 @@
         </div>
       </div>
 
+      <div id="sections-manager"></div>
+
     </div>
   </section>
 
@@ -874,6 +849,8 @@
     </div>
   </footer>
 
+  <script src="site-config.js"></script>
+  <script src="admin-registrations.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     const authView = $('auth-view');
@@ -954,6 +931,35 @@
       dash.classList.remove('hidden');
       attachEventListeners();
       loadData();
+      loadSectionsManager();
+    }
+
+    // Show / hide dashboard sections
+    const ADMIN_SECTIONS = [
+      { key: 'slideshow', label: 'Homepage Slideshow' },
+      { key: 'music', label: 'Music Playlist Manager' },
+      { key: 'recurring-practices', label: 'Recurring Practices' },
+      { key: 'one-off-practices', label: 'One-Off Practices' },
+      { key: 'tournaments', label: 'Upcoming Tournaments' },
+      { key: 'registrations', label: 'Registrations' },
+      { key: 'team-roster', label: 'Team Roster' },
+      { key: 'coaches', label: 'Coaches' },
+      { key: 'contact-messages', label: 'Contact Messages' }
+    ];
+
+    function applyHiddenAdminSections(hiddenKeys) {
+      document.querySelectorAll('[data-admin-section]').forEach(el => {
+        el.style.display = hiddenKeys.includes(el.dataset.adminSection) ? 'none' : '';
+      });
+    }
+
+    async function loadSectionsManager() {
+      applyHiddenAdminSections(await WWRegAdmin.getHiddenAdminSections('admin_hidden'));
+      await WWRegAdmin.renderSectionsManager($('sections-manager'), {
+        adminKey: 'admin_hidden',
+        adminSections: ADMIN_SECTIONS,
+        onApply: applyHiddenAdminSections
+      });
     }
 
     // Data ops
@@ -965,7 +971,7 @@
         loadCalendarEvents(),
         loadOneOffPractices(),
         loadTournaments(),
-        loadWinterSignups(),
+        loadRegistrations(),
         loadTeamRoster(),
         loadCoaches(),
         loadContactMessages(),
@@ -973,7 +979,7 @@
       ]);
 
       results.forEach((result, index) => {
-        const names = ['Slides', 'Audio', 'Calendar Events', 'One-Off Practices', 'Tournaments', 'Winter Signups', 'Team Roster', 'Coaches', 'Contact Messages', 'Slider Settings'];
+        const names = ['Slides', 'Audio', 'Calendar Events', 'One-Off Practices', 'Tournaments', 'Registrations', 'Team Roster', 'Coaches', 'Contact Messages', 'Slider Settings'];
         if (result.status === 'rejected') {
           console.error(`Failed to load ${names[index]}:`, result.reason);
         } else {
@@ -1841,103 +1847,12 @@
       }
     }
 
-    // Winter Sign Ups management
-    async function loadWinterSignups() {
-      try {
-        const res = await fetch(cacheBust('data/winter-signups.json'));
-        const data = await res.json();
-        const tbody = $('winter-signups-list');
-        tbody.innerHTML = '';
-
-        if (!data || data.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #aaa;">No registrations yet</td></tr>';
-          return;
-        }
-
-        for (let i = 0; i < data.length; i++) {
-          const row = data[i];
-          const tr = document.createElement('tr');
-          const submittedDate = row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : '';
-          const submittedTime = row.submitted_at ? new Date(row.submitted_at).toLocaleTimeString() : '';
-          const dob = row.wrestler_dob ? new Date(row.wrestler_dob).toLocaleDateString() : '';
-
-          const isOnTeam = row.on_team === true;
-
-          tr.innerHTML = `
-            <td>${row.parent_name || ''}</td>
-            <td><strong>${row.wrestler_name || ''}</strong></td>
-            <td>${dob}</td>
-            <td>${row.wrestler_grade || ''}</td>
-            <td>${row.wrestler_weight ? row.wrestler_weight + ' lbs' : '-'}</td>
-            <td>${row.phone || ''}</td>
-            <td>${row.email || ''}</td>
-            <td>${row.town || '-'}</td>
-            <td>${submittedDate}<br><small style="color:#aaa;">${submittedTime}</small></td>
-            <td class='right' style="padding: 0.5rem;">
-              <div style="display: flex; flex-direction: column; gap: 0.4rem; align-items: stretch;">
-                <button class='${isOnTeam ? 'secondary' : 'primary'}' data-index='${i}' data-action='team' style="font-size: 0.8rem; padding: 0.4rem 0.6rem; white-space: nowrap; min-width: 100px;">
-                  ${isOnTeam ? '✓ On Team' : '+ Add to Team'}
-                </button>
-                <button class='danger' data-index='${i}' data-action='delete' style="font-size: 0.8rem; padding: 0.4rem 0.6rem;">Delete</button>
-              </div>
-            </td>
-          `;
-
-          const teamBtn = tr.querySelector('button[data-action="team"]');
-          const deleteBtn = tr.querySelector('button[data-action="delete"]');
-
-          teamBtn.addEventListener('click', () => toggleTeamMember(i, !isOnTeam));
-          deleteBtn.addEventListener('click', () => deleteSignup(i));
-
-          tbody.appendChild(tr);
-        }
-      } catch (e) {
-        console.error('Load winter signups error:', e);
-      }
-    }
-
-    async function deleteSignup(index) {
-      if (!confirm('Delete this signup?')) return;
-
-      try {
-        const res = await fetch(cacheBust('data/winter-signups.json'));
-        const signups = await res.json();
-        signups.splice(index, 1);
-
-        // Save to API
-        const saveRes = await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
-        const result = await saveRes.json();
-        if (result.success) {
-          alert('✅ Signup deleted successfully!');
-          await loadWinterSignups();
-          await loadTeamRoster();
-        } else {
-          alert('❌ Error: ' + result.error);
-        }
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-
-    async function toggleTeamMember(index, addToTeam) {
-      try {
-        const res = await fetch(cacheBust('data/winter-signups.json'));
-        const signups = await res.json();
-
-        signups[index].on_team = addToTeam;
-
-        // Save to API
-        const saveRes = await saveData('data/winter-signups.json', JSON.stringify(signups, null, 2));
-        const result = await saveRes.json();
-        if (result.success) {
-          await loadWinterSignups();
-          await loadTeamRoster();
-        } else {
-          alert('❌ Error: ' + result.error);
-        }
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
+    // Registrations (one table per town/season, plus season manager)
+    async function loadRegistrations() {
+      await WWRegAdmin.renderRegistrations($('registrations-manager'), {
+        teamMode: 'flag',
+        onChange: loadTeamRoster
+      });
     }
 
     // Team Roster management
@@ -1946,8 +1861,7 @@
 
     async function loadTeamRoster() {
       try {
-        const res = await fetch(cacheBust('data/winter-signups.json'));
-        const data = await res.json();
+        const data = await WWRegAdmin.loadAllActiveSignups();
 
         // Filter only team members
         teamMembers = data.filter(member => member.on_team === true);
