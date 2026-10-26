@@ -1,5 +1,9 @@
 {
   "public_hidden": [],
   "admin_hidden": [],
-  "admin_enhanced_hidden_tabs": []
+  "admin_enhanced_hidden_tabs": [
+    "volunteers",
+    "medical",
+    "skills"
+  ]
 }
