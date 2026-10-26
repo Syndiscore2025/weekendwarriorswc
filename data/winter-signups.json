@@ -118,5 +118,22 @@
     "waiver_acknowledged_at": "2026-10-25T01:12:29.759Z",
     "submitted_at": "2026-10-25T01:12:29.759Z",
     "on_team": false
+  },
+  {
+    "program_id": "wethersfield-winter-2026-27",
+    "program_name": "Wethersfield 2026-27 Winter Season",
+    "parent_name": "Michael Horak",
+    "wrestler_name": "Brayden Horak TEST",
+    "wrestler_dob": "2012-03-02",
+    "wrestler_grade": "8th",
+    "wrestler_weight": "250",
+    "phone": "8609229875",
+    "email": "syndiscore@gmail.com",
+    "address": "101 Oxford Street",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-26T09:45:03.766Z",
+    "submitted_at": "2026-10-26T09:45:03.766Z",
+    "on_team": false
   }
 ]
