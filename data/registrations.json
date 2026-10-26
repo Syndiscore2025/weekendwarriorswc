@@ -33,9 +33,12 @@
       "eligibility_note": "Open to Winsted residents and non-residents",
       "zip_placeholder": "06098",
       "flyer_image": "media/winsted-winter-2026-flyer.png",
-      "status": "open",
+      "status": "archived",
       "data_file": "data/winsted-winter-signups.json",
-      "created_at": "2026-10-26T00:00:00.000Z"
+      "created_at": "2026-10-26T00:00:00.000Z",
+      "archived_at": "2026-10-26T14:50:39.136Z",
+      "archive_file": "data/archive/winsted-winter-2026-27-signups.json",
+      "archived_count": 0
     }
   ]
 }
