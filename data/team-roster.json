@@ -118,5 +118,22 @@
     "waiver_acknowledged_at": "2026-10-25T01:12:29.759Z",
     "submitted_at": "2026-10-25T01:12:29.759Z",
     "on_team": false
+  },
+  {
+    "program_id": "wethersfield-winter-2026-27",
+    "program_name": "Wethersfield 2026-27 Winter Season",
+    "parent_name": "Shannon Seeley",
+    "wrestler_name": "Kane Seeley",
+    "wrestler_dob": "2014-08-01",
+    "wrestler_grade": "7th",
+    "wrestler_weight": "100",
+    "phone": "8607346593",
+    "email": "mrsseeley143@gmail.com",
+    "address": "118 two brook road",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-10-27T23:43:41.333Z",
+    "submitted_at": "2026-10-27T23:43:41.333Z",
+    "on_team": false
   }
 ]
