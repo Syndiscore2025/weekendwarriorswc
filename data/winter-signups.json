@@ -135,5 +135,22 @@
     "waiver_acknowledged_at": "2026-10-27T23:43:41.333Z",
     "submitted_at": "2026-10-27T23:43:41.333Z",
     "on_team": false
+  },
+  {
+    "program_id": "wethersfield-winter-2026-27",
+    "program_name": "Wethersfield 2026-27 Winter Season",
+    "parent_name": "Pat McKenna",
+    "wrestler_name": "Patrick McKenna",
+    "wrestler_dob": "2016-09-16",
+    "wrestler_grade": "4th",
+    "wrestler_weight": "78",
+    "phone": "8604207311",
+    "email": "patrick.mckenna@uconn.edu",
+    "address": "215 Clearfield Road",
+    "town": "Wethersfield",
+    "waiver_acknowledged": true,
+    "waiver_acknowledged_at": "2026-11-21T20:26:49.619Z",
+    "submitted_at": "2026-11-21T20:26:49.619Z",
+    "on_team": false
   }
 ]
